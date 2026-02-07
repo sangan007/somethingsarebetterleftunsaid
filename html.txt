@@ -1,0 +1,6 @@
+apiKey: "AIzaSyBHz2WmR09Q6YA7rzLgnyhPJuXOEolhBUE", // Paste your Key here
+            authDomain: "unsaid-project.firebaseapp.com",
+            projectId: "unsaid-project",
+            storageBucket: "unsaid-project.firebasestorage.ap",
+            messagingSenderId: "685066165953",
+            appId: "1:685066165953:web:dc07faeb3ebf3d37727e40"

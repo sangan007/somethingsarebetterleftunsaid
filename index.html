@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#050505">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>somethingsarebetterleftunsaid</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-void: #050505;
+            --text-main: #f3f3f3;
+            --text-muted: rgba(243, 243, 243, 0.4);
+            --soft-ease: cubic-bezier(0.19, 1, 0.22, 1);
+            --safe-top: env(safe-area-inset-top);
+            --safe-bottom: env(safe-area-inset-bottom);
+        }
+
+        body {
+            background-color: var(--bg-void);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+        }
+
+        /* --- ACCESSIBILITY & FOCUS --- */
+        *:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5);
+        }
+        
+        button:focus-visible, input:focus-visible, textarea:focus-visible {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* --- PRODUCT NAVIGATION --- */
+        .nav-link {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+            transition: color 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            padding: 8px; /* Touch target */
+        }
+        .nav-link:hover, .nav-link.active {
+            color: var(--text-main);
+        }
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 8px;
+            right: 8px;
+            height: 1px;
+            background-color: var(--text-main);
+            opacity: 0.5;
+        }
+
+        /* --- PAGE TRANSITIONS --- */
+        .view-section {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+        .view-section.active {
+            display: block;
+            opacity: 1;
+            animation: fadeView 0.8s var(--soft-ease);
+        }
+        @keyframes fadeView {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- SPLASH SCREEN --- */
+        #splash-screen {
+            position: fixed;
+            inset: 0;
+            background-color: var(--bg-void);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1.2s ease-in-out, visibility 1.2s step-end;
+        }
+        
+        #splash-screen.fade-out {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        #splash-text {
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            color: rgba(255, 255, 255, 0.9);
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 1.5s ease-out, transform 1.5s var(--soft-ease);
+            letter-spacing: 0.05em;
+            text-align: center;
+            max-width: 80%;
+        }
+
+        #splash-text.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- FULL SCREEN READING VIEW --- */
+        #full-screen-view {
+            position: fixed;
+            inset: 0;
+            z-index: 90;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s var(--soft-ease), visibility 0.5s step-end;
+            padding: 2rem;
+            padding-top: max(2rem, var(--safe-top)); /* Safe area support */
+            padding-bottom: max(2rem, var(--safe-bottom));
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+        }
+
+        #full-screen-view.active {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.5s var(--soft-ease), visibility 0s;
+        }
+
+        .fs-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+            position: relative;
+            min-height: 100%;
+        }
+
+        .fs-header {
+            margin-top: 4rem;
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.6s 0.2s var(--soft-ease);
+        }
+        #full-screen-view.active .fs-header { opacity: 1; transform: translateY(0); }
+
+        .fs-to {
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            font-size: 1.5rem;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 0.5rem;
+        }
+
+        .fs-meta {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255,255,255,0.4);
+        }
+
+        .fs-body {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 0 6rem 0;
+            opacity: 0;
+            transform: scale(0.98);
+            transition: all 0.8s 0.3s var(--soft-ease);
+        }
+        #full-screen-view.active .fs-body { opacity: 1; transform: scale(1); }
+
+        .fs-text {
+            width: 100%;
+            text-align: center;
+            overflow-wrap: break-word;
+        }
+
+        .fs-close {
+            position: fixed;
+            top: max(2rem, var(--safe-top));
+            right: 2rem;
+            cursor: pointer;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+            z-index: 100;
+            background: rgba(0,0,0,0.2);
+            border-radius: 50%;
+            padding: 12px; /* Larger touch target */
+        }
+        .fs-close:hover { opacity: 1; background: rgba(255,255,255,0.1); }
+
+        /* --- THE MODERN STRUCTURED CARD --- */
+        .message-fragment {
+            width: 100%;
+            opacity: 0;
+            transform: scale(0.98) translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s var(--soft-ease);
+            margin-bottom: 0;
+            cursor: pointer;
+            -webkit-user-select: none; /* Mobile optimization */
+            user-select: none;
+        }
+
+        .message-fragment:active .fragment-content {
+            transform: scale(0.98); /* Touch feedback */
+        }
+
+        .message-fragment:hover .fragment-content {
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-4px);
+        }
+        /* Disable hover transform on mobile to avoid stickiness */
+        @media (hover: none) {
+            .message-fragment:hover .fragment-content { transform: none; }
+        }
+
+        .message-fragment.visible {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        .fragment-content {
+            position: relative;
+            width: 100%;
+            min-height: 450px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+            background-clip: padding-box;
+            overflow: hidden;
+            transition: all 0.4s var(--soft-ease);
+        }
+
+        /* Dynamic Classes */
+        .pad-compact { padding: 1.5rem; }
+        .pad-balanced { padding: 3rem; }
+        .pad-spacious { padding: 5rem; }
+        /* Adjust padding for mobile */
+        @media (max-width: 640px) {
+            .pad-balanced { padding: 2rem; }
+            .pad-spacious { padding: 3rem; }
+        }
+
+        .rad-sharp { border-radius: 2px; }
+        .rad-soft { border-radius: 16px; }
+        .rad-round { border-radius: 32px; }
+
+        .width-narrow { max-width: 400px; margin: 0 auto; }
+        .width-standard { max-width: 100%; }
+        .width-wide { max-width: 100%; }
+
+        .border-thin { border-width: 1px; }
+        .border-medium { border-width: 2px; }
+
+        /* HEADER SECTION */
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            transition: opacity 0.3s;
+        }
+
+        .header-to {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255,255,255,0.5);
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            transition: opacity 0.3s;
+        }
+        
+        .header-to span.to-value {
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            text-transform: none;
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.9);
+            opacity: 1;
+        }
+
+        .header-icon {
+            opacity: 0.5;
+            width: 24px;
+            height: 24px;
+        }
+
+        /* BODY SECTION */
+        .card-body {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 0;
+            width: 100%;
+        }
+
+        .body-text {
+            width: 100%;
+            overflow-wrap: break-word;
+            transition: all 0.3s;
+        }
+
+        /* Typography Utilities */
+        .font-sans { font-family: 'Inter', sans-serif; }
+        .font-serif { font-family: 'EB Garamond', serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+        .weight-light { font-weight: 300; }
+        .weight-normal { font-weight: 400; }
+        .weight-medium { font-weight: 600; }
+
+        .size-small { font-size: 1.25rem; }
+        .size-medium { font-size: 1.8rem; }
+        .size-large { font-size: 2.8rem; line-height: 1.1; }
+        /* Responsive Text Sizing */
+        @media (max-width: 640px) {
+            .size-medium { font-size: 1.5rem; }
+            .size-large { font-size: 2.2rem; }
+        }
+
+        .leading-tight { line-height: 1.1; }
+        .leading-normal { line-height: 1.5; }
+        .leading-airy { line-height: 1.8; }
+
+        .align-left { text-align: left; }
+        .align-center { text-align: center; }
+
+        /* FOOTER SECTION */
+        .card-footer {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            width: 100%;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: rgba(255,255,255,0.4);
+            transition: opacity 0.3s;
+        }
+
+        .footer-left { text-align: left; }
+        .footer-center { text-align: center; opacity: 0.5; }
+        .footer-right { text-align: right; }
+
+        .symbolic-btn {
+            opacity: 0.6;
+            transition: opacity 0.2s;
+            cursor: default;
+        }
+
+        /* UI Chrome - Tabbed Control Panel */
+        .control-panel-container {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.9);
+            padding: 16px;
+            padding-bottom: max(16px, var(--safe-bottom)); /* Safe area padding */
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 100%;
+            max-width: 600px;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        
+        .control-panel-container.keyboard-hidden {
+            transform: translateY(100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .tab-bar {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 12px;
+            overflow-x: auto; /* Allow scrolling on small screens */
+            scrollbar-width: none;
+        }
+        .tab-bar::-webkit-scrollbar { display: none; }
+
+        .tab-btn {
+            background: transparent;
+            color: rgba(255,255,255,0.4);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 8px 12px;
+            border-radius: 100px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .tab-btn:hover { color: rgba(255,255,255,0.8); }
+        .tab-btn.active { background: rgba(255,255,255,0.1); color: #fff; font-weight: 600; }
+
+        .control-group {
+            display: none; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 12px; align-items: start; animation: fadeIn 0.3s ease;
+        }
+        .control-group.active { display: grid; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .control-item { display: flex; flex-direction: column; gap: 6px; }
+        .control-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.3); }
+        .toggle-row { display: flex; gap: 4px; background: rgba(255,255,255,0.05); border-radius: 8px; padding: 2px; }
+        .micro-btn { flex: 1; text-align: center; font-size: 0.65rem; padding: 10px 0; /* Larger touch target */ border-radius: 6px; color: rgba(255,255,255,0.5); transition: all 0.2s; }
+        .micro-btn:hover { background: rgba(255,255,255,0.05); }
+        .micro-btn.active { background: rgba(255,255,255,0.2); color: #fff; }
+        
+        .color-swatch { width: 100%; height: 32px; border-radius: 6px; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
+        .color-swatch:focus-visible { transform: scale(1.1); border-color: rgba(255,255,255,0.8); }
+        .color-swatch.active { border-color: #fff; transform: scale(0.95); }
+
+        .feed-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 480px), 1fr));
+            gap: 3rem;
+            align-items: start;
+        }
+        /* Mobile Grid */
+        @media (max-width: 640px) {
+            .feed-grid { gap: 1.5rem; }
+        }
+
+        #writeModal { transition: background-color 0.6s var(--soft-ease); padding-top: var(--safe-top); }
+        
+        .input-card-container { width: 100%; max-width: 600px; min-height: 500px; transition: all 0.3s ease; }
+        #toInput { background: transparent; font-family: inherit; font-size: inherit; color: #fff; width: 100%; outline: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 8px 0; }
+        #toInput::placeholder { color: rgba(255,255,255,0.3); font-style: normal; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; }
+        #msgInput { background: transparent; outline: none; width: 100%; height: 100%; padding: 10px; }
+        .releasing-overlay { position: fixed; inset: 0; background: rgba(5,5,5,0.95); z-index: 100; display: none; align-items: center; justify-content: center; }
+
+        /* Search & Discovery Styles */
+        .search-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto 4rem auto;
+            position: relative;
+        }
+        .search-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 1rem 0;
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            font-size: 1.5rem;
+            color: white;
+            text-align: center;
+            transition: border-color 0.3s;
+            border-radius: 0; /* Remove default styling on iOS */
+        }
+        .search-input:focus { outline: none; border-bottom-color: rgba(255,255,255,0.3); }
+        .search-input::placeholder { color: rgba(255,255,255,0.2); }
+    </style>
+</head>
+<body class="selection:bg-white/20 selection:text-white">
+
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <div id="splash-text"></div>
+    </div>
+
+    <div id="releasingOverlay" class="releasing-overlay">
+        <div class="text-[10px] uppercase tracking-[0.5em] animate-pulse font-light">Releasing...</div>
+    </div>
+
+    <!-- Product Navigation -->
+    <nav class="fixed top-0 w-full z-40 px-6 py-6 flex justify-between items-center bg-gradient-to-b from-[#050505] to-transparent" style="padding-top: max(1.5rem, var(--safe-top));">
+        <div class="flex items-center gap-8">
+            <h1 class="text-[9px] font-bold uppercase tracking-[0.3em] opacity-80 cursor-pointer" onclick="app.router('archive')" role="button" tabindex="0">somethingsarebetterleftunsaid</h1>
+            
+            <!-- Desktop Nav Links -->
+            <div class="hidden md:flex gap-6">
+                <span class="nav-link active" onclick="app.router('archive')" id="nav-archive" role="button" tabindex="0">Archive</span>
+                <span class="nav-link" onclick="app.router('shop')" id="nav-shop" role="button" tabindex="0">Shop</span>
+                <span class="nav-link" onclick="app.router('about')" id="nav-about" role="button" tabindex="0">About</span>
+                <span class="nav-link" onclick="app.router('terms')" id="nav-terms" role="button" tabindex="0">Terms</span>
+            </div>
+        </div>
+
+        <button id="btnOpenWrite" class="text-[10px] font-bold uppercase tracking-widest border border-white/20 px-5 py-2.5 rounded-full hover:bg-white hover:text-black transition-all">
+            Express
+        </button>
+    </nav>
+
+    <!-- Mobile Navigation Bar (NEW) -->
+    <div class="md:hidden fixed bottom-6 left-0 w-full z-40 flex justify-center pointer-events-none" style="padding-bottom: var(--safe-bottom);">
+        <div class="pointer-events-auto bg-[#0a0a0a]/90 backdrop-blur-xl border border-white/10 rounded-full px-5 py-3 flex items-center gap-5 shadow-2xl shadow-black/50">
+            <span class="text-[9px] uppercase tracking-widest font-bold cursor-pointer text-white hover:text-white transition-colors" onclick="app.router('archive')" id="mob-archive" role="button">Archive</span>
+            <div class="w-px h-3 bg-white/10"></div>
+            <span class="text-[9px] uppercase tracking-widest font-bold cursor-pointer text-white/50 hover:text-white transition-colors" onclick="app.router('shop')" id="mob-shop" role="button">Shop</span>
+            <div class="w-px h-3 bg-white/10"></div>
+            <span class="text-[9px] uppercase tracking-widest font-bold cursor-pointer text-white/50 hover:text-white transition-colors" onclick="app.router('about')" id="mob-about" role="button">About</span>
+            <div class="w-px h-3 bg-white/10"></div>
+            <span class="text-[9px] uppercase tracking-widest font-bold cursor-pointer text-white/50 hover:text-white transition-colors" onclick="app.router('terms')" id="mob-terms" role="button">Terms</span>
+        </div>
+    </div>
+
+    <!-- FULL SCREEN MESSAGE VIEW -->
+    <div id="full-screen-view" class="fixed inset-0 z-[90] hidden bg-black text-white flex-col p-8 opacity-0 transition-opacity duration-500 overflow-y-auto" role="dialog" aria-modal="true" aria-label="Reading view">
+        <div class="fixed top-8 right-8 z-[100]" style="top: max(2rem, var(--safe-top));">
+            <button onclick="app.closeFullScreen()" class="bg-black/20 hover:bg-white/10 rounded-full p-2 transition-colors" aria-label="Close">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="fs-content max-w-4xl mx-auto w-full flex flex-col flex-grow relative min-h-screen">
+            <div class="fs-header mt-16 mb-8 opacity-0 translate-y-[-10px] transition-all duration-700 delay-200">
+                <div class="font-serif italic text-2xl md:text-3xl opacity-90 mb-2">To: <span id="fs-to-text"></span></div>
+                <div class="font-sans text-[10px] uppercase tracking-[0.15em] opacity-40" id="fs-meta-text">Posted on...</div>
+            </div>
+            <div class="fs-body flex-grow flex items-center justify-center py-12 opacity-0 scale-95 transition-all duration-700 delay-300">
+                <div id="fs-message-text" class="w-full text-center break-words"></div>
+            </div>
+        </div>
+        <!-- Keyboard Hint -->
+        <div id="fs-hint" class="fixed bottom-8 left-1/2 -translate-x-1/2 text-[9px] uppercase tracking-widest opacity-30 pointer-events-none transition-opacity duration-1000" style="padding-bottom: var(--safe-bottom);">Use ← → to read, Esc to close</div>
+    </div>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="w-full min-h-screen pt-32 pb-32 px-4 md:px-8">
+
+        <!-- VIEW: ARCHIVE (Default) -->
+        <section id="view-archive" class="view-section active max-w-[1600px] mx-auto">
+            
+            <!-- Editorial Hero -->
+            <div class="text-center mb-16 opacity-0 animate-[fadeIn_1s_ease_forwards] delay-500">
+                <h2 class="font-serif italic text-3xl md:text-4xl text-white/80 mb-2">A Collection of Unsaid Things</h2>
+                <div id="post-count" class="text-[9px] font-mono uppercase tracking-widest text-white/30">Loading archive...</div>
+            </div>
+
+            <!-- Search -->
+            <div class="search-container opacity-0 animate-[fadeIn_1s_ease_forwards] delay-700">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search by mood, person, or memory..." autocomplete="off">
+            </div>
+
+            <!-- Feed -->
+            <div id="status-display" class="text-center py-12 opacity-30 text-[10px] uppercase tracking-widest">
+                <span id="loading-text">Listening to the void...</span>
+                <div id="setup-help" class="hidden mt-4 text-red-400 normal-case tracking-normal">Config Required.</div>
+            </div>
+            
+            <div id="feed" class="feed-grid"></div>
+            
+            <div id="empty-state" class="hidden text-center py-24">
+                <p class="font-serif italic text-xl text-white/40">No echoes found.</p>
+                <button onclick="app.clearSearch()" class="mt-4 text-[10px] uppercase tracking-widest border-b border-white/20 pb-1 hover:border-white/60">Clear Search</button>
+            </div>
+        </section>
+
+        <!-- VIEW: SHOP -->
+        <section id="view-shop" class="view-section max-w-2xl mx-auto pt-20 text-center">
+            <div class="border border-white/10 p-12 rounded-2xl bg-[#0a0a0a]">
+                <span class="font-serif italic text-2xl text-white/60 block mb-4">Physical Artifacts</span>
+                <p class="text-sm font-light text-white/40 leading-relaxed mb-8">
+                    We are currently curating the first printed volume of unsaid messages. 
+                    Tokens of silence will be available soon.
+                </p>
+                <span class="text-[10px] uppercase tracking-[0.2em] border border-white/20 px-4 py-2 rounded-full opacity-50">Coming Soon</span>
+            </div>
+        </section>
+
+        <!-- VIEW: ABOUT -->
+        <section id="view-about" class="view-section max-w-3xl mx-auto pt-20">
+            <h2 class="font-serif italic text-4xl text-white/90 mb-12 text-center">About the Archive</h2>
+            <div class="space-y-8 text-lg font-light text-white/60 leading-relaxed px-6">
+                <p>This is a quiet corner of the internet dedicated to the things we carry but cannot speak.</p>
+                <p>Every message here is real. Every silence is heavy. We provide the space; you provide the release.</p>
+                <div class="h-px bg-white/10 w-24 mx-auto my-12"></div>
+                <p class="text-center text-sm">No data collected. No identities tracked. Pure anonymity.</p>
+            </div>
+        </section>
+
+        <!-- VIEW: TERMS -->
+        <section id="view-terms" class="view-section max-w-2xl mx-auto pt-20 px-6">
+            <h3 class="text-xs font-bold uppercase tracking-widest text-white/50 mb-8">Terms of Use</h3>
+            <div class="space-y-4 text-xs font-mono text-white/30">
+                <p>1. This archive is anonymous. Your identity is never stored.</p>
+                <p>2. This is a space for emotion, not harm. Hateful content is deleted.</p>
+                <p>3. By submitting, you release your words to the void.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Immersive Writing Interface -->
+    <div id="writeModal" class="fixed inset-0 z-50 flex flex-col hidden overflow-y-auto bg-[#050505]" role="dialog" aria-label="Write a message">
+        <!-- Live Preview Area -->
+        <div class="flex-grow flex items-center justify-center p-4 pb-40">
+            <div id="livePreview" class="input-card-container">
+                <!-- Header -->
+                <div class="card-header">
+                    <div class="header-to">
+                        <span>To:</span>
+                        <input id="toInput" type="text" placeholder="Name / Memory" maxlength="40" autocomplete="off" tabindex="1">
+                    </div>
+                    <svg id="headerIcon" class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M22 2L11 13" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+
+                <!-- Body -->
+                <div class="card-body">
+                    <textarea id="msgInput" 
+                        placeholder="Type..."
+                        class="bg-transparent border-none focus:ring-0 w-full resize-none placeholder:text-white/20"
+                        maxlength="500" tabindex="2"></textarea>
+                </div>
+
+                <!-- Footer -->
+                <div class="card-footer" id="cardFooter">
+                    <div class="footer-left"><span class="symbolic-btn">Send</span></div>
+                    <div class="footer-center">#UNSAID</div>
+                    <div class="footer-right"><span id="btnCloseWrite" class="symbolic-btn cursor-pointer hover:text-white/80" role="button" tabindex="0">Discard</span></div>
+                </div>
+            </div>
+            
+            <div id="publishError" class="absolute bottom-32 text-red-400 text-[10px] tracking-widest uppercase hidden"></div>
+        </div>
+
+        <!-- Floating Tabbed Control Bar -->
+        <div id="editorControls" class="fixed bottom-6 left-1/2 -translate-x-1/2 w-full px-4 flex justify-center z-50 transition-all duration-300">
+            <div class="control-panel-container">
+                <div class="tab-bar">
+                    <button class="tab-btn active" data-tab="type" tabindex="3">Typography</button>
+                    <button class="tab-btn" data-tab="mood" tabindex="3">Mood</button>
+                    <button class="tab-btn" data-tab="shape" tabindex="3">Shape</button>
+                    <button class="tab-btn" data-tab="detail" tabindex="3">Details</button>
+                    <div class="w-px bg-white/10 mx-2"></div>
+                    <button id="btnSubmit" class="tab-btn" style="color: #fff; font-weight: 700;" tabindex="4">Release</button>
+                </div>
+
+                <!-- Controls: Typography -->
+                <div class="control-group active" id="tab-type">
+                    <div class="control-item"><span class="control-label">Font</span><div class="toggle-row"><button class="micro-btn active" data-cat="font" data-val="font-sans" tabindex="3">Sans</button><button class="micro-btn" data-cat="font" data-val="font-serif" tabindex="3">Serif</button><button class="micro-btn" data-cat="font" data-val="font-mono" tabindex="3">Mono</button></div></div>
+                    <div class="control-item"><span class="control-label">Size</span><div class="toggle-row"><button class="micro-btn" data-cat="size" data-val="size-small" tabindex="3">S</button><button class="micro-btn active" data-cat="size" data-val="size-medium" tabindex="3">M</button><button class="micro-btn" data-cat="size" data-val="size-large" tabindex="3">L</button></div></div>
+                    <div class="control-item"><span class="control-label">Weight</span><div class="toggle-row"><button class="micro-btn" data-cat="weight" data-val="weight-light" tabindex="3">Light</button><button class="micro-btn active" data-cat="weight" data-val="weight-normal" tabindex="3">Reg</button><button class="micro-btn" data-cat="weight" data-val="weight-medium" tabindex="3">Bold</button></div></div>
+                    <div class="control-item"><span class="control-label">Spacing</span><div class="toggle-row"><button class="micro-btn" data-cat="leading" data-val="leading-tight" tabindex="3">Tight</button><button class="micro-btn active" data-cat="leading" data-val="leading-normal" tabindex="3">Norm</button><button class="micro-btn" data-cat="leading" data-val="leading-airy" tabindex="3">Airy</button></div></div>
+                    <div class="control-item"><span class="control-label">Align</span><div class="toggle-row"><button class="micro-btn" data-cat="align" data-val="align-left" tabindex="3">Left</button><button class="micro-btn active" data-cat="align" data-val="align-center" tabindex="3">Center</button></div></div>
+                </div>
+
+                <!-- Controls: Mood -->
+                <div class="control-group" id="tab-mood">
+                    <div class="control-item" style="grid-column: span 2;"><span class="control-label">Atmosphere</span><div class="flex gap-2"><div class="color-swatch bg-[#0a0a0a] active" data-cat="bg" data-val="#0a0a0a" tabindex="3" role="button" aria-label="Obsidian"></div><div class="color-swatch bg-[#450a0a]" data-cat="bg" data-val="#450a0a" tabindex="3" role="button" aria-label="Crimson"></div><div class="color-swatch bg-[#0f172a]" data-cat="bg" data-val="#0f172a" tabindex="3" role="button" aria-label="Midnight"></div><div class="color-swatch bg-[#14532d]" data-cat="bg" data-val="#14532d" tabindex="3" role="button" aria-label="Forest"></div><div class="color-swatch bg-[#262626]" data-cat="bg" data-val="#262626" tabindex="3" role="button" aria-label="Concrete"></div><div class="color-swatch bg-[#3f3f46]" data-cat="bg" data-val="#3f3f46" tabindex="3" role="button" aria-label="Stone"></div><div class="color-swatch bg-[#57534e]" data-cat="bg" data-val="#57534e" tabindex="3" role="button" aria-label="Warm Gray"></div></div></div>
+                    <div class="control-item"><span class="control-label">Border</span><div class="toggle-row"><button class="micro-btn active" data-cat="border" data-val="border-thin" tabindex="3">Thin</button><button class="micro-btn" data-cat="border" data-val="border-medium" tabindex="3">Med</button></div></div>
+                </div>
+
+                <!-- Controls: Shape -->
+                <div class="control-group" id="tab-shape">
+                    <div class="control-item"><span class="control-label">Padding</span><div class="toggle-row"><button class="micro-btn" data-cat="padding" data-val="pad-compact" tabindex="3">Compact</button><button class="micro-btn active" data-cat="padding" data-val="pad-balanced" tabindex="3">Bal</button><button class="micro-btn" data-cat="padding" data-val="pad-spacious" tabindex="3">Airy</button></div></div>
+                    <div class="control-item"><span class="control-label">Corners</span><div class="toggle-row"><button class="micro-btn" data-cat="radius" data-val="rad-sharp" tabindex="3">Sharp</button><button class="micro-btn active" data-cat="radius" data-val="rad-soft" tabindex="3">Soft</button><button class="micro-btn" data-cat="radius" data-val="rad-round" tabindex="3">Round</button></div></div>
+                    <div class="control-item"><span class="control-label">Width</span><div class="toggle-row"><button class="micro-btn" data-cat="width" data-val="width-narrow" tabindex="3">Narrow</button><button class="micro-btn active" data-cat="width" data-val="width-standard" tabindex="3">Std</button><button class="micro-btn" data-cat="width" data-val="width-wide" tabindex="3">Wide</button></div></div>
+                </div>
+
+                <!-- Controls: Details -->
+                <div class="control-group" id="tab-detail">
+                    <div class="control-item"><span class="control-label">To Opacity</span><div class="toggle-row"><button class="micro-btn" data-cat="toOpacity" data-val="opacity-50" tabindex="3">Subtle</button><button class="micro-btn active" data-cat="toOpacity" data-val="opacity-100" tabindex="3">Bold</button></div></div>
+                    <div class="control-item"><span class="control-label">Icon</span><div class="toggle-row"><button class="micro-btn active" data-cat="icon" data-val="show" tabindex="3">Show</button><button class="micro-btn" data-cat="icon" data-val="hide" tabindex="3">Hide</button></div></div>
+                    <div class="control-item"><span class="control-label">Footer</span><div class="toggle-row"><button class="micro-btn active" data-cat="footer" data-val="show" tabindex="3">Show</button><button class="micro-btn" data-cat="footer" data-val="hide" tabindex="3">Hide</button></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, query, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+        // FIREBASE CONFIG
+        const manualConfig = {
+            apiKey: "AIzaSyBHz2WmR09Q6YA7rzLgnyhPJuXOEolhBUE", // Paste your Key here
+            authDomain: "unsaid-project.firebaseapp.com",
+            projectId: "unsaid-project",
+            storageBucket: "unsaid-project.firebasestorage.ap",
+            messagingSenderId: "685066165953",
+            appId: "1:685066165953:web:dc07faeb3ebf3d37727e40"
+        }; 
+
+        const getFirebaseConfig = () => {
+            if (manualConfig && typeof manualConfig === 'object' && manualConfig.projectId !== "YOUR-PROJECT-ID") {
+                return manualConfig;
+            }
+            try { return typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null; } catch (e) { return null; }
+        };
+
+        const config = getFirebaseConfig();
+        const ui = {
+            feed: document.getElementById('feed'),
+            modal: document.getElementById('writeModal'),
+            openBtn: document.getElementById('btnOpenWrite'),
+            closeBtn: document.getElementById('btnCloseWrite'),
+            livePreview: document.getElementById('livePreview'),
+            msgInput: document.getElementById('msgInput'),
+            toInput: document.getElementById('toInput'),
+            toLabel: document.querySelector('.header-to'),
+            headerIcon: document.getElementById('headerIcon'),
+            cardFooter: document.getElementById('cardFooter'),
+            submitBtn: document.getElementById('btnSubmit'),
+            loadingText: document.getElementById('loading-text'),
+            publishError: document.getElementById('publishError'),
+            releasingOverlay: document.getElementById('releasingOverlay'),
+            statusDisplay: document.getElementById('status-display'),
+            setupHelp: document.getElementById('setup-help'),
+            searchInput: document.getElementById('searchInput'),
+            postCount: document.getElementById('post-count'),
+            emptyState: document.getElementById('empty-state'),
+            fsView: document.getElementById('full-screen-view'),
+            fsTo: document.getElementById('fs-to-text'),
+            fsMeta: document.getElementById('fs-meta-text'),
+            fsMsg: document.getElementById('fs-message-text'),
+            editorControls: document.getElementById('editorControls')
+        };
+
+        if (!config) {
+            ui.loadingText.textContent = "Error: Connection Failed.";
+            ui.setupHelp.classList.remove('hidden');
+            throw new Error("Config Missing");
+        }
+
+        const app = initializeApp(config);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'unsaid-modern-mvp';
+
+        let user = null;
+        let allMessages = [];
+        let displayedMessages = [];
+        let currentFullScreenIndex = -1;
+        
+        // --- APP STATE ---
+        const state = { 
+            bg: '#0a0a0a',
+            font: 'font-sans', size: 'size-medium', weight: 'weight-normal', leading: 'leading-normal', align: 'align-center',
+            border: 'border-thin', padding: 'pad-balanced', radius: 'rad-soft', width: 'width-standard',
+            toOpacity: 'opacity-100', icon: 'show', footer: 'show'
+        };
+
+        const moodMap = {
+            '#0a0a0a': 'Obsidian', '#450a0a': 'Crimson', '#0f172a': 'Midnight',
+            '#14532d': 'Forest', '#262626': 'Concrete', '#3f3f46': 'Stone', '#57534e': 'Warm Gray'
+        };
+
+        // --- ROUTER LOGIC ---
+        window.app = {
+            router: (viewId) => {
+                document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+                document.getElementById(`view-${viewId}`).classList.add('active');
+                
+                // Desktop Nav Active State
+                document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+                if(document.getElementById(`nav-${viewId}`)) document.getElementById(`nav-${viewId}`).classList.add('active');
+                
+                // Mobile Nav Active State
+                ['archive', 'shop', 'about', 'terms'].forEach(id => {
+                    const el = document.getElementById(`mob-${id}`);
+                    if(el) {
+                        if(id === viewId) {
+                            el.classList.remove('text-white/50');
+                            el.classList.add('text-white');
+                        } else {
+                            el.classList.add('text-white/50');
+                            el.classList.remove('text-white');
+                        }
+                    }
+                });
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            },
+            clearSearch: () => {
+                ui.searchInput.value = '';
+                renderFeed(allMessages);
+            },
+            openFullScreen: (index) => {
+                const data = displayedMessages[index];
+                if (!data) return;
+                
+                currentFullScreenIndex = index;
+
+                // Populate Content
+                ui.fsTo.textContent = data.to || 'Unknown';
+                ui.fsMsg.textContent = data.msg;
+                
+                // Style
+                ui.fsView.style.backgroundColor = data.bg || '#0a0a0a';
+                ui.fsMsg.className = `${data.size || 'size-medium'} ${data.font || 'font-sans'} ${data.weight || 'weight-normal'} ${data.leading || 'leading-normal'} ${data.align || 'align-center'}`;
+                
+                // Meta
+                const dateStr = data.createdAt?.seconds ? new Date(data.createdAt.seconds * 1000).toLocaleDateString() : 'Just now';
+                const moodName = moodMap[data.bg] || 'Silence';
+                ui.fsMeta.textContent = `Posted on ${dateStr} in ${moodName}`;
+
+                // Show
+                ui.fsView.classList.remove('hidden');
+                ui.fsView.classList.add('flex');
+                setTimeout(() => {
+                    ui.fsView.classList.remove('opacity-0');
+                    ui.fsView.querySelector('.fs-header').classList.remove('opacity-0', 'translate-y-[-10px]');
+                    ui.fsView.querySelector('.fs-body').classList.remove('opacity-0', 'scale-95');
+                }, 10);
+                
+                document.body.style.overflow = 'hidden';
+                
+                // Focus trap for accessibility
+                const closeBtn = ui.fsView.querySelector('button[aria-label="Close"]');
+                if (closeBtn) closeBtn.focus();
+            },
+            closeFullScreen: () => {
+                ui.fsView.classList.add('opacity-0');
+                ui.fsView.querySelector('.fs-header').classList.add('opacity-0', 'translate-y-[-10px]');
+                ui.fsView.querySelector('.fs-body').classList.add('opacity-0', 'scale-95');
+                setTimeout(() => {
+                    ui.fsView.classList.add('hidden');
+                    ui.fsView.classList.remove('flex');
+                    document.body.style.overflow = '';
+                    currentFullScreenIndex = -1;
+                }, 500);
+            },
+            navigateFullScreen: (direction) => {
+                if (currentFullScreenIndex === -1) return;
+                const newIndex = currentFullScreenIndex + direction;
+                if (newIndex >= 0 && newIndex < displayedMessages.length) {
+                    
+                    // Simple transition effect for text
+                    const msgContainer = ui.fsView.querySelector('.fs-body');
+                    msgContainer.style.opacity = '0';
+                    msgContainer.style.transform = 'scale(0.98)';
+                    
+                    setTimeout(() => {
+                        window.app.openFullScreen(newIndex);
+                    }, 200); // Wait for fade out
+                }
+            }
+        };
+
+        // --- GLOBAL KEYBOARD LISTENERS ---
+        document.addEventListener('keydown', (e) => {
+            // Full Screen Navigation
+            if (!ui.fsView.classList.contains('hidden')) {
+                if (e.key === 'Escape') window.app.closeFullScreen();
+                if (e.key === 'ArrowLeft') window.app.navigateFullScreen(-1);
+                if (e.key === 'ArrowRight') window.app.navigateFullScreen(1);
+                return;
+            }
+
+            // Editor Navigation (Escape)
+            if (!ui.modal.classList.contains('hidden')) {
+                if (e.key === 'Escape') {
+                    // If focus is in controls, return to message
+                    if (!document.activeElement.isSameNode(ui.msgInput) && !document.activeElement.isSameNode(ui.toInput)) {
+                        ui.msgInput.focus();
+                    } 
+                }
+            }
+        });
+
+        // Add keyboard support to custom div buttons
+        const makeAccessible = (el, onClick) => {
+            el.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onClick.call(el);
+                }
+            });
+        };
+
+        // --- TOUCH GESTURES ---
+        let touchStartX = 0;
+        let touchStartY = 0;
+
+        ui.fsView.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+        }, {passive: true});
+
+        ui.fsView.addEventListener('touchend', e => {
+            const touchEndX = e.changedTouches[0].screenX;
+            const touchEndY = e.changedTouches[0].screenY;
+            const xDiff = touchEndX - touchStartX;
+            const yDiff = touchEndY - touchStartY;
+            
+            // Horizontal Swipe (Next/Prev)
+            if (Math.abs(xDiff) > Math.abs(yDiff)) {
+                if (Math.abs(xDiff) > 50) {
+                    if (xDiff > 0) window.app.navigateFullScreen(-1); // Right Swipe -> Prev
+                    else window.app.navigateFullScreen(1); // Left Swipe -> Next
+                }
+            } 
+            // Vertical Swipe (Close) - Only if at top
+            else {
+                if (yDiff > 60 && ui.fsView.scrollTop <= 0) { 
+                     window.app.closeFullScreen();
+                }
+            }
+        }, {passive: true});
+
+        // --- MOBILE EDITOR LOGIC ---
+        // Hide controls when typing on mobile
+        const handleMobileFocus = () => {
+            if (window.innerWidth < 768) {
+                ui.editorControls.classList.add('keyboard-hidden');
+            }
+        };
+        const handleMobileBlur = () => {
+            if (window.innerWidth < 768) {
+                // Check if active element is still an input to prevent flickering
+                setTimeout(() => {
+                    if (document.activeElement !== ui.msgInput && document.activeElement !== ui.toInput) {
+                        ui.editorControls.classList.remove('keyboard-hidden');
+                    }
+                }, 100);
+            }
+        };
+
+        ui.msgInput.addEventListener('focus', handleMobileFocus);
+        ui.msgInput.addEventListener('blur', handleMobileBlur);
+        ui.toInput.addEventListener('focus', handleMobileFocus);
+        ui.toInput.addEventListener('blur', handleMobileBlur);
+
+
+        const updateUI = () => {
+            ui.modal.style.backgroundColor = state.bg;
+            ui.livePreview.className = `input-card-container ${state.padding} ${state.radius} ${state.width} ${state.border}`;
+            ui.msgInput.className = `bg-transparent border-none focus:ring-0 w-full h-full resize-none placeholder:text-white/20 text-white ${state.font} ${state.size} ${state.weight} ${state.leading} ${state.align}`;
+            ui.toLabel.className = `header-to ${state.toOpacity}`;
+            ui.headerIcon.style.opacity = state.icon === 'show' ? '0.5' : '0';
+            ui.cardFooter.style.opacity = state.footer === 'show' ? '1' : '0';
+        };
+
+        const createFragment = (data, index) => {
+            const el = document.createElement('div');
+            el.className = 'message-fragment cursor-pointer'; 
+            el.setAttribute('role', 'button');
+            el.setAttribute('tabindex', '0');
+            el.setAttribute('aria-label', `Message to ${data.to || 'Someone'}`);
+            
+            // Bind click & Enter for full screen
+            el.onclick = () => window.app.openFullScreen(index);
+            el.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    window.app.openFullScreen(index);
+                }
+            });
+
+            const toDisplay = data.to ? `<span class="to-value">${data.to}</span>` : `<span class="to-value opacity-50">Someone</span>`;
+            const iconOpacity = data.icon === 'hide' ? '0' : '0.5';
+            const footerOpacity = data.footer === 'hide' ? '0' : '1';
+
+            el.innerHTML = `
+                <div class="fragment-content ${data.padding || 'pad-balanced'} ${data.radius || 'rad-soft'} ${data.border || 'border-thin'}" style="background-color: ${data.bg}">
+                    <div class="card-header">
+                        <div class="header-to ${data.toOpacity || 'opacity-100'}"><span>To:</span>${toDisplay}</div>
+                        <svg class="header-icon" style="opacity: ${iconOpacity}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 2L11 13" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 2L15 22L11 13L2 9L22 2Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                    <div class="card-body">
+                        <div class="body-text ${data.size || 'size-medium'} ${data.font || 'font-sans'} ${data.weight || 'weight-normal'} ${data.leading || 'leading-normal'} ${data.align || 'align-center'}">${data.msg}</div>
+                    </div>
+                    <div class="card-footer" style="opacity: ${footerOpacity}">
+                        <div class="footer-left"><span class="symbolic-btn">Send</span></div>
+                        <div class="footer-center">#UNSAID</div>
+                        <div class="footer-right"><span class="symbolic-btn">Back</span></div>
+                    </div>
+                </div>
+            `;
+            setTimeout(() => el.classList.add('visible'), 50 + (index * 50));
+            return el;
+        };
+
+        function renderFeed(messages) {
+            ui.feed.innerHTML = '';
+            const term = ui.searchInput.value.toLowerCase();
+            displayedMessages = messages.filter(m => (m.msg && m.msg.toLowerCase().includes(term)) || (m.to && m.to.toLowerCase().includes(term)));
+            
+            ui.postCount.textContent = `${displayedMessages.length} echoes found`;
+            if (displayedMessages.length === 0 && messages.length > 0) ui.emptyState.classList.remove('hidden');
+            else ui.emptyState.classList.add('hidden');
+            
+            displayedMessages.forEach((m, i) => ui.feed.appendChild(createFragment(m, i)));
+        }
+
+        const init = async () => {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) await signInWithCustomToken(auth, __initial_auth_token);
+                else await signInAnonymously(auth);
+            } catch (err) { console.error("Auth Error:", err); }
+        };
+
+        onAuthStateChanged(auth, (u) => {
+            user = u;
+            if (u) {
+                const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'messages');
+                onSnapshot(query(colRef), (snap) => {
+                    ui.statusDisplay.classList.add('hidden');
+                    const messages = [];
+                    snap.forEach(doc => messages.push({ ...doc.data() }));
+                    messages.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+                    allMessages = messages;
+                    renderFeed(messages);
+                });
+            }
+        });
+
+        ui.searchInput.addEventListener('input', () => renderFeed(allMessages));
+        ui.openBtn.onclick = () => { ui.modal.classList.remove('hidden'); ui.publishError.classList.add('hidden'); updateUI(); setTimeout(() => ui.toInput.focus(), 50); };
+        ui.closeBtn.onclick = () => ui.modal.classList.add('hidden');
+
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.onclick = function() {
+            if(this.id === 'btnSubmit') return;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); this.classList.add('active');
+            document.querySelectorAll('.control-group').forEach(g => g.classList.remove('active'));
+            document.getElementById(`tab-${this.dataset.tab}`).classList.add('active');
+        });
+
+        document.querySelectorAll('.micro-btn').forEach(btn => btn.onclick = function() {
+            const { cat, val } = this.dataset;
+            this.parentElement.querySelectorAll('.micro-btn').forEach(b => b.classList.remove('active')); this.classList.add('active');
+            state[cat] = val; updateUI();
+        });
+
+        document.querySelectorAll('.color-swatch').forEach(s => s.onclick = function() {
+            const { cat, val } = this.dataset;
+            this.parentElement.querySelectorAll('.color-swatch').forEach(sw => sw.classList.remove('active')); this.classList.add('active');
+            state[cat] = val; updateUI();
+        });
+
+        ui.submitBtn.onclick = async () => {
+            const msg = ui.msgInput.value.trim();
+            if (!msg || !user) return;
+            ui.releasingOverlay.style.display = 'flex'; ui.submitBtn.disabled = true;
+            try {
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'messages'), {
+                    msg, to: ui.toInput.value.trim(), bg: state.bg,
+                    font: state.font, size: state.size, weight: state.weight, leading: state.leading, align: state.align,
+                    border: state.border, padding: state.padding, radius: state.radius, width: state.width,
+                    toOpacity: state.toOpacity, icon: state.icon, footer: state.footer,
+                    createdAt: serverTimestamp(), uid: user.uid
+                });
+                ui.msgInput.value = ''; ui.toInput.value = ''; ui.modal.classList.add('hidden'); ui.releasingOverlay.style.display = 'none'; ui.submitBtn.disabled = false;
+            } catch (err) { ui.releasingOverlay.style.display = 'none'; ui.submitBtn.disabled = false; ui.publishError.textContent = "Error."; ui.publishError.classList.remove('hidden'); }
+        };
+
+        const splashText = document.getElementById('splash-text');
+        splashText.textContent = ["some things are better left unsaid", "release the weight", "nobody knows it's you", "silence speaks volumes"][Math.floor(Math.random()*4)];
+        window.onload = () => { setTimeout(() => splashText.classList.add('visible'), 500); setTimeout(() => document.getElementById('splash-screen').classList.add('fade-out'), 3000); };
+
+        init();
+    </script>
+</body>
+</html>
