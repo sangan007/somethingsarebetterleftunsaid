@@ -28,7 +28,7 @@
             font-family: 'Inter', sans-serif;
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* --- ACCESSIBILITY & FOCUS --- */
@@ -52,7 +52,7 @@
             transition: color 0.3s ease;
             cursor: pointer;
             position: relative;
-            padding: 8px; /* Touch target */
+            padding: 8px;
         }
         .nav-link:hover, .nav-link.active {
             color: var(--text-main);
@@ -66,6 +66,21 @@
             height: 1px;
             background-color: var(--text-main);
             opacity: 0.5;
+        }
+
+        /* --- BACKGROUND RECEDING EFFECT --- */
+        main, nav, .md\:hidden.fixed.bottom-6 {
+            transition: filter 0.6s var(--soft-ease), transform 0.6s var(--soft-ease), opacity 0.6s ease;
+            transform-origin: center top;
+        }
+        
+        body.mode-focused main, 
+        body.mode-focused nav, 
+        body.mode-focused .md\:hidden.fixed.bottom-6 {
+            filter: blur(8px) grayscale(80%);
+            opacity: 0.2;
+            transform: scale(0.96);
+            pointer-events: none;
         }
 
         /* --- PAGE TRANSITIONS --- */
@@ -120,6 +135,33 @@
             transform: translateY(0);
         }
 
+        /* --- EMOTIONAL ACKNOWLEDGMENT LAYER --- */
+        #emotional-layer {
+            position: fixed;
+            inset: 0;
+            z-index: 80;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+        
+        #emotional-text {
+            font-family: 'EB Garamond', serif;
+            font-style: italic;
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 0.05em;
+            text-align: center;
+            text-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        #emotional-layer.active {
+            opacity: 1;
+        }
+
         /* --- FULL SCREEN READING VIEW --- */
         #full-screen-view {
             position: fixed;
@@ -129,12 +171,15 @@
             flex-direction: column;
             opacity: 0;
             visibility: hidden;
+            /* Transition handled by class toggling for robustness */
             transition: opacity 0.5s var(--soft-ease), visibility 0.5s step-end;
             padding: 2rem;
-            padding-top: max(2rem, var(--safe-top)); /* Safe area support */
+            padding-top: max(2rem, var(--safe-top));
             padding-bottom: max(2rem, var(--safe-bottom));
             overflow-y: auto;
-            -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+            -webkit-overflow-scrolling: touch;
+            background-color: #000; /* Fallback */
+            cursor: default; /* Reset cursor */
         }
 
         #full-screen-view.active {
@@ -152,6 +197,7 @@
             width: 100%;
             position: relative;
             min-height: 100%;
+            pointer-events: auto;
         }
 
         .fs-header {
@@ -159,7 +205,7 @@
             margin-bottom: 2rem;
             opacity: 0;
             transform: translateY(-10px);
-            transition: all 0.6s 0.2s var(--soft-ease);
+            transition: all 0.6s 0.1s var(--soft-ease);
         }
         #full-screen-view.active .fs-header { opacity: 1; transform: translateY(0); }
 
@@ -187,7 +233,7 @@
             padding: 2rem 0 6rem 0;
             opacity: 0;
             transform: scale(0.98);
-            transition: all 0.8s 0.3s var(--soft-ease);
+            transition: all 0.7s 0.2s var(--soft-ease);
         }
         #full-screen-view.active .fs-body { opacity: 1; transform: scale(1); }
 
@@ -205,11 +251,11 @@
             opacity: 0.5;
             transition: opacity 0.3s;
             z-index: 100;
-            background: rgba(0,0,0,0.2);
+            background: rgba(255,255,255,0.1); /* Explicit background for visibility */
             border-radius: 50%;
-            padding: 12px; /* Larger touch target */
+            padding: 12px;
         }
-        .fs-close:hover { opacity: 1; background: rgba(255,255,255,0.1); }
+        .fs-close:hover { opacity: 1; background: rgba(255,255,255,0.2); }
 
         /* --- THE MODERN STRUCTURED CARD --- */
         .message-fragment {
@@ -219,19 +265,19 @@
             transition: opacity 0.8s ease-out, transform 0.8s var(--soft-ease);
             margin-bottom: 0;
             cursor: pointer;
-            -webkit-user-select: none; /* Mobile optimization */
+            -webkit-user-select: none;
             user-select: none;
         }
 
         .message-fragment:active .fragment-content {
-            transform: scale(0.98); /* Touch feedback */
+            transform: scale(0.97); /* Clearer touch feedback */
+            border-color: rgba(255, 255, 255, 0.4);
         }
 
         .message-fragment:hover .fragment-content {
             border-color: rgba(255, 255, 255, 0.4);
             transform: translateY(-4px);
         }
-        /* Disable hover transform on mobile to avoid stickiness */
         @media (hover: none) {
             .message-fragment:hover .fragment-content { transform: none; }
         }
@@ -261,7 +307,6 @@
         .pad-compact { padding: 1.5rem; }
         .pad-balanced { padding: 3rem; }
         .pad-spacious { padding: 5rem; }
-        /* Adjust padding for mobile */
         @media (max-width: 640px) {
             .pad-balanced { padding: 2rem; }
             .pad-spacious { padding: 3rem; }
@@ -345,7 +390,6 @@
         .size-small { font-size: 1.25rem; }
         .size-medium { font-size: 1.8rem; }
         .size-large { font-size: 2.8rem; line-height: 1.1; }
-        /* Responsive Text Sizing */
         @media (max-width: 640px) {
             .size-medium { font-size: 1.5rem; }
             .size-large { font-size: 2.2rem; }
@@ -393,7 +437,7 @@
             border-radius: 24px;
             box-shadow: 0 30px 60px rgba(0,0,0,0.9);
             padding: 16px;
-            padding-bottom: max(16px, var(--safe-bottom)); /* Safe area padding */
+            padding-bottom: max(16px, var(--safe-bottom));
             display: flex;
             flex-direction: column;
             gap: 16px;
@@ -414,7 +458,7 @@
             gap: 8px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
             padding-bottom: 12px;
-            overflow-x: auto; /* Allow scrolling on small screens */
+            overflow-x: auto;
             scrollbar-width: none;
         }
         .tab-bar::-webkit-scrollbar { display: none; }
@@ -442,7 +486,7 @@
         .control-item { display: flex; flex-direction: column; gap: 6px; }
         .control-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.3); }
         .toggle-row { display: flex; gap: 4px; background: rgba(255,255,255,0.05); border-radius: 8px; padding: 2px; }
-        .micro-btn { flex: 1; text-align: center; font-size: 0.65rem; padding: 10px 0; /* Larger touch target */ border-radius: 6px; color: rgba(255,255,255,0.5); transition: all 0.2s; }
+        .micro-btn { flex: 1; text-align: center; font-size: 0.65rem; padding: 10px 0; border-radius: 6px; color: rgba(255,255,255,0.5); transition: all 0.2s; }
         .micro-btn:hover { background: rgba(255,255,255,0.05); }
         .micro-btn.active { background: rgba(255,255,255,0.2); color: #fff; }
         
@@ -456,7 +500,6 @@
             gap: 3rem;
             align-items: start;
         }
-        /* Mobile Grid */
         @media (max-width: 640px) {
             .feed-grid { gap: 1.5rem; }
         }
@@ -488,7 +531,7 @@
             color: white;
             text-align: center;
             transition: border-color 0.3s;
-            border-radius: 0; /* Remove default styling on iOS */
+            border-radius: 0;
         }
         .search-input:focus { outline: none; border-bottom-color: rgba(255,255,255,0.3); }
         .search-input::placeholder { color: rgba(255,255,255,0.2); }
@@ -499,6 +542,11 @@
     <!-- Splash Screen -->
     <div id="splash-screen">
         <div id="splash-text"></div>
+    </div>
+
+    <!-- Emotional Acknowledgment Layer -->
+    <div id="emotional-layer">
+        <div id="emotional-text"></div>
     </div>
 
     <div id="releasingOverlay" class="releasing-overlay">
@@ -524,7 +572,7 @@
         </button>
     </nav>
 
-    <!-- Mobile Navigation Bar (NEW) -->
+    <!-- Mobile Navigation Bar -->
     <div class="md:hidden fixed bottom-6 left-0 w-full z-40 flex justify-center pointer-events-none" style="padding-bottom: var(--safe-bottom);">
         <div class="pointer-events-auto bg-[#0a0a0a]/90 backdrop-blur-xl border border-white/10 rounded-full px-5 py-3 flex items-center gap-5 shadow-2xl shadow-black/50">
             <span class="text-[9px] uppercase tracking-widest font-bold cursor-pointer text-white hover:text-white transition-colors" onclick="app.router('archive')" id="mob-archive" role="button">Archive</span>
@@ -603,9 +651,11 @@
         <!-- VIEW: ABOUT -->
         <section id="view-about" class="view-section max-w-3xl mx-auto pt-20">
             <h2 class="font-serif italic text-4xl text-white/90 mb-12 text-center">About the Archive</h2>
-            <div class="space-y-8 text-lg font-light text-white/60 leading-relaxed px-6">
-                <p>This is a quiet corner of the internet dedicated to the things we carry but cannot speak.</p>
-                <p>Every message here is real. Every silence is heavy. We provide the space; you provide the release.</p>
+            <div class="space-y-8 text-lg font-light text-white/60 leading-relaxed px-6 text-center md:text-left">
+                <p>This archive is a resting place for words that were never sent.</p>
+                <p>In an age of constant communication, we often carry heavy things in silence. This project exists to give those thoughts a space to exist outside of your mind, without the consequences of delivery.</p>
+                <p>There are no profiles here. No likes, no shares, no algorithms chasing engagement. The messages are anonymous, unconnected to your identity.</p>
+                <p>We invite you to write to release, and read to witness. That is all.</p>
                 <div class="h-px bg-white/10 w-24 mx-auto my-12"></div>
                 <p class="text-center text-sm">No data collected. No identities tracked. Pure anonymity.</p>
             </div>
@@ -614,10 +664,23 @@
         <!-- VIEW: TERMS -->
         <section id="view-terms" class="view-section max-w-2xl mx-auto pt-20 px-6">
             <h3 class="text-xs font-bold uppercase tracking-widest text-white/50 mb-8">Terms of Use</h3>
-            <div class="space-y-4 text-xs font-mono text-white/30">
-                <p>1. This archive is anonymous. Your identity is never stored.</p>
-                <p>2. This is a space for emotion, not harm. Hateful content is deleted.</p>
-                <p>3. By submitting, you release your words to the void.</p>
+            <div class="space-y-8 text-xs font-mono text-white/40 leading-relaxed">
+                <div>
+                    <h4 class="text-white/70 mb-2">1. Public & Anonymous</h4>
+                    <p>Everything you submit is public to the archive but disconnected from your identity. We do not track who you are, but we cannot protect you if you include identifying details in your message.</p>
+                </div>
+                <div>
+                    <h4 class="text-white/70 mb-2">2. Your Responsibility</h4>
+                    <p>You are responsible for the words you release. This is a space for emotion, not abuse. Hate speech, harassment, and harmful content do not belong here and may be removed.</p>
+                </div>
+                <div>
+                    <h4 class="text-white/70 mb-2">3. The Nature of the Archive</h4>
+                    <p>Messages submitted here are released to the void. We do not guarantee they will be kept forever, nor can we retrieve them for you once sent. By submitting, you acknowledge that these words are no longer just yours.</p>
+                </div>
+                <div>
+                    <h4 class="text-white/70 mb-2">4. Not a Crisis Service</h4>
+                    <p>This platform is for reflection, not emergency support. If you or someone else is in danger, please contact local emergency services or a crisis helpline.</p>
+                </div>
             </div>
         </section>
 
@@ -625,7 +688,13 @@
 
     <!-- Immersive Writing Interface -->
     <div id="writeModal" class="fixed inset-0 z-50 flex flex-col hidden overflow-y-auto bg-[#050505]" role="dialog" aria-label="Write a message">
-        <!-- Live Preview Area -->
+        <!-- New Back Button for Safe Exit -->
+        <div class="fixed top-0 left-0 w-full p-4 z-[60] flex justify-between items-center pointer-events-none" style="padding-top: max(1rem, var(--safe-top));">
+            <button id="btnExitEditor" class="pointer-events-auto bg-black/50 backdrop-blur-md text-white/80 px-4 py-2 rounded-full text-[10px] uppercase tracking-widest border border-white/10 hover:bg-white/10 transition-all shadow-lg">
+                ← Back to Archive
+            </button>
+        </div>
+
         <div class="flex-grow flex items-center justify-center p-4 pb-40">
             <div id="livePreview" class="input-card-container">
                 <!-- Header -->
@@ -731,6 +800,7 @@
             modal: document.getElementById('writeModal'),
             openBtn: document.getElementById('btnOpenWrite'),
             closeBtn: document.getElementById('btnCloseWrite'),
+            exitBtn: document.getElementById('btnExitEditor'),
             livePreview: document.getElementById('livePreview'),
             msgInput: document.getElementById('msgInput'),
             toInput: document.getElementById('toInput'),
@@ -750,12 +820,15 @@
             fsTo: document.getElementById('fs-to-text'),
             fsMeta: document.getElementById('fs-meta-text'),
             fsMsg: document.getElementById('fs-message-text'),
-            editorControls: document.getElementById('editorControls')
+            editorControls: document.getElementById('editorControls'),
+            emotionalLayer: document.getElementById('emotional-layer'),
+            emotionalText: document.getElementById('emotional-text')
         };
 
         if (!config) {
             ui.loadingText.textContent = "Error: Connection Failed.";
             ui.setupHelp.classList.remove('hidden');
+            setTimeout(() => document.getElementById('splash-screen').classList.add('fade-out'), 500);
             throw new Error("Config Missing");
         }
 
@@ -768,6 +841,8 @@
         let allMessages = [];
         let displayedMessages = [];
         let currentFullScreenIndex = -1;
+        let interactionCount = 0;
+        let hasShownSessionAck = false;
         
         // --- APP STATE ---
         const state = { 
@@ -780,6 +855,49 @@
         const moodMap = {
             '#0a0a0a': 'Obsidian', '#450a0a': 'Crimson', '#0f172a': 'Midnight',
             '#14532d': 'Forest', '#262626': 'Concrete', '#3f3f46': 'Stone', '#57534e': 'Warm Gray'
+        };
+
+        // --- EMOTIONAL LAYER LOGIC ---
+        const emotionalPhrases = [
+            "it’s okay to feel this",
+            "take your time",
+            "you don’t have to carry it all",
+            "silence is heavy",
+            "take a moment"
+        ];
+
+        function triggerEmotional(customText = null, isSystem = false) {
+             if (isSystem && hasShownSessionAck) return;
+
+            const text = customText || emotionalPhrases[Math.floor(Math.random() * emotionalPhrases.length)];
+            ui.emotionalText.textContent = text;
+            ui.emotionalLayer.classList.add('active');
+
+            if (isSystem) hasShownSessionAck = true;
+
+            setTimeout(() => ui.emotionalLayer.classList.remove('active'), 4000);
+        }
+
+        // --- VIEW STATE MANAGEMENT ---
+        const ViewState = { CLOSED: 'closed', OPENING: 'opening', OPEN: 'open', CLOSING: 'closing' };
+        let viewState = ViewState.CLOSED;
+
+        // --- CORE FUNCTIONS ---
+        const toggleScrollLock = (shouldLock) => {
+            document.body.style.overflow = shouldLock ? 'hidden' : '';
+        };
+
+        const showEditor = () => {
+            ui.modal.classList.remove('hidden');
+            ui.publishError.classList.add('hidden');
+            updateUI();
+            toggleScrollLock(true);
+            setTimeout(() => ui.toInput.focus(), 50);
+        };
+
+        const hideEditor = () => {
+            ui.modal.classList.add('hidden');
+            toggleScrollLock(false);
         };
 
         // --- ROUTER LOGIC ---
@@ -813,6 +931,9 @@
                 renderFeed(allMessages);
             },
             openFullScreen: (index) => {
+                if (viewState !== ViewState.CLOSED) return; // Strict State Check
+                 
+                viewState = ViewState.OPENING;
                 const data = displayedMessages[index];
                 if (!data) return;
                 
@@ -831,45 +952,84 @@
                 const moodName = moodMap[data.bg] || 'Silence';
                 ui.fsMeta.textContent = `Posted on ${dateStr} in ${moodName}`;
 
-                // Show
+                // Recede Background
+                document.body.classList.add('mode-focused');
+
+                // Show Overlay
                 ui.fsView.classList.remove('hidden');
-                ui.fsView.classList.add('flex');
-                setTimeout(() => {
-                    ui.fsView.classList.remove('opacity-0');
+                // Force reflow
+                void ui.fsView.offsetWidth; 
+                ui.fsView.classList.add('active');
+                
+                // Lock scroll immediately
+                toggleScrollLock(true);
+                
+                // Animation Sequence
+                requestAnimationFrame(() => {
                     ui.fsView.querySelector('.fs-header').classList.remove('opacity-0', 'translate-y-[-10px]');
                     ui.fsView.querySelector('.fs-body').classList.remove('opacity-0', 'scale-95');
-                }, 10);
-                
-                document.body.style.overflow = 'hidden';
-                
-                // Focus trap for accessibility
-                const closeBtn = ui.fsView.querySelector('button[aria-label="Close"]');
-                if (closeBtn) closeBtn.focus();
+                });
+
+                // State Transition: Opening -> Open after animation
+                setTimeout(() => {
+                    viewState = ViewState.OPEN;
+                    // Focus trap for accessibility
+                    const closeBtn = ui.fsView.querySelector('button[aria-label="Close"]');
+                    if (closeBtn) closeBtn.focus();
+                }, 500); 
             },
             closeFullScreen: () => {
-                ui.fsView.classList.add('opacity-0');
+                // Strict State Check
+                if (viewState !== ViewState.OPEN) return;
+                 
+                viewState = ViewState.CLOSING;
+
+                // Trigger emotional check logic
+                interactionCount++;
+                if (interactionCount === 5) triggerEmotional(null, true);
+
+                // Restore Background
+                document.body.classList.remove('mode-focused');
+
+                ui.fsView.classList.remove('active'); // Start fade out
                 ui.fsView.querySelector('.fs-header').classList.add('opacity-0', 'translate-y-[-10px]');
                 ui.fsView.querySelector('.fs-body').classList.add('opacity-0', 'scale-95');
+
                 setTimeout(() => {
                     ui.fsView.classList.add('hidden');
-                    ui.fsView.classList.remove('flex');
-                    document.body.style.overflow = '';
+                    toggleScrollLock(false);
                     currentFullScreenIndex = -1;
-                }, 500);
+                    viewState = ViewState.CLOSED;
+                }, 500); // match transition duration
             },
             navigateFullScreen: (direction) => {
-                if (currentFullScreenIndex === -1) return;
+                if (viewState !== ViewState.OPEN || currentFullScreenIndex === -1) return;
                 const newIndex = currentFullScreenIndex + direction;
                 if (newIndex >= 0 && newIndex < displayedMessages.length) {
-                    
-                    // Simple transition effect for text
+                    // Quick fade out content
                     const msgContainer = ui.fsView.querySelector('.fs-body');
+                    msgContainer.style.transition = 'opacity 0.2s';
                     msgContainer.style.opacity = '0';
                     msgContainer.style.transform = 'scale(0.98)';
                     
+                    // Switch
                     setTimeout(() => {
-                        window.app.openFullScreen(newIndex);
-                    }, 200); // Wait for fade out
+                        // Reset state slightly to allow re-opening logic reuse or direct update
+                        // Better: Update content in place
+                        const data = displayedMessages[newIndex];
+                        currentFullScreenIndex = newIndex;
+                        ui.fsTo.textContent = data.to || 'Unknown';
+                        ui.fsMsg.textContent = data.msg;
+                        ui.fsView.style.backgroundColor = data.bg || '#0a0a0a';
+                        ui.fsMsg.className = `${data.size || 'size-medium'} ${data.font || 'font-sans'} ${data.weight || 'weight-normal'} ${data.leading || 'leading-normal'} ${data.align || 'align-center'}`;
+                        const dateStr = data.createdAt?.seconds ? new Date(data.createdAt.seconds * 1000).toLocaleDateString() : 'Just now';
+                        const moodName = moodMap[data.bg] || 'Silence';
+                        ui.fsMeta.textContent = `Posted on ${dateStr} in ${moodName}`;
+
+                        // Fade in
+                        msgContainer.style.opacity = '1';
+                        msgContainer.style.transform = 'scale(1)';
+                    }, 200); 
                 }
             }
         };
@@ -877,7 +1037,7 @@
         // --- GLOBAL KEYBOARD LISTENERS ---
         document.addEventListener('keydown', (e) => {
             // Full Screen Navigation
-            if (!ui.fsView.classList.contains('hidden')) {
+            if (viewState === ViewState.OPEN) {
                 if (e.key === 'Escape') window.app.closeFullScreen();
                 if (e.key === 'ArrowLeft') window.app.navigateFullScreen(-1);
                 if (e.key === 'ArrowRight') window.app.navigateFullScreen(1);
@@ -887,7 +1047,6 @@
             // Editor Navigation (Escape)
             if (!ui.modal.classList.contains('hidden')) {
                 if (e.key === 'Escape') {
-                    // If focus is in controls, return to message
                     if (!document.activeElement.isSameNode(ui.msgInput) && !document.activeElement.isSameNode(ui.toInput)) {
                         ui.msgInput.focus();
                     } 
@@ -906,15 +1065,18 @@
         };
 
         // --- TOUCH GESTURES ---
-        let touchStartX = 0;
-        let touchStartY = 0;
+        let touchStartX = null;
+        let touchStartY = null;
 
         ui.fsView.addEventListener('touchstart', e => {
+            if (viewState !== ViewState.OPEN) return;
             touchStartX = e.changedTouches[0].screenX;
             touchStartY = e.changedTouches[0].screenY;
         }, {passive: true});
 
         ui.fsView.addEventListener('touchend', e => {
+            if (viewState !== ViewState.OPEN || touchStartX === null || touchStartY === null) return;
+
             const touchEndX = e.changedTouches[0].screenX;
             const touchEndY = e.changedTouches[0].screenY;
             const xDiff = touchEndX - touchStartX;
@@ -923,8 +1085,8 @@
             // Horizontal Swipe (Next/Prev)
             if (Math.abs(xDiff) > Math.abs(yDiff)) {
                 if (Math.abs(xDiff) > 50) {
-                    if (xDiff > 0) window.app.navigateFullScreen(-1); // Right Swipe -> Prev
-                    else window.app.navigateFullScreen(1); // Left Swipe -> Next
+                    if (xDiff > 0) window.app.navigateFullScreen(-1); 
+                    else window.app.navigateFullScreen(1);
                 }
             } 
             // Vertical Swipe (Close) - Only if at top
@@ -933,10 +1095,18 @@
                      window.app.closeFullScreen();
                 }
             }
+            touchStartX = null; touchStartY = null;
         }, {passive: true});
+        
+        // Add Close on Background Click Logic
+        ui.fsView.addEventListener('click', (e) => {
+             // Only close if clicking the background, not content, and ONLY if fully open
+             if (e.target === ui.fsView && viewState === ViewState.OPEN) {
+                 window.app.closeFullScreen();
+             }
+        });
 
         // --- MOBILE EDITOR LOGIC ---
-        // Hide controls when typing on mobile
         const handleMobileFocus = () => {
             if (window.innerWidth < 768) {
                 ui.editorControls.classList.add('keyboard-hidden');
@@ -944,7 +1114,6 @@
         };
         const handleMobileBlur = () => {
             if (window.innerWidth < 768) {
-                // Check if active element is still an input to prevent flickering
                 setTimeout(() => {
                     if (document.activeElement !== ui.msgInput && document.activeElement !== ui.toInput) {
                         ui.editorControls.classList.remove('keyboard-hidden');
@@ -975,8 +1144,10 @@
             el.setAttribute('tabindex', '0');
             el.setAttribute('aria-label', `Message to ${data.to || 'Someone'}`);
             
-            // Bind click & Enter for full screen
-            el.onclick = () => window.app.openFullScreen(index);
+            el.onclick = (e) => {
+                e.stopPropagation();
+                window.app.openFullScreen(index);
+            };
             el.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
@@ -1043,27 +1214,30 @@
         });
 
         ui.searchInput.addEventListener('input', () => renderFeed(allMessages));
-        ui.openBtn.onclick = () => { ui.modal.classList.remove('hidden'); ui.publishError.classList.add('hidden'); updateUI(); setTimeout(() => ui.toInput.focus(), 50); };
-        ui.closeBtn.onclick = () => ui.modal.classList.add('hidden');
+        
+        // Editor Open/Close Logic
+        ui.openBtn.onclick = showEditor;
+        ui.closeBtn.onclick = hideEditor;
+        ui.exitBtn.onclick = hideEditor;
 
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.onclick = function() {
+        // Shared Logic for Buttons
+        const handleBtnClick = function() {
             if(this.id === 'btnSubmit') return;
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); this.classList.add('active');
-            document.querySelectorAll('.control-group').forEach(g => g.classList.remove('active'));
-            document.getElementById(`tab-${this.dataset.tab}`).classList.add('active');
-        });
-
-        document.querySelectorAll('.micro-btn').forEach(btn => btn.onclick = function() {
-            const { cat, val } = this.dataset;
-            this.parentElement.querySelectorAll('.micro-btn').forEach(b => b.classList.remove('active')); this.classList.add('active');
-            state[cat] = val; updateUI();
-        });
-
-        document.querySelectorAll('.color-swatch').forEach(s => s.onclick = function() {
-            const { cat, val } = this.dataset;
-            this.parentElement.querySelectorAll('.color-swatch').forEach(sw => sw.classList.remove('active')); this.classList.add('active');
-            state[cat] = val; updateUI();
-        });
+            if (this.classList.contains('tab-btn')) {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); this.classList.add('active');
+                document.querySelectorAll('.control-group').forEach(g => g.classList.remove('active'));
+                document.getElementById(`tab-${this.dataset.tab}`).classList.add('active');
+            } else if (this.classList.contains('micro-btn')) {
+                const { cat, val } = this.dataset;
+                this.parentElement.querySelectorAll('.micro-btn').forEach(b => b.classList.remove('active')); this.classList.add('active');
+                state[cat] = val; updateUI();
+            } else if (this.classList.contains('color-swatch')) {
+                const { cat, val } = this.dataset;
+                this.parentElement.querySelectorAll('.color-swatch').forEach(sw => sw.classList.remove('active')); this.classList.add('active');
+                state[cat] = val; updateUI();
+            }
+        };
+        document.querySelectorAll('.tab-btn, .micro-btn, .color-swatch').forEach(btn => btn.onclick = handleBtnClick);
 
         ui.submitBtn.onclick = async () => {
             const msg = ui.msgInput.value.trim();
@@ -1077,7 +1251,10 @@
                     toOpacity: state.toOpacity, icon: state.icon, footer: state.footer,
                     createdAt: serverTimestamp(), uid: user.uid
                 });
-                ui.msgInput.value = ''; ui.toInput.value = ''; ui.modal.classList.add('hidden'); ui.releasingOverlay.style.display = 'none'; ui.submitBtn.disabled = false;
+                ui.msgInput.value = ''; ui.toInput.value = ''; 
+                hideEditor();
+                triggerEmotional("released"); // Trigger emotional layer on submit
+                ui.releasingOverlay.style.display = 'none'; ui.submitBtn.disabled = false;
             } catch (err) { ui.releasingOverlay.style.display = 'none'; ui.submitBtn.disabled = false; ui.publishError.textContent = "Error."; ui.publishError.classList.remove('hidden'); }
         };
 
