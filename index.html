@@ -156,6 +156,7 @@
             letter-spacing: 0.05em;
             text-align: center;
             text-shadow: 0 0 20px rgba(0,0,0,0.5);
+            padding: 0 2rem;
         }
 
         #emotional-layer.active {
@@ -171,28 +172,26 @@
             flex-direction: column;
             opacity: 0;
             visibility: hidden;
-            /* Transition handled by class toggling for robustness */
-            transition: opacity 0.5s var(--soft-ease), visibility 0.5s step-end;
-            padding: 2rem;
-            padding-top: max(2rem, var(--safe-top));
-            padding-bottom: max(2rem, var(--safe-bottom));
+            transition: opacity 0.4s var(--soft-ease), visibility 0.4s step-end;
+            padding: 1.5rem;
+            /* Safe area handling + breathing room */
+            padding-top: calc(max(1.5rem, var(--safe-top)));
+            padding-bottom: calc(max(1.5rem, var(--safe-bottom)));
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
-            background-color: #000; /* Fallback */
-            cursor: default; /* Reset cursor */
         }
 
         #full-screen-view.active {
             opacity: 1;
             visibility: visible;
-            transition: opacity 0.5s var(--soft-ease), visibility 0s;
+            transition: opacity 0.4s var(--soft-ease), visibility 0s;
         }
 
         .fs-content {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
             width: 100%;
             position: relative;
@@ -200,12 +199,16 @@
             pointer-events: auto;
         }
 
+        /* Optimized for mobile header space */
         .fs-header {
-            margin-top: 4rem;
+            margin-top: 2rem; /* Reduced from 4rem for mobile */
             margin-bottom: 2rem;
             opacity: 0;
             transform: translateY(-10px);
             transition: all 0.6s 0.1s var(--soft-ease);
+        }
+        @media (min-width: 768px) {
+            .fs-header { margin-top: 4rem; } /* Restore on desktop */
         }
         #full-screen-view.active .fs-header { opacity: 1; transform: translateY(0); }
 
@@ -230,7 +233,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2rem 0 6rem 0;
+            padding: 1rem 0 4rem 0;
             opacity: 0;
             transform: scale(0.98);
             transition: all 0.7s 0.2s var(--soft-ease);
@@ -245,17 +248,17 @@
 
         .fs-close {
             position: fixed;
-            top: max(2rem, var(--safe-top));
-            right: 2rem;
+            top: max(1.5rem, var(--safe-top));
+            right: 1.5rem;
             cursor: pointer;
             opacity: 0.5;
             transition: opacity 0.3s;
             z-index: 100;
-            background: rgba(255,255,255,0.1); /* Explicit background for visibility */
+            background: rgba(255,255,255,0.08);
             border-radius: 50%;
-            padding: 12px;
+            padding: 10px;
         }
-        .fs-close:hover { opacity: 1; background: rgba(255,255,255,0.2); }
+        .fs-close:hover { opacity: 1; background: rgba(255,255,255,0.15); }
 
         /* --- THE MODERN STRUCTURED CARD --- */
         .message-fragment {
@@ -270,13 +273,13 @@
         }
 
         .message-fragment:active .fragment-content {
-            transform: scale(0.97); /* Clearer touch feedback */
+            transform: scale(0.98);
             border-color: rgba(255, 255, 255, 0.4);
         }
 
         .message-fragment:hover .fragment-content {
             border-color: rgba(255, 255, 255, 0.4);
-            transform: translateY(-4px);
+            transform: translateY(-2px);
         }
         @media (hover: none) {
             .message-fragment:hover .fragment-content { transform: none; }
@@ -290,7 +293,7 @@
         .fragment-content {
             position: relative;
             width: 100%;
-            min-height: 450px;
+            min-height: 420px; /* Slightly reduced for mobile fit */
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -303,18 +306,18 @@
             transition: all 0.4s var(--soft-ease);
         }
 
-        /* Dynamic Classes */
+        /* Dynamic Classes - Responsive Padding */
         .pad-compact { padding: 1.5rem; }
-        .pad-balanced { padding: 3rem; }
-        .pad-spacious { padding: 5rem; }
-        @media (max-width: 640px) {
-            .pad-balanced { padding: 2rem; }
-            .pad-spacious { padding: 3rem; }
+        .pad-balanced { padding: 2rem; } /* Default mobile */
+        .pad-spacious { padding: 3rem; }
+        @media (min-width: 768px) {
+            .pad-balanced { padding: 3rem; } /* Restored desktop */
+            .pad-spacious { padding: 5rem; }
         }
 
         .rad-sharp { border-radius: 2px; }
-        .rad-soft { border-radius: 16px; }
-        .rad-round { border-radius: 32px; }
+        .rad-soft { border-radius: 12px; }
+        .rad-round { border-radius: 24px; }
 
         .width-narrow { max-width: 400px; margin: 0 auto; }
         .width-standard { max-width: 100%; }
@@ -388,16 +391,16 @@
         .weight-medium { font-weight: 600; }
 
         .size-small { font-size: 1.25rem; }
-        .size-medium { font-size: 1.8rem; }
-        .size-large { font-size: 2.8rem; line-height: 1.1; }
-        @media (max-width: 640px) {
-            .size-medium { font-size: 1.5rem; }
-            .size-large { font-size: 2.2rem; }
+        .size-medium { font-size: 1.6rem; } /* Mobile optimized */
+        .size-large { font-size: 2.2rem; line-height: 1.1; }
+        @media (min-width: 768px) {
+            .size-medium { font-size: 1.8rem; }
+            .size-large { font-size: 2.8rem; }
         }
 
         .leading-tight { line-height: 1.1; }
-        .leading-normal { line-height: 1.5; }
-        .leading-airy { line-height: 1.8; }
+        .leading-normal { line-height: 1.4; }
+        .leading-airy { line-height: 1.7; }
 
         .align-left { text-align: left; }
         .align-center { text-align: center; }
@@ -497,11 +500,11 @@
         .feed-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(min(100%, 480px), 1fr));
-            gap: 3rem;
+            gap: 1.5rem; /* Mobile first gap */
             align-items: start;
         }
-        @media (max-width: 640px) {
-            .feed-grid { gap: 1.5rem; }
+        @media (min-width: 768px) {
+            .feed-grid { gap: 3rem; } /* Restore desktop gap */
         }
 
         #writeModal { transition: background-color 0.6s var(--soft-ease); padding-top: var(--safe-top); }
@@ -516,9 +519,11 @@
         .search-container {
             width: 100%;
             max-width: 600px;
-            margin: 0 auto 4rem auto;
+            margin: 0 auto 2rem auto; /* Reduced margin */
             position: relative;
         }
+        @media (min-width: 768px) { .search-container { margin: 0 auto 4rem auto; } }
+
         .search-input {
             width: 100%;
             background: transparent;
@@ -554,7 +559,7 @@
     </div>
 
     <!-- Product Navigation -->
-    <nav class="fixed top-0 w-full z-40 px-6 py-6 flex justify-between items-center bg-gradient-to-b from-[#050505] to-transparent" style="padding-top: max(1.5rem, var(--safe-top));">
+    <nav class="fixed top-0 w-full z-40 px-4 md:px-6 py-4 md:py-6 flex justify-between items-center bg-gradient-to-b from-[#050505] to-transparent" style="padding-top: max(1.5rem, var(--safe-top));">
         <div class="flex items-center gap-8">
             <h1 class="text-[9px] font-bold uppercase tracking-[0.3em] opacity-80 cursor-pointer" onclick="app.router('archive')" role="button" tabindex="0">somethingsarebetterleftunsaid</h1>
             
@@ -567,7 +572,7 @@
             </div>
         </div>
 
-        <button id="btnOpenWrite" class="text-[10px] font-bold uppercase tracking-widest border border-white/20 px-5 py-2.5 rounded-full hover:bg-white hover:text-black transition-all">
+        <button id="btnOpenWrite" class="text-[10px] font-bold uppercase tracking-widest border border-white/20 px-4 py-2 md:px-5 md:py-2.5 rounded-full hover:bg-white hover:text-black transition-all">
             Express
         </button>
     </nav>
@@ -606,13 +611,13 @@
     </div>
 
     <!-- MAIN CONTENT AREA -->
-    <main class="w-full min-h-screen pt-32 pb-32 px-4 md:px-8">
+    <main class="w-full min-h-screen pt-24 pb-24 px-4 md:px-8 md:pt-32 md:pb-32">
 
         <!-- VIEW: ARCHIVE (Default) -->
         <section id="view-archive" class="view-section active max-w-[1600px] mx-auto">
             
             <!-- Editorial Hero -->
-            <div class="text-center mb-16 opacity-0 animate-[fadeIn_1s_ease_forwards] delay-500">
+            <div class="text-center mb-8 md:mb-16 opacity-0 animate-[fadeIn_1s_ease_forwards] delay-500">
                 <h2 class="font-serif italic text-3xl md:text-4xl text-white/80 mb-2">A Collection of Unsaid Things</h2>
                 <div id="post-count" class="text-[9px] font-mono uppercase tracking-widest text-white/30">Loading archive...</div>
             </div>
@@ -638,7 +643,7 @@
 
         <!-- VIEW: SHOP -->
         <section id="view-shop" class="view-section max-w-2xl mx-auto pt-20 text-center">
-            <div class="border border-white/10 p-12 rounded-2xl bg-[#0a0a0a]">
+            <div class="border border-white/10 p-8 md:p-12 rounded-2xl bg-[#0a0a0a]">
                 <span class="font-serif italic text-2xl text-white/60 block mb-4">Physical Artifacts</span>
                 <p class="text-sm font-light text-white/40 leading-relaxed mb-8">
                     We are currently curating the first printed volume of unsaid messages. 
@@ -650,7 +655,7 @@
 
         <!-- VIEW: ABOUT -->
         <section id="view-about" class="view-section max-w-3xl mx-auto pt-20">
-            <h2 class="font-serif italic text-4xl text-white/90 mb-12 text-center">About the Archive</h2>
+            <h2 class="font-serif italic text-3xl md:text-4xl text-white/90 mb-12 text-center">About the Archive</h2>
             <div class="space-y-8 text-lg font-light text-white/60 leading-relaxed px-6 text-center md:text-left">
                 <p>This archive is a resting place for words that were never sent.</p>
                 <p>In an age of constant communication, we often carry heavy things in silence. This project exists to give those thoughts a space to exist outside of your mind, without the consequences of delivery.</p>
