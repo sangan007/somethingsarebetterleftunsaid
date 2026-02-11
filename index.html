@@ -779,10 +779,10 @@
 
         // FIREBASE CONFIG
         const manualConfig = {
-            apiKey: "AIzaSyBHz2WmR09Q6YA7rzLgnyhPJuXOEolhBUE", // Paste your Key here
+            apiKey: "AIzaSyBHz2WmR09Q6YA7rzLgnyhPJuXOEolhBUE",
             authDomain: "unsaid-project.firebaseapp.com",
             projectId: "unsaid-project",
-            storageBucket: "unsaid-project.firebasestorage.ap",
+            storageBucket: "unsaid-project.firebasestorage.app",
             messagingSenderId: "685066165953",
             appId: "1:685066165953:web:dc07faeb3ebf3d37727e40"
         }; 
@@ -964,6 +964,10 @@
                 // Lock scroll immediately
                 toggleScrollLock(true);
                 
+                // Add opening state guard
+                ui.fsView.dataset.isOpening = 'true';
+                setTimeout(() => ui.fsView.dataset.isOpening = 'false', 500);
+
                 // Animation Sequence
                 requestAnimationFrame(() => {
                     ui.fsView.querySelector('.fs-header').classList.remove('opacity-0', 'translate-y-[-10px]');
@@ -1101,7 +1105,7 @@
         // Add Close on Background Click Logic
         ui.fsView.addEventListener('click', (e) => {
              // Only close if clicking the background, not content, and ONLY if fully open
-             if (e.target === ui.fsView && viewState === ViewState.OPEN) {
+             if (e.target === ui.fsView && viewState === ViewState.OPEN && ui.fsView.dataset.isOpening !== 'true') {
                  window.app.closeFullScreen();
              }
         });
