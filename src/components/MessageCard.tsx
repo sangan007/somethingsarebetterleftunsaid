@@ -371,17 +371,9 @@ export default function MessageCard({
             =================================================================== */}
         {variant === "archival-slip" && (
           <div className="flex flex-col p-6 sm:p-7 space-y-4">
-            {/* Header: Palette Dots near upper edge + Accession */}
+            {/* Header: Palette Dots + Accession No. */}
             <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-2.5">
-                <PaletteDots dots={palette.dots} size="md" />
-                <span
-                  className="font-mono text-[8.5px] uppercase tracking-[0.22em] font-medium opacity-60"
-                  style={{ color: palette.muted }}
-                >
-                  SPECIMEN
-                </span>
-              </div>
+              <PaletteDots dots={palette.dots} size="md" />
               <span
                 className="font-mono text-[9.5px] uppercase tracking-[0.2em] opacity-65"
                 style={{ color: palette.muted }}
@@ -515,48 +507,39 @@ export default function MessageCard({
             =================================================================== */}
         {variant === "letter-fragment" && (
           <div className="flex flex-col p-6 sm:p-7 space-y-4">
-            {/* Header: Accession NO. and Recipient in correspondence format */}
-            <div className="border-b border-white/[0.07] pb-3 flex items-center justify-between">
-              <div className="space-y-0.5">
-                <div
-                  className="font-mono text-[9px] uppercase tracking-[0.2em] opacity-60"
-                  style={{ color: palette.muted }}
-                >
-                  {accessionNumber}
-                </div>
-                <div>
-                  <span
-                    className="font-mono text-[10px] uppercase tracking-[0.16em] font-medium transition-colors duration-300"
-                    style={{ color: isInspecting ? palette.accent : palette.muted }}
-                  >
-                    TO: {recipientDisplay}
-                  </span>
-                  {/* The "TO" Rule: 30% default, expands to 100% on inspect */}
-                  <div
-                    className="h-[1px] mt-1 transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)]"
-                    style={{
-                      width: isInspecting ? "100%" : "30%",
-                      backgroundColor: isInspecting ? palette.accent : "rgba(255, 255, 255, 0.12)",
-                      opacity: isInspecting ? 0.85 : 0.4,
-                    }}
-                    aria-hidden="true"
-                  />
-                </div>
-              </div>
-
-              <PaletteDots dots={palette.dots} size="sm" />
-            </div>
-
-            {/* Correspondence Body with "Dear—" salutation */}
-            <div className="space-y-1">
-              <div
-                className="font-serif italic text-[13.5px] sm:text-[14px] tracking-normal opacity-75"
+            {/* Header: Palette Dots + Accession No. */}
+            <div className="flex items-center justify-between gap-4">
+              <PaletteDots dots={palette.dots} size="md" />
+              <span
+                className="font-mono text-[9.5px] uppercase tracking-[0.2em] opacity-65"
                 style={{ color: palette.muted }}
               >
-                Dear—
+                {accessionNumber}
+              </span>
+            </div>
+
+            {/* Recipient & The "TO" Rule */}
+            <div className="space-y-2">
+              <div>
+                <span
+                  className="font-mono text-[9.5px] uppercase tracking-[0.16em] font-medium transition-colors duration-300"
+                  style={{ color: isInspecting ? palette.accent : palette.muted }}
+                >
+                  TO: {recipientDisplay}
+                </span>
+                {/* The "TO" Rule: 30% default, expands to 100% on inspect */}
+                <div
+                  className="h-[1px] mt-1 transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                  style={{
+                    width: isInspecting ? "100%" : "30%",
+                    backgroundColor: isInspecting ? palette.accent : "rgba(255, 255, 255, 0.12)",
+                    opacity: isInspecting ? 0.85 : 0.4,
+                  }}
+                  aria-hidden="true"
+                />
               </div>
 
-              <blockquote className="w-full pl-0.5">
+              <blockquote className="w-full pt-1">
                 <p
                   className={`font-serif font-normal break-words whitespace-pre-line tracking-[-0.015em] ${
                     msgLength < 80
@@ -659,17 +642,9 @@ export default function MessageCard({
             =================================================================== */}
         {variant === "featured-fragment" && (
           <div className="flex flex-col justify-between min-h-[300px] sm:min-h-[340px] p-7 sm:p-9 md:p-10 space-y-6">
-            {/* Header: Prominent Swatch + Accession + Badge */}
+            {/* Header: Swatch Dots + Accession No. */}
             <div className="flex items-center justify-between border-b border-white/[0.07] pb-4">
-              <div className="flex items-center gap-3">
-                <PaletteDots dots={palette.dots} size="md" />
-                <span
-                  className="font-mono text-[9px] uppercase tracking-[0.24em] font-semibold"
-                  style={{ color: palette.accent }}
-                >
-                  ARCHIVAL SELECTION
-                </span>
-              </div>
+              <PaletteDots dots={palette.dots} size="md" />
 
               <span
                 className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-65"
@@ -778,10 +753,10 @@ export default function MessageCard({
                   ·
                 </span>
                 <span
-                  className="font-mono text-[9px] uppercase tracking-[0.16em] opacity-55"
+                  className="font-mono text-[8.5px] uppercase tracking-[0.16em] opacity-55"
                   style={{ color: palette.muted }}
                 >
-                  ARCHIVE RECORD
+                  UNSAID
                 </span>
               </div>
 

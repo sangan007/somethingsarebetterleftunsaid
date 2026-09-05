@@ -140,8 +140,8 @@ export function getEditorialLayout(
         layoutVariant: "wide",
         layoutSpanClass: "col-span-12 md:col-span-6 lg:col-span-12",
         showSectionDividerBefore: {
-          label: "SELECTION / 02 · CORRESPONDENCE",
-          sublabel: "RECORDS IN CUSTODY",
+          label: "CORRESPONDENCE",
+          sublabel: "",
           accentColor: "#C29B68",
         },
       };
@@ -150,8 +150,8 @@ export function getEditorialLayout(
       layoutVariant: "compact",
       layoutSpanClass: "col-span-12 md:col-span-3 lg:col-span-5",
       showSectionDividerBefore: {
-        label: "SELECTION / 02 · CORRESPONDENCE",
-        sublabel: "RECORDS IN CUSTODY",
+        label: "CORRESPONDENCE",
+        sublabel: "",
         accentColor: "#C29B68",
       },
     };
@@ -196,8 +196,8 @@ export function getEditorialLayout(
         layoutVariant: "featured",
         layoutSpanClass: "col-span-12 md:col-span-6 lg:col-span-12",
         showSectionDividerBefore: {
-          label: "SELECTION / 03 · DISTANT WHISPERS",
-          sublabel: "ARCHIVAL REGISTERS",
+          label: "DISTANT WHISPERS",
+          sublabel: "",
           accentColor: "#7CA2CC",
         },
       };
@@ -206,8 +206,8 @@ export function getEditorialLayout(
       layoutVariant: "standard",
       layoutSpanClass: "col-span-12 md:col-span-6 lg:col-span-4",
       showSectionDividerBefore: {
-        label: "SELECTION / 03 · DISTANT WHISPERS",
-        sublabel: "ARCHIVAL REGISTERS",
+        label: "DISTANT WHISPERS",
+        sublabel: "",
         accentColor: "#7CA2CC",
       },
     };
