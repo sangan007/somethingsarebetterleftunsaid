@@ -7,12 +7,33 @@ export type JournalCategory =
   | "letters-never-sent"
   | "small-rituals";
 
-export interface JournalSource {
+export type JournalSourceType =
+  | "ORIGINAL EDITORIAL"
+  | "RESEARCH NOTE"
+  | "COMMUNITY FIELD NOTE"
+  | "ARCHIVAL NOTE"
+  | "LITERARY NOTE";
+
+export interface JournalReferenceSource {
   title: string;
   authors: string;
   year: number;
-  publication?: string;
-  doiOrUrl?: string;
+  publication: string;
+  url?: string;
+  doi?: string;
+  pmcId?: string;
+  pubmedId?: string;
+  sourceType: "peer-reviewed" | "book" | "open-access" | "community" | "archival";
+  isOpenAccess?: boolean;
+  notes?: string;
+}
+
+export interface FurtherReadingItem {
+  title: string;
+  authorsOrSource?: string;
+  url?: string;
+  type: "study" | "review" | "book" | "archive" | "community" | "related-entry";
+  description?: string;
 }
 
 export interface JournalEntry {
@@ -33,14 +54,36 @@ export interface JournalEntry {
     text: string;
     attribution?: string;
   };
-  researchContext?: {
-    finding: string;
-    sources: JournalSource[];
-  };
   tags: string[];
   relatedSlugs: string[];
   archiveEmotionFilter?: string; // e.g. "LONGING", "REGRET", "LOVE", "MEMORY", "GRIEF"
   isFeatured?: boolean;
+
+  // Editorial and Academic Integrity Architecture
+  sourceType: JournalSourceType;
+  researchFocus?: string[]; // e.g. ["Temporal Self-Distancing", "Written Emotional Disclosure"]
+  researchFindings?: string; // Empirical findings from published scientific literature
+  editorialReading?: string; // Clear demarcation of editorial/archival interpretation
+  sources?: JournalReferenceSource[]; // Real, peer-reviewed citations with verified DOIs / PMIDs / PMCs
+  furtherReading?: FurtherReadingItem[]; // Curated academic and literary recommendations
+  communityContext?: {
+    platform: string; // e.g. "Reddit / r/Journaling"
+    url: string;
+    description: string;
+  };
+  disclaimer?: string;
+
+  // Backward compatibility alias
+  researchContext?: {
+    finding: string;
+    sources: {
+      title: string;
+      authors: string;
+      year: number;
+      publication?: string;
+      doiOrUrl?: string;
+    }[];
+  };
 }
 
 export const JOURNAL_CATEGORIES: { id: JournalCategory; label: string; description: string }[] = [
@@ -83,7 +126,7 @@ export const JOURNAL_CATEGORIES: { id: JournalCategory; label: string; descripti
 
 export const JOURNAL_ENTRIES: JournalEntry[] = [
   // =========================================================================
-  // 1. THE UNSAID (Essays)
+  // 1. THE UNSAID (Essays — Original Editorial)
   // =========================================================================
   {
     id: "unsaid-01",
@@ -93,6 +136,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     entryNumber: "NO. 0001",
     category: "the-unsaid",
     seriesName: "The Unsaid",
+    sourceType: "ORIGINAL EDITORIAL",
     date: "February 2026",
     readingTime: "6 min",
     depth: "medium",
@@ -103,7 +147,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     paragraphs: [
       "There is a particular acoustic quality to the speech we prepare when walking down a cold street alone. Every clause arrives with devastating clarity. We calibrate our tone, anticipate the interruptions, insert the exact pauses where dignity ought to reside, and deliver an address that would convince any court of human conscience. We are articulate because the listener is an imagined one, endowed with total attentiveness and no unpredictable responses.",
       "And yet, within three paces of the actual door, the entire architecture turns into water. When the recipient actually appears—distracted, holding a tea mug, glancing up from a phone—the speech collapses into something pathetic: 'Did you get the milk?' or 'It’s colder than yesterday.'",
-      "Psychologists who study what Erving Goffman termed 'remedial interchanges' understand that rehearsal in solitary motion is rarely an attempt to communicate. It is an attempt to inhabit an uninjured version of oneself. In the safety of the dark pavement, you are neither hurried nor misunderstood. You are simply stating what happened to you.",
+      "Sociologists who study remedial interchanges understand that rehearsal in solitary motion is rarely an attempt to communicate. It is an attempt to inhabit an uninjured version of oneself. In the safety of the dark pavement, you are neither hurried nor misunderstood. You are simply stating what happened to you.",
       "The unsaid message is almost always a hostage situation of timing. The window for speaking honestly rarely lasts longer than twelve seconds: right after someone takes off their coat, or just before the elevator bell chimes. Once that window closes, the speech goes back into the coat pocket, where it accumulates lint and historical weight.",
       "To leave a sentence unsaid is rarely an act of cowardice. More often, it is an act of preservation. We recognize that the spoken sentence is an irreversible chemical agent—once poured into the room, it alters the nitrogen balance between two bodies forever. The unsaid words allow the room to stay the same temperature for one more evening.",
     ],
@@ -126,6 +170,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     entryNumber: "NO. 0002",
     category: "the-unsaid",
     seriesName: "The Unsaid",
+    sourceType: "ORIGINAL EDITORIAL",
     date: "January 2026",
     readingTime: "7 min",
     depth: "medium",
@@ -158,6 +203,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     entryNumber: "NO. 0003",
     category: "the-unsaid",
     seriesName: "The Unsaid",
+    sourceType: "ORIGINAL EDITORIAL",
     date: "December 2025",
     readingTime: "8 min",
     depth: "medium",
@@ -167,7 +213,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     paragraphs: [
       "A relationship that ran its full course leaves behind forensic evidence. You know how they chewed when they were tired; you know the small, petty irritations that cropped up during a four-hour road trip; you know how they acted when the WiFi went out. The dream was tested against the brutal friction of ordinary Tuesday mornings, and it broke where all human things break.",
       "An 'almost'—the friendship that stood on the edge of a balcony for one summer, the colleague with whom you exchanged eight hundred oblique jokes over email, the train seat companion you talked to between Berlin and Prague—leaves behind no such debris. Because it was never grounded in laundry and grocery lists, it remains permanently pristine.",
-      "Psychologically, what resists closure in the 'almost' is not the person, but the infinite subjunctive tense. In the grammatical study of regret, the conditional tense ('what would have happened if I reached across the console') possesses an infinite half-life. Reality has boundaries; potential has none.",
+      "In the grammatical study of regret, the conditional tense ('what would have happened if I reached across the console') possesses an infinite half-life. Reality has boundaries; potential has none.",
       "When we archive messages addressed to an 'almost', they are consistently the most tender and the most irrational. The writer is mourning a phantom limb. You cannot fall out of love with a ghost because the ghost never forgot your birthday or left the stove on. It only ever did what you imagined it doing.",
       "To recover from an almost requires mourning an event that never took place. It requires looking at an empty doorway and admitting that the person walking through it was only ever a projection of your own loneliness.",
     ],
@@ -190,6 +236,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     entryNumber: "NO. 0004",
     category: "the-unsaid",
     seriesName: "The Unsaid",
+    sourceType: "ORIGINAL EDITORIAL",
     date: "November 2025",
     readingTime: "5 min",
     depth: "medium",
@@ -218,6 +265,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     entryNumber: "NO. 0005",
     category: "the-unsaid",
     seriesName: "The Unsaid",
+    sourceType: "ORIGINAL EDITORIAL",
     date: "October 2025",
     readingTime: "6 min",
     depth: "medium",
@@ -243,7 +291,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
   },
 
   // =========================================================================
-  // 2. AFTERIMAGE (Memory & Time)
+  // 2. AFTERIMAGE (Memory & Time — Original Editorial)
   // =========================================================================
   {
     id: "afterimage-01",
@@ -253,6 +301,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     entryNumber: "NO. 0006",
     category: "afterimage",
     seriesName: "Afterimage",
+    sourceType: "ORIGINAL EDITORIAL",
     date: "September 2025",
     readingTime: "5 min",
     depth: "medium",
@@ -281,6 +330,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     entryNumber: "NO. 0007",
     category: "afterimage",
     seriesName: "Afterimage",
+    sourceType: "ORIGINAL EDITORIAL",
     date: "August 2025",
     readingTime: "7 min",
     depth: "medium",
@@ -289,7 +339,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
       "Somewhere in a town you haven't visited since college, an acquaintance still thinks of you as someone who drinks cheap gin and wears an olive-drab army jacket. You are an antique fixture in their mental gallery, frozen at twenty-two.",
     paragraphs: [
       "We walk through our adult lives with the comforting illusion that our identity is a continuous, unified project. We update our resumes, change our haircuts, acquire new tastes in literature, and quietly prune away our youthful embarrassments.",
-      "Yet scattered across the geography of the world are hundreds of ghost versions of you, living inside other people's skulls without your consent or supervision. To a girl you dated for six weeks in 2016, you are still the boy who drives a Honda with a broken passenger window and listens to indie rock. To your former landlord, you are the quiet tenant on the third floor who always paid rent three days early in cash.",
+      "Yet scattered across the geography of the world are hundreds of ghost versions of you, living inside other people's skulls without your consent or supervision. To an acquaintance you dated for six weeks in 2016, you are still the person who drives a sedan with a broken passenger window and listens to indie rock. To your former landlord, you are the quiet tenant on the third floor who always paid rent three days early in cash.",
       "These ghost avatars never age. They don't have back pain. They don't pay property taxes. They sit frozen in memory like museum specimens preserved under glass. And occasionally, when an old contact sends an unexpected message out of the blue, you realize they are speaking to that museum mannequin, not to the tired person sitting at your desk.",
       "It is a disorienting thought, but also a tender one. In an indifferent universe, our past selves are not completely annihilated. They are simply farmed out to the memories of casual acquaintances who remember us on rainy afternoons.",
     ],
@@ -312,6 +362,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     entryNumber: "NO. 0008",
     category: "afterimage",
     seriesName: "Afterimage",
+    sourceType: "ORIGINAL EDITORIAL",
     date: "July 2025",
     readingTime: "6 min",
     depth: "medium",
@@ -321,8 +372,8 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     paragraphs: [
       "Ask almost anyone to describe their most romanticized era, and surprisingly often they will point to a year when their life was objectively miserable: the first year after a divorce, the semester they lived on dry cereal in a drafty bedsit, or the six months they spent searching for a job in a city where they knew nobody.",
       "While living inside those months, there was nothing romantic about them. The loneliness was abrasive; the anxiety felt permanent; the radiator clanked all night. Yet five years later, hearing a song from that winter evokes an involuntary pang of longing so sharp it feels like homesickness.",
-      "Psychologists who study autobiographical memory understand this mechanism: the mind strips away the cortisol of uncertainty. When you were twenty-three and broke, you did not know whether you would ever find work or companionship. Looking back from thirty-five, you possess the supreme luxury of knowing how the chapter ends.",
-      "Hardship, once relieved of its open-ended dread, becomes narrative gold. It becomes the trial through which the hero passed. We do not miss the poverty or the heartbreak; we miss the fierce, concentrated clarity of a life stripped down to survival.",
+      "The mind strips away the cortisol of uncertainty. When you were twenty-three and broke, you did not know whether you would ever find work or companionship. Looking back from thirty-five, you possess the supreme luxury of knowing how the chapter ends.",
+      "Hardship, once relieved of its open-ended dread, becomes narrative gold. It becomes the trial through which the protagonist passed. We do not miss the poverty or the heartbreak; we miss the fierce, concentrated clarity of a life stripped down to survival.",
     ],
     tags: ["Nostalgia", "Hardship", "Autobiographical Memory", "Clarity"],
     relatedSlugs: [
@@ -340,6 +391,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     entryNumber: "NO. 0009",
     category: "afterimage",
     seriesName: "Afterimage",
+    sourceType: "ORIGINAL EDITORIAL",
     date: "June 2025",
     readingTime: "8 min",
     depth: "medium",
@@ -347,7 +399,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     excerpt:
       "Every time you retrieve a memory, you are not opening a file drawer; you are re-baking a loaf of bread. The mind adjusts the ingredients to ensure you remain the protagonist of your own life.",
     paragraphs: [
-      "Cognitive neuroscientists have established that memory is not a surveillance tape; it is an act of imaginative reconstruction. Each time an episodic memory is pulled into working memory, its synaptic connections become labile, meaning it can be rewritten, colored by current mood, and resaved with subtle modifications.",
+      "Cognitive researchers observe that episodic memory is not a surveillance recording; it is an act of imaginative reconstruction. Each time an episodic memory is retrieved into working memory, its representations become malleable, colored by present mood, current relationships, and updated self-conceptions.",
       "In personal relationships, this reconstructive process operates as a ruthless editorial department. If you need to believe that a past relationship was doomed from the beginning, your memory will obligingly amplify the awkward silence in the car on your second date while quietly fading out the three hundred times you laughed until your ribs ached.",
       "This is not dishonesty in the conventional sense. It is psychological immune defense. To hold the contradictory truth—that two people were genuinely magnificent together and yet still failed each other—is exhausting. It is far simpler to write a tidy narrative arc: 'He was always selfish' or 'She never truly understood me.'",
       "When people read through old diaries or unsent messages years later, the shock is almost always how much gentle nuance they erased. The archive serves as an external witness against our own self-serving revisions.",
@@ -371,6 +423,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     entryNumber: "NO. 0010",
     category: "afterimage",
     seriesName: "Afterimage",
+    sourceType: "ORIGINAL EDITORIAL",
     date: "May 2025",
     readingTime: "5 min",
     depth: "medium",
@@ -393,7 +446,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
   },
 
   // =========================================================================
-  // 3. OBJECTS & TRACES (Material Culture)
+  // 3. OBJECTS & TRACES (Material Culture — Archival Notes)
   // =========================================================================
   {
     id: "objects-01",
@@ -403,6 +456,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     entryNumber: "NO. 0011",
     category: "objects-and-traces",
     seriesName: "Objects & Traces",
+    sourceType: "ARCHIVAL NOTE",
     date: "April 2025",
     readingTime: "4 min",
     depth: "brief",
@@ -410,8 +464,8 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     excerpt:
       "Two coffees, one almond croissant, November 14, 2018, 14:22. The ink is fading into pale indigo dust, but the thermal paper still remembers the exact temperature of an afternoon before everything broke.",
     paragraphs: [
-      "Sherry Turkle, the MIT sociologist who wrote *Evocative Objects*, observes that physical artifacts act as companions to our thoughts. Among all such artifacts, thermal receipts are the most fragile and the most unforgiving.",
-      "Pulling an old winter coat from the back of a closet, your fingers find a stiff, folded slip of paper deep in the lining. You unfold it: *Café Madeleine, November 14, 2018, 14:22. 1 Drip Coffee, 1 Oat Flat White, 1 Almond Croissant. Total: $11.40.*",
+      "Sociologist Sherry Turkle, author of 'Evocative Objects', observed that everyday physical artifacts act as companions to our interior thoughts. Among all such artifacts, thermal receipts are the most fragile and the most unforgiving.",
+      "Pulling an old winter coat from the back of a closet, your fingers find a stiff, folded slip of paper deep in the lining. You unfold it: 'Café Madeleine, November 14, 2018, 14:22. 1 Drip Coffee, 1 Oat Flat White, 1 Almond Croissant. Total: $11.40.'",
       "The paper is already yellowing at the creases. The chemical coating is fading back into neutral cellulose. Yet the receipt functions as an accidental legal deposition: you were there, on a Wednesday afternoon, sitting across from someone whose voice you now have trouble reconstructing.",
       "Unlike a curated photograph, which is staged to flatter the present, a receipt is completely indifferent to vanity. It doesn't know that two months later you would have the argument that ended the lease. It only knows that at 2:22 PM on a rainy Wednesday, two drinks were carried to a wooden table.",
     ],
@@ -431,6 +485,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     entryNumber: "NO. 0012",
     category: "objects-and-traces",
     seriesName: "Objects & Traces",
+    sourceType: "ARCHIVAL NOTE",
     date: "March 2025",
     readingTime: "5 min",
     depth: "medium",
@@ -438,7 +493,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     excerpt:
       "The blinking cursor on an empty text input is not empty at all. It is built upon the crushed debris of fourteen sentences that you lacked the recklessness to send.",
     paragraphs: [
-      "Modern digital communication is unique in human history because it leaves zero trace of hesitation. When you wrote a letter on parchment in 1840, your crossings-out, blotches of ink, and crumpled preliminary sheets were physical facts. The recipient could see where your pen dragged.",
+      "Modern digital communication is unique in human history because it leaves zero physical trace of hesitation. When you wrote a letter on parchment in 1840, your crossings-out, blotches of ink, and crumpled preliminary sheets were physical facts. The recipient could see where your pen dragged.",
       "A smartphone text input, by contrast, presents an immaculate void. You can type four paragraphs of desperate confession, read it through three times, feel your pulse jump to ninety beats per minute, and then hold down the backspace key until the cursor swallows every syllable.",
       "Where do those deleted drafts go? Psychologically, they do not disappear. They migrate inward, hardening into permanent interior fixtures. The act of typing them out proved that the sentiment was fully formed in the cortex; the act of deleting them proved that you understood the social price of delivery.",
       "The archive of unsaid things is essentially a sanctuary for these deleted drafts. It takes the text that was held hostage between the thumb and the backspace key and gives it a resting place where it can exist without collateral damage.",
@@ -462,6 +517,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     entryNumber: "NO. 0013",
     category: "objects-and-traces",
     seriesName: "Objects & Traces",
+    sourceType: "ARCHIVAL NOTE",
     date: "February 2025",
     readingTime: "4 min",
     depth: "brief",
@@ -490,6 +546,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     entryNumber: "NO. 0014",
     category: "objects-and-traces",
     seriesName: "Objects & Traces",
+    sourceType: "ARCHIVAL NOTE",
     date: "January 2025",
     readingTime: "6 min",
     depth: "medium",
@@ -521,6 +578,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     entryNumber: "NO. 0015",
     category: "objects-and-traces",
     seriesName: "Objects & Traces",
+    sourceType: "ARCHIVAL NOTE",
     date: "December 2024",
     readingTime: "5 min",
     depth: "medium",
@@ -543,16 +601,17 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
   },
 
   // =========================================================================
-  // 4. RESEARCH NOTES (Empirical Studies)
+  // 4. RESEARCH NOTES (Empirical Studies & Editorial Readings)
   // =========================================================================
   {
     id: "research-01",
     slug: "research-note-the-neural-gap-between-present-and-future-selves",
     title: "Research Note: The Neural Gap Between Present and Future Selves",
-    subtitle: "A review of Ersner-Hershfield et al. (2009) on rACC activation and why writing to our future self alters temporal discounting.",
+    subtitle: "A review of Ersner-Hershfield et al. (2009) and Chishima et al. (2021) on cortical activation and temporal letter-writing.",
     entryNumber: "NO. 0016",
     category: "research-notes",
     seriesName: "Research Notes",
+    sourceType: "RESEARCH NOTE",
     date: "November 2024",
     readingTime: "6 min",
     depth: "medium",
@@ -560,35 +619,64 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     excerpt:
       "When functional MRI scans monitor brain activity during self-reflection, thinking about yourself in ten years produces nearly identical activation patterns to thinking about a complete stranger.",
     paragraphs: [
-      "Why is it so effortless to promise that 'future me will deal with this,' while simultaneously making decisions that sabotage that very person? A landmark neuroimaging experiment led by Hal Ersner-Hershfield, Brian Knutson, and colleagues at Stanford and UCLA provides a biological answer.",
-      "In the 2009 study, participants were placed in an fMRI scanner and asked to make trait judgments about their current self, their self ten years in the future, and a neutral stranger (Matt Damon). When people thought about their current self, the rostral anterior cingulate cortex (rACC)—a critical hub for self-referential emotion and identity—lit up vividly.",
-      "However, when asked to consider their *future* self, the rACC quieted down dramatically, mimicking the neural profile observed when considering a stranger. The degree of this 'neural discount' directly predicted behavior: individuals with the largest neural gap between current and future selves demonstrated significantly higher temporal discounting (choosing smaller immediate rewards over larger delayed ones).",
-      "Subsequent behavioral interventions tested whether narrative connection could bridge this neurological gulf. Writing letters to one's future self, or interacting with age-progressed digital renderings, systematically increased future-self continuity and reduced impulsive deferral.",
-      "From an archival perspective, this reveals why letters to a future self are so emotionally stabilizing. They are not merely whimsical exercises; they are cognitive bridges that force the brain to grant legal personhood to the stranger who will inherit our bodies ten years from now.",
+      "Why is it so effortless to promise that 'future me will deal with this,' while simultaneously making decisions that sabotage that very person? A landmark neuroimaging experiment led by Hal Ersner-Hershfield, Brian Knutson, and colleagues at Stanford and UCLA provides a biological clue.",
+      "In the 2009 study, participants were placed in an fMRI scanner and asked to make trait judgments about their current self, their self ten years in the future, and a neutral stranger (Matt Damon). When people considered their current self, the rostral anterior cingulate cortex (rACC)—a critical hub for self-referential emotion and identity—demonstrated heightened activation.",
+      "However, when asked to evaluate their future self, the rACC quieted down significantly, mimicking the neural profile observed when considering a stranger. The degree of this neural discrepancy directly predicted behavior: individuals with the largest neural gap between current and future selves demonstrated significantly higher temporal discounting (preferring smaller immediate rewards over larger delayed rewards).",
+      "Subsequent behavioral investigations tested whether narrative connection could bridge this neurological distance. In 2021, Yuta Chishima, I-Ting Liu, and Anne Wilson evaluated temporal distancing through letter writing during acute public crisis, finding that writing to or from a future self systematically mitigated acute negative affect by expanding the temporal horizon.",
+      "From an archival standpoint, letters addressed across time function as cognitive bridges. They force the neural architecture to grant personhood and empathy to the stranger who will inherit our body five or ten years from now.",
     ],
     pullQuote: {
       text: "Thinking about yourself in ten years produces nearly identical activation patterns in the rACC to thinking about a complete stranger.",
     },
-    researchContext: {
-      finding:
-        "The rostral anterior cingulate cortex (rACC) treats future selves with the same neural indifference as unfamiliar strangers. Narrative exercises like letter-writing bridge this continuity gap.",
-      sources: [
-        {
-          title: "Saving for the future self: Neural measures of future self-continuity predict temporal discounting",
-          authors: "Ersner-Hershfield, H., Wimmer, G. E., & Knutson, B.",
-          year: 2009,
-          publication: "Social Cognitive and Affective Neuroscience, 4(1), 85–92",
-          doiOrUrl: "https://doi.org/10.1093/scan/nsn042",
-        },
-        {
-          title: "Future self-continuity: how conceptions of the future self transform intertemporal choice",
-          authors: "Hershfield, H. E.",
-          year: 2011,
-          publication: "Annals of the New York Academy of Sciences, 1235(1), 30–43",
-          doiOrUrl: "https://doi.org/10.1111/j.1749-6632.2011.06201.x",
-        },
-      ],
-    },
+    researchFocus: [
+      "Future-Self Continuity",
+      "rACC Neural Activation",
+      "Temporal Discounting",
+      "Letter-Writing Interventions",
+    ],
+    researchFindings:
+      "In functional magnetic resonance imaging (fMRI) investigations, neural activation within the rostral anterior cingulate cortex (rACC) during future-self reflection closely resembled patterns observed when evaluating unfamiliar strangers. The magnitude of this neural discrepancy correlated with steeper temporal discounting rates. In subsequent experimental trials, structured letter-writing exercises to post-crisis future selves significantly enhanced temporal distancing and alleviated acute negative affect without clinical intervention.",
+    editorialReading:
+      "Why this matters for an archive of unsaid things: Letters written across time are not sentimental exercises in self-indulgence. They are cognitive scaffolds. By addressing words to the person who will occupy our body in five or ten years, the writer forcibly grants personhood and empathy to a future stranger who would otherwise inherit our deferred grief.",
+    sources: [
+      {
+        title: "Saving for the future self: Neural measures of future self-continuity predict temporal discounting",
+        authors: "Ersner-Hershfield, H., Wimmer, G. E., & Knutson, B.",
+        year: 2009,
+        publication: "Social Cognitive and Affective Neuroscience, 4(1), 85–92",
+        doi: "10.1093/scan/nsn042",
+        url: "https://doi.org/10.1093/scan/nsn042",
+        pmcId: "PMC2656877",
+        pubmedId: "19015081",
+        sourceType: "peer-reviewed",
+        isOpenAccess: true,
+        notes: "Open Access full text available via PubMed Central (PMC2656877).",
+      },
+      {
+        title: "Temporal distancing during the COVID-19 pandemic: Letter writing with future self can mitigate negative affect",
+        authors: "Chishima, Y., Liu, I.-T. H., & Wilson, A. E.",
+        year: 2021,
+        publication: "Applied Psychology: Health and Well-Being, 13(2), 406–418",
+        doi: "10.1111/aphw.12256",
+        url: "https://doi.org/10.1111/aphw.12256",
+        pmcId: "PMC8250269",
+        pubmedId: "33595208",
+        sourceType: "peer-reviewed",
+        isOpenAccess: true,
+        notes: "Open Access full text available via PubMed Central (PMC8250269).",
+      },
+    ],
+    furtherReading: [
+      {
+        title: "Future self-continuity: how conceptions of the future self transform intertemporal choice",
+        authorsOrSource: "Hershfield, H. E. (2011). Annals of the New York Academy of Sciences, 1235(1), 30–43",
+        url: "https://pubmed.ncbi.nlm.nih.gov/22023165/",
+        type: "review",
+        description: "Comprehensive review of the cognitive and behavioural mechanisms underlying future-self continuity.",
+      },
+    ],
+    disclaimer:
+      "Research literature is cited for educational, cultural, and archival inquiry. Interpretations belong to the publication and should not be construed as clinical or psychological counsel.",
     tags: ["Cognitive Neuroscience", "fMRI", "Future Self", "Temporal Discounting"],
     relatedSlugs: [
       "letters-written-across-ten-years",
@@ -600,10 +688,11 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     id: "research-02",
     slug: "research-note-when-expressive-writing-fails",
     title: "Research Note: When Expressive Writing Fails",
-    subtitle: "Examining the limits of Pennebaker's paradigm: why venting without cognitive restructuring exacerbates emotional distress.",
+    subtitle: "Examining the boundaries of the Pennebaker paradigm: why emotional venting without cognitive restructuring can heighten distress.",
     entryNumber: "NO. 0017",
     category: "research-notes",
     seriesName: "Research Notes",
+    sourceType: "RESEARCH NOTE",
     date: "October 2024",
     readingTime: "7 min",
     depth: "medium",
@@ -611,29 +700,71 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     excerpt:
       "For four decades, popular culture has treated journaling as an unalloyed panacea. Yet empirical trials show that unstructured emotional venting often acts as fuel on the fire of rumination.",
     paragraphs: [
-      "In 1986, James Pennebaker published a classic protocol: participants wrote about their deepest traumas for fifteen minutes a day over four consecutive days. The results showed improved immune markers, fewer physician visits, and measurable psychological relief.",
-      "However, decades of subsequent replication and meta-analytic work (such as Frattaroli, 2006; Stroebe et al., 2002) revealed crucial boundaries. Expressive writing is not an unconditional cure; in certain populations—particularly those undergoing acute bereavement or severe marital divorce (Sbarra et al., 2011)—writing repeatedly about emotional pain actually *slowed* recovery and heightened cardiovascular distress.",
-      "The decisive variable identified by computational linguistic analysis (Pennebaker, Mayne, & Francis, 1997) was cognitive restructuring. Participants who benefited did not simply regurgitate grief; their writing showed a marked increase over time in causal and insight words ('because', 'reason', 'understand', 'realize').",
-      "Those who merely chronicled their misery without constructing a narrative arc remained trapped in depressive rumination. The brain does not need to relive a fire; it needs an architect to draw a diagram of how the fire started and where the fire doors were located.",
+      "In 1986, James Pennebaker and Sandra Beall published a seminal protocol: participants wrote about traumatic experiences for fifteen minutes across consecutive days. Initial findings documented fewer health center visits, reduced autonomic activity, and measurable subjective relief.",
+      "However, decades of subsequent replication and meta-analytic work (e.g., Frattaroli, 2006) revealed crucial boundaries. Expressive writing is not an unconditional panacea. In specific clinical contexts—particularly acute marital dissolution (Sbarra et al., 2013)—individuals who engaged in expressive writing with high baseline emotional brooding exhibited *slower* psychological recovery and elevated cardiovascular arousal.",
+      "Computational linguistic analysis (Pennebaker, Mayne, & Francis, 1997) isolated the critical moderating variable: cognitive restructuring. Participants who benefited did not merely recount raw distress; their writing demonstrated a progressive increase over time in causal and insight words ('because', 'reason', 'understand', 'realize').",
+      "Participants who engaged in circular venting without narrative re-framing remained trapped in depressive rumination. The brain does not heal simply by re-living an emotional crisis; it requires narrative organization to construct causal boundaries around the event.",
     ],
-    researchContext: {
-      finding:
-        "Expressive writing improves health outcomes only when it drives causal insight and narrative organization. Pure emotional venting without reappraisal increases rumination.",
-      sources: [
-        {
-          title: "Confronting a traumatic event: toward an understanding of inhibition and disease",
-          authors: "Pennebaker, J. W., & Beall, S. K.",
-          year: 1986,
-          publication: "Journal of Abnormal Psychology, 95(3), 274–281",
-        },
-        {
-          title: "When writing about a relationship breakup is good and bad: Expressive writing and emotional recovery",
-          authors: "Sbarra, D. A., Boals, A., Mason, A. E., Larson, G. M., & Mehl, M. R.",
-          year: 2011,
-          publication: "Clinical Psychological Science, 1(1), 80–91",
-        },
-      ],
-    },
+    researchFocus: [
+      "Expressive Writing Boundaries",
+      "Cognitive Restructuring vs Venting",
+      "Marital Separation Recovery",
+      "Linguistic Markers of Insight",
+    ],
+    researchFindings:
+      "While James Pennebaker's foundational 1986 expressive writing paradigm documented physiological and psychological improvements following disclosure of traumatic events, subsequent randomized controlled trials and meta-analyses established critical boundaries. In populations facing acute marital separation (Sbarra et al., 2013), expressive writing about distress actually impeded emotional recovery and heightened cardiovascular distress in individuals with high initial brooding. Linguistic analysis revealed that benefits depend on an increase in cognitive-mechanism words ('because', 'understand') indicating narrative restructuring, rather than repeated unstructured venting.",
+    editorialReading:
+      "Why this matters for an archive of unsaid things: The archive rejects the popular misconception that writing is an unconditional cure. Depositing words into silence is not therapeutic simply because pain was typed out; it requires a shift in perspective. Leaving a message here is an act of containment—drawing a boundary around what was felt so that it ceases to loop endlessly in the chest.",
+    sources: [
+      {
+        title: "Confronting a traumatic event: toward an understanding of inhibition and disease",
+        authors: "Pennebaker, J. W., & Beall, S. K.",
+        year: 1986,
+        publication: "Journal of Abnormal Psychology, 95(3), 274–281",
+        doi: "10.1037/0021-843X.95.3.274",
+        url: "https://doi.org/10.1037/0021-843X.95.3.274",
+        pubmedId: "3745650",
+        sourceType: "peer-reviewed",
+        isOpenAccess: false,
+        notes: "Foundational empirical paper establishing the expressive writing protocol. Verified PubMed ID: 3745650.",
+      },
+      {
+        title: "Expressive writing can impede emotional recovery following marital separation",
+        authors: "Sbarra, D. A., Boals, A., Mason, A. E., Larson, G. M., & Mehl, M. R.",
+        year: 2013,
+        publication: "Clinical Psychological Science, 1(2), 120–134",
+        doi: "10.1177/2167702612458421",
+        url: "https://doi.org/10.1177/2167702612458421",
+        pmcId: "PMC3777637",
+        pubmedId: "24058810",
+        sourceType: "peer-reviewed",
+        isOpenAccess: true,
+        notes: "Randomized controlled trial examining limits of expressive writing. Open Access via PMC3777637.",
+      },
+      {
+        title: "Effects of writing about stressful experiences on symptom reduction in patients with asthma or rheumatoid arthritis: a randomized trial",
+        authors: "Smyth, J. M., Stone, A. A., Hurewitz, A., & Kaell, A.",
+        year: 1999,
+        publication: "JAMA, 281(14), 1304–1309",
+        doi: "10.1001/jama.281.14.1304",
+        url: "https://doi.org/10.1001/jama.281.14.1304",
+        pubmedId: "10208146",
+        sourceType: "peer-reviewed",
+        isOpenAccess: false,
+        notes: "Randomized clinical evaluation of structured written disclosure. Verified PubMed ID: 10208146.",
+      },
+    ],
+    furtherReading: [
+      {
+        title: "Experimental disclosure and its moderators: a meta-analysis",
+        authorsOrSource: "Frattaroli, J. (2006). Psychological Bulletin, 132(6), 823–865",
+        url: "https://pubmed.ncbi.nlm.nih.gov/17073523/",
+        type: "review",
+        description: "Comprehensive meta-analytic synthesis of 146 randomized expressive writing studies examining boundary conditions.",
+      },
+    ],
+    disclaimer:
+      "Research literature is cited for educational, cultural, and archival inquiry. Interpretations belong to the publication and should not be construed as clinical or psychological counsel.",
     tags: ["Expressive Writing", "Pennebaker", "Rumination", "Cognitive Reappraisal"],
     relatedSlugs: [
       "research-note-the-mechanics-of-self-distancing",
@@ -645,45 +776,75 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     id: "research-03",
     slug: "research-note-the-mechanics-of-self-distancing",
     title: "Research Note: The Mechanics of Self-Distancing",
-    subtitle: "Kross & Ayduk's experiments on how third-person self-talk reduces cardiovascular stress and quells rumination chatter.",
+    subtitle: "Kross & Ayduk's experiments on how third-person perspectives dampen cardiovascular reactivity and quells rumination.",
     entryNumber: "NO. 0018",
     category: "research-notes",
     seriesName: "Research Notes",
+    sourceType: "RESEARCH NOTE",
     date: "September 2024",
     readingTime: "6 min",
     depth: "medium",
     palette: "deep-blue",
     excerpt:
-      "Shifting from first-person ('Why am I feeling this?') to third-person ('Why is David feeling this?') sounds like an awkward linguistic trick. In brain scans, it instantly lowers amygdala reactivity.",
+      "Shifting from first-person ('Why am I feeling this?') to third-person ('Why is Alex feeling this?') sounds like an awkward linguistic trick. In laboratory trials, it significantly attenuates sympathetic nervous system reactivity.",
     paragraphs: [
-      "When we experience acute emotional failure, our default introspective stance is self-immersion: we look out through our own eyes and replay the humiliating or agonizing sequence in vivid first-person HD. Research by Ethan Kross (University of Michigan) and Özlem Ayduk (UC Berkeley) demonstrates that this immersion activates the brain's default mode network in ways that promote cyclic rumination.",
-      "In a sequence of foundational studies (Ayduk & Kross, 2010; Kross et al., 2014), the researchers tested 'self-distancing'—instructing participants to reflect on a painful memory from the perspective of an objective, fly-on-the-wall observer, or using non-first-person pronouns and their own name.",
-      "The results were startlingly consistent across behavioral, cardiovascular, and neural measures. Third-person self-talk ('Why did Sarah feel so betrayed during that conversation?') reduced heart rate spikes, minimized emotional distress, and facilitated adaptive reappraisal rather than anxious replay.",
-      "The underlying mechanism engages what psychological literature calls 'Solomon’s Paradox' (Grossmann & Kross, 2014): humans demonstrate far superior cognitive wisdom and emotional temperance when analyzing other people's conflicts than their own. Self-distancing tricks the brain's social cognition machinery into treating your own wounded heart as that of a friend who needs sensible counsel.",
+      "When experiencing acute emotional distress, our default introspective stance is self-immersion: we look out through our own eyes and replay the painful sequence in vivid first-person fidelity. Research by Ethan Kross (University of Michigan) and Özlem Ayduk (UC Berkeley) demonstrates that this immersion frequently promotes cyclic rumination.",
+      "In a sequence of foundational studies (Ayduk & Kross, 2010; Kross et al., 2014), the researchers investigated 'self-distancing'—instructing participants to reflect on a negative memory from the perspective of an objective observer, or using non-first-person pronouns and their own name.",
+      "The findings were consistent across physiological and behavioral measures. Self-distancing and third-person self-talk systematically reduced heart rate spikes, minimized self-reported distress, and facilitated adaptive reappraisal rather than anxious rumination.",
+      "The underlying mechanism engages what literature describes as 'Solomon’s Paradox' (Grossmann & Kross, 2014): humans demonstrate superior cognitive wisdom and emotional temperance when analyzing other people's conflicts than their own. Self-distancing recruits social-reasoning machinery to evaluate personal distress as if advising a trusted companion.",
     ],
     pullQuote: {
-      text: "Self-distancing tricks the brain into treating your own wounded heart as that of a friend who needs sensible counsel.",
+      text: "Self-distancing recruits social-reasoning machinery to evaluate personal distress as if advising a trusted companion.",
     },
-    researchContext: {
-      finding:
-        "Adopting a self-distanced, third-person perspective reduces cardiovascular reactivity and rumination by recruiting social-reasoning networks normally reserved for advising others.",
-      sources: [
-        {
-          title: "From a distance: Implications of spontaneous self-distancing for adaptive emotional processing",
-          authors: "Ayduk, Ö., & Kross, E.",
-          year: 2010,
-          publication: "Journal of Personality and Social Psychology, 98(5), 809–829",
-          doiOrUrl: "https://doi.org/10.1037/a0019205",
-        },
-        {
-          title: "Self-talk as a regulatory mechanism: How you do it matters",
-          authors: "Kross, E., Bruehlman-Senecal, E., et al.",
-          year: 2014,
-          publication: "Journal of Personality and Social Psychology, 106(2), 304–324",
-          doiOrUrl: "https://doi.org/10.1037/a0035173",
-        },
-      ],
-    },
+    researchFocus: [
+      "Self-Distancing",
+      "Third-Person Self-Talk",
+      "Cardiovascular Autonomic Reactivity",
+      "Adaptive Cognitive Reappraisal",
+      "Solomon's Paradox",
+    ],
+    researchFindings:
+      "Experimental investigations by Ethan Kross, Özlem Ayduk, and colleagues demonstrate that shifting from first-person ('Why am I feeling this?') to distanced visual or third-person linguistic perspectives ('Why did Alex feel this way?') systematically reduces sympathetic autonomic arousal, reduces subjective distress, and mitigates post-event rumination. Visual self-distancing enables participants to reconstruct past stressors as an observer, facilitating adaptive reappraisal rather than anxious re-immersion.",
+    editorialReading:
+      "Why this matters for an archive of unsaid things: When someone submits an anonymous note to a public archive, they naturally engage a distanced observer stance. By placing their unsaid confession onto a dark screen where thousands of strangers can view it, the author ceases to be trapped inside their own panic and begins to view their pain with the calm, measured compassion one reserves for a stranger.",
+    sources: [
+      {
+        title: "From a distance: Implications of spontaneous self-distancing for adaptive emotional processing",
+        authors: "Ayduk, Ö., & Kross, E.",
+        year: 2010,
+        publication: "Journal of Personality and Social Psychology, 98(5), 809–829",
+        doi: "10.1037/a0019205",
+        url: "https://doi.org/10.1037/a0019205",
+        pmcId: "PMC2866252",
+        pubmedId: "20438226",
+        sourceType: "peer-reviewed",
+        isOpenAccess: true,
+        notes: "Open Access full text available via PubMed Central (PMC2866252).",
+      },
+      {
+        title: "Self-talk as a regulatory mechanism: How you do it matters",
+        authors: "Kross, E., Bruehlman-Senecal, E., Park, J., Burson, A., Dougherty, A., Shablack, H., Bremner, R., Jason, J., & Ayduk, Ö.",
+        year: 2014,
+        publication: "Journal of Personality and Social Psychology, 106(2), 304–324",
+        doi: "10.1037/a0035173",
+        url: "https://doi.org/10.1037/a0035173",
+        pubmedId: "24446865",
+        sourceType: "peer-reviewed",
+        isOpenAccess: false,
+        notes: "Empirical study demonstrating third-person self-talk regulates acute negative affect. PubMed ID: 24446865.",
+      },
+    ],
+    furtherReading: [
+      {
+        title: "Exploring Solomon's paradox: self-distancing eliminates the self-other asymmetry in wise reasoning",
+        authorsOrSource: "Grossmann, I., & Kross, E. (2014). Personality and Social Psychology Bulletin, 40(12), 1571–1584",
+        url: "https://pubmed.ncbi.nlm.nih.gov/25227763/",
+        type: "study",
+        description: "Demonstrates that self-distancing enables individuals to reason about their own relationships with the wisdom typically reserved for others.",
+      },
+    ],
+    disclaimer:
+      "Research literature is cited for educational, cultural, and archival inquiry. Interpretations belong to the publication and should not be construed as clinical or psychological counsel.",
     tags: ["Self-Distancing", "Ethan Kross", "Third-Person", "Solomon Paradox"],
     relatedSlugs: [
       "research-note-when-expressive-writing-fails",
@@ -695,41 +856,69 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     id: "research-04",
     slug: "research-note-nostalgia-as-a-homeostatic-corrective",
     title: "Research Note: Nostalgia as a Homeostatic Corrective",
-    subtitle: "Sedikides & Wildschut (Southampton) on nostalgia as an evolutionary buffer against meaninglessness and existential loneliness.",
+    subtitle: "Sedikides & Wildschut on nostalgia as an adaptive psychological thermostat buffering existential threat.",
     entryNumber: "NO. 0019",
     category: "research-notes",
     seriesName: "Research Notes",
+    sourceType: "RESEARCH NOTE",
     date: "August 2024",
     readingTime: "6 min",
     depth: "medium",
     palette: "ochre",
     excerpt:
-      "For three hundred years, medical manuals classified nostalgia as a fatal brain lesion. Modern experimental psychology demonstrates that it is actually a psychological thermostat.",
+      "For three hundred years, medical manuals classified nostalgia as a fatal brain lesion. Modern experimental psychology demonstrates that it acts as a psychological thermostat.",
     paragraphs: [
-      "When Swiss physician Johannes Hofer coined the term *nostalgia* in 1688, he regarded it as a neurological affliction caused by 'the continuous vibration of animal spirits' in Swiss mercenaries longing for their Alpine valleys. For centuries, longing for the past was pathologized as a form of melancholic sickness.",
-      "Over the past two decades, experimental psychologists Constantine Sedikides and Tim Wildschut at the University of Southampton have systematically dismantled that view. In dozens of empirical trials across multiple cultures, they demonstrated that nostalgia is an inherently adaptive, affectively mixed emotion.",
-      "Most importantly, their research demonstrates that nostalgia acts as an internal 'homeostatic corrective.' When individuals are experimentally subjected to existential threats—boredom, loneliness, mortality salience, or feelings of meaninglessness—the mind spontaneously recruits nostalgic memories to re-establish emotional equilibrium.",
-      "Nostalgic recollections are not random; they almost always feature close social connections, redemption arcs, and milestones of personal agency. By replaying these curated memories, the brain bolsters feelings of social support, reinforces identity continuity, and buffers against existential despair.",
+      "When Swiss physician Johannes Hofer coined the term 'nostalgia' in 1688, he characterized it as a debilitating medical affliction caused by 'the continuous vibration of animal spirits' in mercenaries longing for their Alpine homes. For centuries, longing for the past was pathologized as a form of melancholic stagnation.",
+      "Over recent decades, experimental psychologists Constantine Sedikides and Tim Wildschut at the University of Southampton have systematically re-evaluated this perspective. In empirical trials across cultures, they observed that nostalgia is an adaptive, affectively mixed emotion.",
+      "Their research indicates that nostalgia acts as an internal homeostatic mechanism. When participants are experimentally subjected to psychological threats—such as acute loneliness, boredom, or existential meaninglessness—nostalgic recollections are spontaneously recruited to restore equilibrium.",
+      "Nostalgic memories are rarely random; they predominantly feature close interpersonal bonds, social support, and milestones of personal redemption. By accessing these memories, individuals experience increased perceived social support, reinforced identity continuity, and a buffer against existential distress.",
     ],
-    researchContext: {
-      finding:
-        "Nostalgia serves as a psychological homeostatic mechanism. When threatened by loneliness or meaninglessness, individuals naturally recruit nostalgic memories to restore existential stability.",
-      sources: [
-        {
-          title: "Nostalgia: Content, triggers, functions",
-          authors: "Wildschut, T., Sedikides, C., Arndt, J., & Routledge, C.",
-          year: 2006,
-          publication: "Journal of Personality and Social Psychology, 91(5), 975–993",
-          doiOrUrl: "https://doi.org/10.1037/0022-3514.91.5.975",
-        },
-        {
-          title: "To nostalgize: Expanding a bittersweet emotion",
-          authors: "Sedikides, C., & Wildschut, T.",
-          year: 2016,
-          publication: "Current Opinion in Psychology, 10, 120–124",
-        },
-      ],
-    },
+    researchFocus: [
+      "Adaptive Nostalgia",
+      "Existential Threat Buffering",
+      "Social Connectedness",
+      "Homeostatic Emotion Regulation",
+    ],
+    researchFindings:
+      "Sedikides, Wildschut, and colleagues conducted systematic laboratory experiments demonstrating that nostalgia is an adaptive, complex social emotion rather than a maladaptive neurological fixation. When participants were exposed to psychological distress—including acute loneliness, boredom, or existential meaninglessness—nostalgic recollections were spontaneously activated. These recollections consistently centered on meaningful interpersonal bonds and personal agency, bolstering social connectedness and mitigating existential threat.",
+    editorialReading:
+      "Why this matters for an archive of unsaid things: Longing for the past is frequently stigmatized as weakness or escapism. Yet experimental evidence demonstrates that nostalgia is an internal regulatory thermostat. Re-reading past messages or reflecting on what was never said is the mind's way of reminding itself that we once mattered profoundly to another human being.",
+    sources: [
+      {
+        title: "Nostalgia: Content, triggers, functions",
+        authors: "Wildschut, T., Sedikides, C., Arndt, J., & Routledge, C.",
+        year: 2006,
+        publication: "Journal of Personality and Social Psychology, 91(5), 975–993",
+        doi: "10.1037/0022-3514.91.5.975",
+        url: "https://doi.org/10.1037/0022-3514.91.5.975",
+        pubmedId: "17059307",
+        sourceType: "peer-reviewed",
+        isOpenAccess: false,
+        notes: "Foundational experimental investigation establishing the adaptive social functions of nostalgia. PubMed ID: 17059307.",
+      },
+      {
+        title: "Past forward: Nostalgia as a motivator",
+        authors: "Sedikides, C., & Wildschut, T.",
+        year: 2016,
+        publication: "Current Directions in Psychological Science, 25(3), 189–195",
+        doi: "10.1177/0963721416641417",
+        url: "https://doi.org/10.1177/0963721416641417",
+        sourceType: "peer-reviewed",
+        isOpenAccess: false,
+        notes: "Review detailing how nostalgic reflection fosters approach motivation and social connection.",
+      },
+    ],
+    furtherReading: [
+      {
+        title: "Nostalgia as a resource for psychological health and well-being",
+        authorsOrSource: "Routledge, C., Wildschut, T., Sedikides, C., & Juhl, J. (2013). Social and Personality Psychology Compass, 7(11), 808–818",
+        url: "https://doi.org/10.1111/spc3.12070",
+        type: "review",
+        description: "Examines how nostalgia counteracts existential anxiety and promotes psychological well-being.",
+      },
+    ],
+    disclaimer:
+      "Research literature is cited for educational, cultural, and archival inquiry. Interpretations belong to the publication and should not be construed as clinical or psychological counsel.",
     tags: ["Nostalgia", "Existential Meaning", "Sedikides", "Wildschut"],
     relatedSlugs: [
       "nostalgia-for-difficult-years",
@@ -745,31 +934,54 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     entryNumber: "NO. 0020",
     category: "research-notes",
     seriesName: "Research Notes",
+    sourceType: "RESEARCH NOTE",
     date: "July 2024",
     readingTime: "7 min",
     depth: "medium",
     palette: "charcoal",
     excerpt:
-      "Why do people reveal things to a black screen and anonymous strangers that they would take to the grave before telling their spouse? The psychology of benign online disinhibition.",
+      "Why do people reveal things to a black screen and anonymous strangers that they would hesitate to tell their closest friends? The cyberpsychology of benign online disinhibition.",
     paragraphs: [
-      "In 2004, cyberpsychologist John Suler published a foundational paper outlining the 'Online Disinhibition Effect.' While public discourse often focuses on toxic disinhibition (cyberbullying, trolling), Suler identified a parallel phenomenon: 'benign disinhibition,' where digital spaces encourage profound emotional honesty and vulnerability.",
-      "Suler isolated six interlocking psychological factors that create this state: dissociative anonymity ('You don’t know me'), invisibility ('You can’t see me'), asynchronicity ('I don’t have to deal with your immediate reaction'), solipsistic introjection ('It’s all in my head'), dissociative imagination ('It’s just a digital room'), and minimization of status.",
-      "In physical interactions, human disclosure is governed by constant micro-feedback: the other person's wince, their crossed arms, the tilt of their head. This feedback creates protective social friction, preventing us from saying things that might destabilize the relationship.",
-      "An anonymous archive strips away both the fear of reprisal and the burden of maintenance. You can place the truth on digital stone, witness other human beings reading it in quiet solidarity, and never have to explain yourself over breakfast tomorrow.",
+      "In 2004, cyberpsychologist John Suler published a foundational paper outlining the 'Online Disinhibition Effect.' While public discourse often emphasizes toxic disinhibition (such as harassment or hostility), Suler identified a parallel phenomenon: 'benign disinhibition,' where mediated environments encourage profound emotional vulnerability.",
+      "Suler isolated interlocking psychological factors that foster this state: dissociative anonymity ('You don’t know me'), invisibility ('You can’t see me'), asynchronicity ('I don’t have to face your immediate reaction'), and solipsistic introjection ('It feels internal').",
+      "In co-present interactions, disclosure is governed by real-time conversational micro-feedback: the other person's wince, posture shifts, or averted gaze. This feedback introduces protective social friction, sometimes preventing individuals from articulating truths that might destabilize a proximate relationship.",
+      "An anonymous text depository removes both the fear of immediate relational rupture and the burden of conversational maintenance. An individual can place their truth into permanent digital stone, observe other human beings witnessing it in quiet solidarity, and avoid the friction of defensive explanations.",
     ],
-    researchContext: {
-      finding:
-        "Dissociative anonymity and asynchronous interaction reduce social threat and evaluation anxiety, enabling benign disinhibition where individuals disclose deeply buried emotional truths.",
-      sources: [
-        {
-          title: "The online disinhibition effect",
-          authors: "Suler, J.",
-          year: 2004,
-          publication: "CyberPsychology & Behavior, 7(3), 321–326",
-          doiOrUrl: "https://doi.org/10.1089/1094931041291295",
-        },
-      ],
-    },
+    researchFocus: [
+      "Benign Online Disinhibition",
+      "Dissociative Anonymity",
+      "Asynchronous Disclosure",
+      "Cyberpsychology of Text Interfaces",
+    ],
+    researchFindings:
+      "John Suler's cyberpsychological framework on the Online Disinhibition Effect outlines the cognitive mechanisms that differentiate mediated digital interaction from face-to-face dialogue. Suler demonstrated that dissociative anonymity ('You don't know me') combined with asynchronous communication strips away immediate social threat, conversational micro-feedback (e.g., winces, crossed arms), and evaluation anxiety. In benign disinhibition, this environment fosters profound emotional candor, allowing individuals to disclose suppressed vulnerabilities that they would withhold in proximate social settings.",
+    editorialReading:
+      "Why this matters for an archive of unsaid things: An anonymous digital archive is neither a social network nor a private diary. It provides a third space: public witness without interpersonal consequence. You place your unsaid truth into the care of the archive, confident that no one will interrogate you at breakfast tomorrow.",
+    sources: [
+      {
+        title: "The online disinhibition effect",
+        authors: "Suler, J.",
+        year: 2004,
+        publication: "CyberPsychology & Behavior, 7(3), 321–326",
+        doi: "10.1089/1094931041291295",
+        url: "https://doi.org/10.1089/1094931041291295",
+        pubmedId: "15282024",
+        sourceType: "peer-reviewed",
+        isOpenAccess: false,
+        notes: "Foundational theoretical framework on online disinhibition and digital disclosure. PubMed ID: 15282024.",
+      },
+    ],
+    furtherReading: [
+      {
+        title: "Effects of anonymity, invisibility, and lack of eye-contact on toxic and benign online disinhibition",
+        authorsOrSource: "Lapidot-Lefler, N., & Barak, A. (2012). Computers in Human Behavior, 28(2), 434–443",
+        url: "https://doi.org/10.1016/j.chb.2011.10.014",
+        type: "study",
+        description: "Empirical breakdown of how invisibility and lack of eye contact independently drive benign emotional disclosure.",
+      },
+    ],
+    disclaimer:
+      "Research literature is cited for educational, cultural, and archival inquiry. Interpretations belong to the publication and should not be construed as clinical or psychological counsel.",
     tags: ["Cyberpsychology", "Anonymity", "Disinhibition", "Vulnerability"],
     relatedSlugs: [
       "the-afterlife-of-a-deleted-draft",
@@ -781,41 +993,68 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     id: "research-06",
     slug: "research-note-autobiographical-reasoning-and-narrative-contamination",
     title: "Research Note: Autobiographical Reasoning and Narrative Contamination",
-    subtitle: "Dan McAdams on how redemption vs. contamination story arcs predict long-term psychological resilience.",
+    subtitle: "Dan McAdams on how redemption vs. contamination story arcs correlate with psychological well-being.",
     entryNumber: "NO. 0021",
     category: "research-notes",
     seriesName: "Research Notes",
+    sourceType: "RESEARCH NOTE",
     date: "June 2024",
     readingTime: "8 min",
     depth: "medium",
     palette: "dusty-plum",
     excerpt:
-      "When people recount their life turning points, the grammatical arc of their story determines whether past trauma heals into wisdom or festers into chronic bitterness.",
+      "When people recount turning points in their life stories, the narrative sequence of their accounts correlates significantly with measures of psychological resilience and distress.",
     paragraphs: [
-      "Dan McAdams, a pioneer in narrative psychology at Northwestern University, posits that human personality cannot be fully measured by traits like extroversion or conscientiousness alone. The third, most vital layer is 'narrative identity'—the internalized, evolving life story an individual constructs to provide their existence with unity and purpose.",
-      "Through decades of life-story interviews, McAdams discovered that how people link turning points (episodes of high emotional salience) follows two primary affective patterns: redemption sequences and contamination sequences.",
-      "In a redemption sequence, a distinctly negative state (failure, grief, heartbreak) leads causally to an emotionally positive outcome (insight, resilience, empathy). In contrast, a contamination sequence describes a positive or hopeful state that is abruptly spoiled, ruined, or contaminated by an ensuing catastrophe.",
-      "Longitudinal findings demonstrate that individuals who habitually organize their personal history through contamination sequences suffer significantly higher rates of depression, chronic rumination, and identity fragmentation. Learning to re-author those contaminated scenes—often through private writing that extracts meaning rather than replaying victimhood—is a critical engine of psychological resilience.",
+      "Dan McAdams, a researcher in narrative psychology at Northwestern University, posits that personality can be examined through 'narrative identity'—the internalized, evolving life story an individual constructs to provide existence with perceived unity and purpose.",
+      "Through systematic life-story interviews, McAdams identified two predominant affective patterns in how individuals link life turning points: redemption sequences and contamination sequences.",
+      "In a redemption sequence, an initially negative state (loss, failure, grief) is narrated as leading to a constructive psychological outcome (insight, resilience, renewed empathy). In contrast, a contamination sequence describes a positive or hopeful state that is perceived as spoiled or undermined by an ensuing disappointment.",
+      "Empirical investigations demonstrate that chronic reliance on contamination sequences in personal storytelling correlates with higher depressive symptoms and reduced generativity. Constructing a coherent narrative arc—often through private writing that clarifies personal meaning—represents a key mechanism in cognitive resilience.",
     ],
-    researchContext: {
-      finding:
-        "Autobiographical narrative structures directly predict mental health: redemption arcs foster resilience and generativity, while contamination sequences sustain depressive rumination.",
-      sources: [
-        {
-          title: "The psychology of life stories",
-          authors: "McAdams, D. P.",
-          year: 2001,
-          publication: "Review of General Psychology, 5(2), 100–122",
-          doiOrUrl: "https://doi.org/10.1037/1089-2680.5.2.100",
-        },
-        {
-          title: "Narrative identity: What is it, and how does it develop?",
-          authors: "McAdams, D. P., & McLean, K. C.",
-          year: 2013,
-          publication: "Current Directions in Psychological Science, 22(3), 233–238",
-        },
-      ],
-    },
+    researchFocus: [
+      "Narrative Identity",
+      "Redemption vs Contamination Sequences",
+      "Autobiographical Reasoning",
+      "Dan McAdams Life-Story Methodology",
+    ],
+    researchFindings:
+      "In life-story research developed by Dan P. McAdams and colleagues at Northwestern University, narrative identity is evaluated through how individuals conceptually link life turning points. McAdams identified two predominant structures: redemption sequences (where a negative event leads to psychological insight or moral growth) and contamination sequences (where an initially positive state is irreparably ruined by tragedy). Cross-sectional and longitudinal data indicate that contamination narratives correlate significantly with depressive symptoms, lower ego development, and identity fragmentation, whereas redemption narratives foster psychological resilience and generativity.",
+    editorialReading:
+      "Why this matters for an archive of unsaid things: The way we describe an unsaid regret determines whether it corrodes or educates us. The act of writing an unsaid truth into an archival record offers an opportunity for narrative revision: shifting an old memory out of a contamination loop and framing it as the difficult chapter that taught us who we could no longer be.",
+    sources: [
+      {
+        title: "The psychology of life stories",
+        authors: "McAdams, D. P.",
+        year: 2001,
+        publication: "Review of General Psychology, 5(2), 100–122",
+        doi: "10.1037/1089-2680.5.2.100",
+        url: "https://doi.org/10.1037/1089-2680.5.2.100",
+        sourceType: "peer-reviewed",
+        isOpenAccess: false,
+        notes: "Foundational conceptual framework establishing narrative identity and life-story methodology.",
+      },
+      {
+        title: "Narrative identity: What is it, and how does it develop?",
+        authors: "McAdams, D. P., & McLean, K. C.",
+        year: 2013,
+        publication: "Current Directions in Psychological Science, 22(3), 233–238",
+        doi: "10.1177/0963721413475622",
+        url: "https://doi.org/10.1177/0963721413475622",
+        sourceType: "peer-reviewed",
+        isOpenAccess: false,
+        notes: "Synthesizes empirical evidence linking narrative structures (redemption/contamination) to psychological health.",
+      },
+    ],
+    furtherReading: [
+      {
+        title: "The incremental validity of narrative identity in predicting well-being",
+        authorsOrSource: "Adler, J. M., Lodi-Smith, J., Philippe, F. L., & Houle, I. (2016). Personality and Social Psychology Review, 20(2), 142–175",
+        url: "https://pubmed.ncbi.nlm.nih.gov/25964262/",
+        type: "review",
+        description: "Rigorous quantitative review establishing narrative identity features as distinct predictors of psychological well-being beyond Big Five personality traits.",
+      },
+    ],
+    disclaimer:
+      "Research literature is cited for educational, cultural, and archival inquiry. Interpretations belong to the publication and should not be construed as clinical or psychological counsel.",
     tags: ["Narrative Identity", "Dan McAdams", "Resilience", "Redemption"],
     relatedSlugs: [
       "memory-distortions-and-the-stories-we-protect",
@@ -825,7 +1064,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
   },
 
   // =========================================================================
-  // 5. FIELD NOTES (Observations & Fragments)
+  // 5. FIELD NOTES (Street-Level Fragments & Community Observations)
   // =========================================================================
   {
     id: "field-01",
@@ -835,6 +1074,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     entryNumber: "NO. 0022",
     category: "field-notes",
     seriesName: "Field Notes",
+    sourceType: "ORIGINAL EDITORIAL",
     date: "May 2024",
     readingTime: "3 min",
     depth: "brief",
@@ -863,6 +1103,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     entryNumber: "NO. 0023",
     category: "field-notes",
     seriesName: "Field Notes",
+    sourceType: "ARCHIVAL NOTE",
     date: "April 2024",
     readingTime: "3 min",
     depth: "brief",
@@ -871,7 +1112,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
       "A faint pencil underline beneath a sentence by Walter Benjamin, and in the margin, a tiny notation: 'Not true for us, 1994.' An anonymous confession preserved in the library stacks.",
     paragraphs: [
       "In the fifth-floor stacks of an old university library, books become palimpsests of human interiority. Librarians spend their careers erasing pencil marks, but the persistent ones endure like archaeological graffiti.",
-      "On page 142 of a faded volume of Roland Barthes' *A Lover's Discourse*, someone thirty years ago took an HB pencil and underlined: *'Am I in love? —yes, since I am waiting.'* Below it, squeezed against the binding, is a single initials inscription: *'M.S. — you never showed up.'*",
+      "On page 142 of a faded volume of Roland Barthes' 'A Lover's Discourse', someone thirty years ago took an HB pencil and underlined: 'Am I in love? —yes, since I am waiting.' Below it, squeezed against the binding, is a single initials inscription: 'M.S. — you never showed up.'",
       "Who was M.S.? Did they get stuck in traffic? Did they simply lose interest? The book gives no resolution. It was returned to the drop box, stamped, reshelved, and sat in darkness for eight thousand days until another lonely person pulled it down on a rainy Tuesday.",
       "Marginalia is the oldest form of the unsaid. It is a letter addressed to the next person whose heart is broken in precisely the same cadence.",
     ],
@@ -891,6 +1132,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     entryNumber: "NO. 0024",
     category: "field-notes",
     seriesName: "Field Notes",
+    sourceType: "COMMUNITY FIELD NOTE",
     date: "March 2024",
     readingTime: "3 min",
     depth: "brief",
@@ -903,6 +1145,12 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
       "It sits there in the bubble. What does it mean if you send it? It means you remember. What does it mean if they don't reply? It means you are still the one holding the rope. What does it mean if they reply with a polite heart emoji? That is perhaps the most devastating outcome of all: an etiquette response to a severed bond.",
       "At 12:01 AM, the calendar flips. The notification dismisses itself. You select the text, tap delete, and put the phone face down on the nightstand.",
     ],
+    communityContext: {
+      platform: "Reddit / r/Journaling",
+      url: "https://www.reddit.com/r/Journaling/",
+      description:
+        "Observed across community discussions regarding annual notifications, digital estrangement, and the recurring ritual of drafting and deleting messages as midnight arrives.",
+    },
     tags: ["Birthdays", "Calendar", "Digital Hesitation", "Estrangement"],
     relatedSlugs: [
       "the-afterlife-of-a-deleted-draft",
@@ -919,6 +1167,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     entryNumber: "NO. 0025",
     category: "field-notes",
     seriesName: "Field Notes",
+    sourceType: "ORIGINAL EDITORIAL",
     date: "February 2024",
     readingTime: "3 min",
     depth: "brief",
@@ -947,18 +1196,25 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     entryNumber: "NO. 0026",
     category: "field-notes",
     seriesName: "Field Notes",
+    sourceType: "COMMUNITY FIELD NOTE",
     date: "January 2024",
     readingTime: "3 min",
     depth: "brief",
     palette: "deep-blue",
     excerpt:
-      "A forgotten forum account or gaming handle from when you were nineteen: looking through your own post history is like reading letters written by an excitable nephew who died a decade ago.",
+      "A forgotten forum account or gaming handle from when you were nineteen: looking through your own post history is like reading letters written by an excitable relative who vanished a decade ago.",
     paragraphs: [
-      "We change physical homes, throw out high school yearbooks, and donate old clothes. But the internet is an unforgiving taxidermist. Every half-abandoned username you created between ages sixteen and twenty-two is still out there, pinned to a forum database like a dried beetle.",
-      "You find yourself on an old discussion board while troubleshooting an obscure technical problem. There is your avatar—a blurry screenshot from an anime you haven't watched in fifteen years. There is your bio: 'Cynical idealist. Coffee and insomnia.'",
-      "Reading through the comment history produces an acute, agonizing cringe. You were so desperate to sound sophisticated. You picked fights with strangers over bands you don't even listen to anymore. You quoted philosophers you hadn't actually read.",
+      "We change physical homes, throw out high school yearbooks, and donate old clothes. But the internet is an unforgiving taxidermist. Every half-abandoned username created between ages sixteen and twenty-two is still out there, pinned to a forum database like a dried beetle.",
+      "You find yourself on an old discussion board while troubleshooting an obscure technical problem. There is your avatar—a blurry screenshot from an animated series you haven't watched in fifteen years. There is your bio: 'Cynical idealist. Coffee and insomnia.'",
+      "Reading through the comment history produces an acute, agonizing cringe. You were so eager to sound sophisticated. You picked arguments with strangers over bands you don't even listen to anymore. You quoted philosophers you hadn't actually read.",
       "Yet beneath the cringe lies an unexpected tenderness. That nineteen-year-old was trying so hard to construct an armor against the terror of not knowing who they were. You close the browser tab gently, leaving the ghost to guard the empty server.",
     ],
+    communityContext: {
+      platform: "Reddit / r/Journaling",
+      url: "https://www.reddit.com/r/Journaling/",
+      description:
+        "Observed across community reflections on digital archives, preserving past diary entries, and encounters with forgotten online usernames.",
+    },
     tags: ["Internet History", "Usernames", "Past Selves", "Identity"],
     relatedSlugs: [
       "the-version-of-you-that-lives-in-someone-elses-memory",
@@ -969,7 +1225,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
   },
 
   // =========================================================================
-  // 6. LETTERS NEVER SENT
+  // 6. LETTERS NEVER SENT (Literary Notes)
   // =========================================================================
   {
     id: "letters-01",
@@ -979,6 +1235,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     entryNumber: "NO. 0027",
     category: "letters-never-sent",
     seriesName: "Letters Never Sent",
+    sourceType: "LITERARY NOTE",
     date: "December 2023",
     readingTime: "5 min",
     depth: "medium",
@@ -1011,6 +1268,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     entryNumber: "NO. 0028",
     category: "letters-never-sent",
     seriesName: "Letters Never Sent",
+    sourceType: "LITERARY NOTE",
     date: "November 2023",
     readingTime: "6 min",
     depth: "medium",
@@ -1019,9 +1277,9 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
       "At twenty-two, the letter was frantic and full of exclamation points about ambition. At thirty-two, the letter is four calm sentences written in black ink, mostly checking whether we slept eight hours last night.",
     paragraphs: [
       "Many people maintain a private ritual of writing an unsent letter on their birthday, sealing it in an envelope, and stashing it away to be opened five or ten years later. It is a correspondence across time where the author and the recipient are technically the same legal person, but psychologically alien to one another.",
-      "When you line up these letters in chronological order, the first thing you notice is the physical change in handwriting. At twenty-two, the strokes are aggressive, hurried, slanting forward with the frantic momentum of someone convinced they are running out of time to become a prodigy.",
-      "By twenty-seven, the script has flattened. The questions are different: less about prestige and awards, more about survival: 'Did we figure out how to pay off the medical bill? Are we still friends with Marcus?' There is fear in the margins.",
-      "By thirty-two, the tone shifts into something approaching peace. The letter is shorter. The handwriting is upright and measured. The author no longer demands that the future self be famous or extraordinary; they simply ask: 'Are you being gentle with yourself? Did you plant the tomatoes this spring?'",
+      "When you line up these letters in chronological order, the first thing you notice is the physical change in handwriting. At twenty-two, the strokes are aggressive, hurried, slanting forward with the frantic momentum of someone convinced they are running out of time to achieve recognition.",
+      "By twenty-seven, the script has flattened. The questions are different: less about prestige and awards, more about survival: 'Did we figure out how to pay off the medical bill? Are we still friends with Marcus?' There is uncertainty in the margins.",
+      "By thirty-two, the tone shifts into something approaching peace. The letter is shorter. The handwriting is upright and measured. The author no longer demands that the future self be extraordinary; they simply ask: 'Are you being gentle with yourself? Did you plant the tomatoes this spring?'",
       "Writing across time teaches us that maturity is not the accumulation of answers. It is the gradual abandonment of questions that were designed to impress other people.",
     ],
     tags: ["Time Travel", "Birthday Letters", "Handwriting", "Maturity"],
@@ -1040,6 +1298,7 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     entryNumber: "NO. 0029",
     category: "letters-never-sent",
     seriesName: "Letters Never Sent",
+    sourceType: "LITERARY NOTE",
     date: "October 2023",
     readingTime: "4 min",
     depth: "brief",
@@ -1047,9 +1306,9 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     excerpt:
       "We sat across from each other on the 79th Street bus while an ambulance screamed past outside. For four seconds our eyes locked in shared recognition of human fragility, and then we both looked back down at our phones.",
     paragraphs: [
-      "To the man in the charcoal coat on the M79 Tuesday evening:",
+      "To the passenger in the charcoal coat on the M79 Tuesday evening:",
       "We didn't speak, because cities have strict unwritten laws against speaking to strangers without an emergency. But when that ambulance siren wound up to top volume right outside our window, vibrating the glass against our shoulders, everyone on the bus flinched.",
-      "You looked up from your book, and I looked up from my lap. For four full seconds, we looked directly into each other's pupils with total, undisguised vulnerability. In that glance was a complete sentence: *Someone in this city is having the worst night of their life, and both of us are miraculously whole on a warm bus.*",
+      "You looked up from your book, and I looked up from my lap. For four full seconds, we looked directly into each other's pupils with total, undisguised vulnerability. In that glance was a complete sentence: 'Someone in this city is having the worst night of their life, and both of us are miraculously whole on a warm bus.'",
       "Then the siren faded down Broadway. The spell broke. You cleared your throat; I checked a notification that didn't exist; we both returned to our designated citizen postures. You got off at Amsterdam Avenue.",
       "I don't know your name or where you were going. But for four seconds, you were closer to my real interior state than anyone I talked to at work all day. I hope whatever was waiting for you at your stop was kind.",
     ],
@@ -1065,10 +1324,11 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     id: "letters-04",
     slug: "the-conversation-we-scheduled-for-sometime-in-the-spring",
     title: "The Conversation We Scheduled for Sometime in the Spring",
-    subtitle: "On vague temporal promises ('let's catch up when the weather gets warmer') that serve as gentle, cowardly farewells.",
+    subtitle: "On vague temporal promises ('let's catch up when the weather gets warmer') that serve as gentle farewells.",
     entryNumber: "NO. 0030",
     category: "letters-never-sent",
     seriesName: "Letters Never Sent",
+    sourceType: "LITERARY NOTE",
     date: "September 2023",
     readingTime: "5 min",
     depth: "medium",
@@ -1095,28 +1355,35 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
   },
 
   // =========================================================================
-  // 7. SMALL RITUALS
+  // 7. SMALL RITUALS (Community Field Notes & Archival Notes)
   // =========================================================================
   {
     id: "rituals-01",
     slug: "the-shoebox-under-the-wardrobe",
     title: "The Shoebox Under the Wardrobe",
-    subtitle: "Why people curate physical graveyards of letters and movie tickets they never intend to open.",
+    subtitle: "Why people curate physical collections of letters and tickets they rarely intend to open.",
     entryNumber: "NO. 0031",
     category: "small-rituals",
     seriesName: "Small Rituals",
+    sourceType: "COMMUNITY FIELD NOTE",
     date: "August 2023",
     readingTime: "4 min",
     depth: "brief",
     palette: "warm-parchment",
     excerpt:
-      "Taped shut with brown packing tape or tucked under extra blankets: the shoebox of past relationships is an emotional nuclear waste site that we refuse to decommission.",
+      "Taped shut with brown packing tape or tucked under extra blankets: the shoebox of past relationships is an emotional containment vessel that we refuse to decommission.",
     paragraphs: [
-      "Almost every adult who has loved and lost more than once keeps a box. It is usually an old Nike or boot box, shoved into the dead corner of a closet or beneath winter coats where dust bunnies accumulate undisturbed.",
-      "Inside is an assortment of completely useless matter: festival wristbands that have frayed at the edges, a handwritten note scribbled on a paper napkin from a bar that went out of business in 2017, a printed train ticket to Edinburgh, a broken silver chain.",
-      "If you ask the owner, 'When was the last time you opened that box?' they will usually confess: 'Not in four years.' If you ask, 'Why don't you throw it away?' they look at you as though you suggested drowning a pet.",
-      "The ritual of the shoebox is not about reminiscing. It is about containment. By sequestering the radioactive material inside a physical cardboard perimeter, you prevent it from contaminating the daily living room. The box allows you to say: 'My past exists, but it is under control beneath the flannel shirts.'",
+      "Across conversations in personal archiving communities, a recurring human habit emerges: almost every adult who has experienced deep connection keeps a box. It is usually an old footwear box, shoved into the dead corner of a closet or beneath winter blankets where dust accumulates undisturbed.",
+      "Inside rests an assortment of seemingly ordinary matter: festival wristbands frayed at the borders, a handwritten note on a paper napkin from a café that closed years ago, a printed train stub to Edinburgh, a broken silver chain.",
+      "If you ask the keeper, 'When was the last time you opened that box?' they will often confess: 'Not in years.' If you ask, 'Why don't you discard it?' they look at you with quiet bewilderment.",
+      "The ritual of the shoebox is not primarily about daily reminiscing. It is about containment. By sequestering the material inside a physical cardboard perimeter, you prevent it from spilling over into your daily routine. The box allows you to declare: 'My past exists, but it has a designated resting place beneath the winter coats.'",
     ],
+    communityContext: {
+      platform: "Reddit / r/Journaling",
+      url: "https://www.reddit.com/r/Journaling/",
+      description:
+        "Observed across community discussions regarding keepsake containment, unread past diaries, and the domestic rituals of storing memorabilia in sealed containers.",
+    },
     tags: ["Rituals", "Shoebox", "Containment", "Keepsakes"],
     relatedSlugs: [
       "what-an-old-receipt-can-remember",
@@ -1129,22 +1396,29 @@ export const JOURNAL_ENTRIES: JournalEntry[] = [
     id: "rituals-02",
     slug: "the-midnight-unsend",
     title: "The Midnight Unsend",
-    subtitle: "The modern digital ritual of sending an email to a dummy email address or draft folder just to experience the click of departure.",
+    subtitle: "The modern digital ritual of sending an email to a dummy inbox or draft folder just to experience the dispatch of departure.",
     entryNumber: "NO. 0032",
     category: "small-rituals",
     seriesName: "Small Rituals",
+    sourceType: "COMMUNITY FIELD NOTE",
     date: "July 2023",
     readingTime: "4 min",
     depth: "brief",
     palette: "charcoal",
     excerpt:
-      "You type the email to an address you know doesn't exist, or to a dummy account you created for this single purpose. You click Send, hear the small paper airplane chime, and breathe.",
+      "You type the email to an address you know doesn't exist, or to a dummy account created for this single purpose. You click Send, hear the small chime, and breathe.",
     paragraphs: [
-      "In ancient Athens, citizens practiced the ritual of the scapegoat: an animal or object was loaded with the symbolic transgressions of the city and driven out into the wilderness. In the twenty-first century, we perform this ritual with mail servers.",
-      "A surprising number of people describe an unusual private habit: when an unsaid sentiment becomes too heavy to contain in the chest, they open their email client, compose a full, unvarnished letter, and enter a recipient address that cannot receive it—a dummy inbox created years ago, or an old university address that has been deactivated.",
-      "Then they press the Send button. The mail client produces that familiar, satisfying auditory chime: the swoosh of a departing letter. For a fraction of a second, the nervous system registers genuine release: *The words have left my body.*",
-      "A minute later, a Mail Delivery Subsystem daemon bounces into the inbox: *'Delivery Status Notification (Failure) — Address not found.'* The writer doesn't care. The point was never for someone to receive it. The point was the physical sensation of letting go.",
+      "In classical literature, cultures practiced rituals of symbolic dispatch: an object was inscribed with private sentiment and cast into flowing water or the wilderness. In the twenty-first century, communities describe adapting this ritual to mail servers.",
+      "In public discussions on journaling forums, people regularly share an unusual private habit: when an unsaid sentiment becomes too heavy to keep inside the chest, they open their email client, compose a full letter, and enter a recipient address that cannot receive it—a dummy inbox created years ago, or an inactive address.",
+      "Then they press Send. The mail client produces that familiar auditory chime: the swoosh of a departing message. For a brief moment, the nervous system registers genuine release: the words have left the body.",
+      "Moments later, a Mail Delivery daemon may return a delivery failure notice: 'Address not found.' The writer doesn't care. The objective was never interpersonal delivery. The objective was the physical sensation of relinquishing the words.",
     ],
+    communityContext: {
+      platform: "Reddit / r/Journaling",
+      url: "https://www.reddit.com/r/Journaling/",
+      description:
+        "Observed across public journaling and unsent-letter discussions where writers describe sending unsendable emails to deactivated addresses or dummy inboxes for psychological catharsis.",
+    },
     tags: ["Rituals", "Email", "Letting Go", "Catharsis"],
     relatedSlugs: [
       "the-afterlife-of-a-deleted-draft",
@@ -1214,9 +1488,10 @@ export function filterJournalEntries(
       const excerptMatch = entry.excerpt.toLowerCase().includes(q);
       const tagsMatch = entry.tags.some((tag) => tag.toLowerCase().includes(q));
       const seriesMatch = entry.seriesName.toLowerCase().includes(q);
+      const sourceTypeMatch = entry.sourceType.toLowerCase().includes(q);
       const textMatch = entry.paragraphs.some((p) => p.toLowerCase().includes(q));
 
-      return titleMatch || subtitleMatch || excerptMatch || tagsMatch || seriesMatch || textMatch;
+      return titleMatch || subtitleMatch || excerptMatch || tagsMatch || seriesMatch || sourceTypeMatch || textMatch;
     }
 
     return true;

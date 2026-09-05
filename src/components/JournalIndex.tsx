@@ -207,9 +207,11 @@ export default function JournalIndex({
                 entry={entry}
                 onSelect={onSelectArticle}
                 variant={
-                  entry.category === "research-notes"
+                  entry.sourceType === "RESEARCH NOTE"
                     ? "research"
-                    : entry.category === "field-notes"
+                    : entry.sourceType === "COMMUNITY FIELD NOTE" ||
+                      entry.category === "field-notes" ||
+                      entry.category === "small-rituals"
                     ? "field-note"
                     : "standard"
                 }
@@ -227,7 +229,7 @@ export default function JournalIndex({
           "Every record in this publication is written from the conviction that what remains unsaid does not vanish; it merely seeks a more patient resting place."
         </p>
         <div className="font-mono text-[9px] uppercase tracking-[0.24em] text-[#736B63]">
-          Curated by Sangan · Archive MMXXVI
+          THE JOURNAL OF INTERIOR LIFE · A COLLECTION OF UNSAID THINGS · MMXXVI
         </div>
       </footer>
     </section>

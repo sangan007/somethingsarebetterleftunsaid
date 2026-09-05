@@ -40,7 +40,9 @@ export default function JournalCard({
           {/* Metadata Row */}
           <div className="flex flex-wrap items-center justify-between gap-3 text-[9.5px] font-mono uppercase tracking-[0.22em] text-[#8C827A]">
             <div className="flex items-center gap-3">
-              <span className="text-[#EDE8E0] font-semibold">{entry.seriesName}</span>
+              <span className="text-[#EDE8E0] font-semibold">{entry.sourceType}</span>
+              <span className="text-white/20">·</span>
+              <span>{entry.seriesName}</span>
               <span className="text-white/20">·</span>
               <span>{entry.entryNumber}</span>
               <span className="text-white/20">·</span>
@@ -78,7 +80,7 @@ export default function JournalCard({
   }
 
   // =========================================================================
-  // VARIANT: RESEARCH NOTE (Index card with publication code and hypothesis)
+  // VARIANT: RESEARCH NOTE (Index card with literature tags and empirical notes)
   // =========================================================================
   if (variant === "research" || entry.category === "research-notes") {
     return (
@@ -88,7 +90,7 @@ export default function JournalCard({
       >
         <div className="space-y-4">
           <div className="flex items-center justify-between text-[9px] font-mono uppercase tracking-[0.24em] text-[#8C827A]">
-            <span className="text-[#8C827A] font-medium">[ Research Note ]</span>
+            <span className="text-[#C29B68] font-medium">[ Research Note ]</span>
             <span>{entry.entryNumber}</span>
           </div>
 
@@ -101,11 +103,11 @@ export default function JournalCard({
             </p>
           </div>
 
-          {/* Finding Callout */}
-          {entry.researchContext && (
+          {/* Finding / Empirical Callout */}
+          {entry.researchFindings && (
             <div className="rounded-lg border border-white/[0.05] bg-black/30 p-3 text-[11px] font-mono text-[#8C827A] leading-relaxed">
-              <span className="text-[#EDE8E0] font-semibold block mb-1">CORE FINDING:</span>
-              <span className="line-clamp-2">{entry.researchContext.finding}</span>
+              <span className="text-[#EDE8E0] font-semibold block mb-1">EMPIRICAL SCOPE:</span>
+              <span className="line-clamp-2">{entry.researchFindings}</span>
             </div>
           )}
         </div>
@@ -115,16 +117,18 @@ export default function JournalCard({
             <PaletteDots dots={palette.dots} size="sm" />
             <span>{entry.readingTime}</span>
           </div>
-          <span className="text-[#C29B68] group-hover:text-[#EDE8E0] transition-colors">Inspect Study →</span>
+          <span className="text-[#C29B68] group-hover:text-[#EDE8E0] transition-colors">
+            Inspect Study & Reading →
+          </span>
         </div>
       </article>
     );
   }
 
   // =========================================================================
-  // VARIANT: FIELD NOTE (Compact tactile fragment style)
+  // VARIANT: FIELD NOTE (Tactile community or street-level observation)
   // =========================================================================
-  if (variant === "field-note" || entry.category === "field-notes") {
+  if (variant === "field-note" || entry.category === "field-notes" || entry.category === "small-rituals") {
     return (
       <article
         onClick={() => onSelect(entry)}
@@ -132,7 +136,9 @@ export default function JournalCard({
       >
         <div className="space-y-3">
           <div className="flex items-center justify-between text-[8.5px] font-mono uppercase tracking-[0.24em] text-[#736B63]">
-            <span>{entry.seriesName}</span>
+            <span className="text-[#A8A196]">
+              {entry.sourceType === "COMMUNITY FIELD NOTE" ? "[ Community Note ]" : `[ ${entry.seriesName} ]`}
+            </span>
             <span>{entry.date}</span>
           </div>
 
@@ -143,11 +149,19 @@ export default function JournalCard({
           <p className="font-serif italic text-xs sm:text-[13px] text-[#8C827A] line-clamp-3 leading-relaxed">
             "{entry.excerpt}"
           </p>
+
+          {entry.communityContext && (
+            <div className="text-[9px] font-mono text-[#736B63]">
+              Observed in: <span className="text-[#A8A196]">{entry.communityContext.platform}</span>
+            </div>
+          )}
         </div>
 
         <div className="pt-4 mt-3 border-t border-white/[0.05] flex items-center justify-between text-[9px] font-mono text-[#736B63] uppercase tracking-wider">
           <span>{entry.readingTime} read</span>
-          <span className="text-[#C29B68] group-hover:text-[#EDE8E0] transition-colors">Open Fragment →</span>
+          <span className="text-[#C29B68] group-hover:text-[#EDE8E0] transition-colors">
+            Open Note →
+          </span>
         </div>
       </article>
     );
@@ -164,7 +178,7 @@ export default function JournalCard({
       <div className="space-y-3.5">
         <div className="flex items-center justify-between text-[9px] font-mono uppercase tracking-[0.22em] text-[#8C827A]">
           <div className="flex items-center gap-2">
-            <span className="text-[#EDE8E0] font-medium">{entry.seriesName}</span>
+            <span className="text-[#EDE8E0] font-medium">{entry.sourceType}</span>
             <span className="text-white/20">·</span>
             <span>{entry.entryNumber}</span>
           </div>
@@ -190,7 +204,9 @@ export default function JournalCard({
           <PaletteDots dots={palette.dots} size="sm" />
           <span>{entry.date}</span>
         </div>
-        <span className="text-[#C29B68] group-hover:text-[#EDE8E0] transition-colors">Read Essay →</span>
+        <span className="text-[#C29B68] group-hover:text-[#EDE8E0] transition-colors">
+          Read Essay →
+        </span>
       </div>
     </article>
   );

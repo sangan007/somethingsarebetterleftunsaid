@@ -46,6 +46,43 @@ export default function JournalArticleView({
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [entry.slug]);
 
+  // Source Type badge styling
+  const renderSourceTypeBadge = () => {
+    switch (entry.sourceType) {
+      case "RESEARCH NOTE":
+        return (
+          <span className="font-mono text-[9px] uppercase tracking-[0.24em] text-[#C29B68] bg-[#C29B68]/10 border border-[#C29B68]/30 px-3 py-1 rounded-full font-medium">
+            [ Research Note · Peer-Reviewed Literature ]
+          </span>
+        );
+      case "COMMUNITY FIELD NOTE":
+        return (
+          <span className="font-mono text-[9px] uppercase tracking-[0.24em] text-[#A8A196] bg-white/[0.05] border border-white/[0.12] px-3 py-1 rounded-full font-medium">
+            [ Community Field Note · Public Forum Observation ]
+          </span>
+        );
+      case "ARCHIVAL NOTE":
+        return (
+          <span className="font-mono text-[9px] uppercase tracking-[0.24em] text-[#8C827A] bg-white/[0.03] border border-white/[0.08] px-3 py-1 rounded-full">
+            [ Archival Note · Material Culture ]
+          </span>
+        );
+      case "LITERARY NOTE":
+        return (
+          <span className="font-mono text-[9px] uppercase tracking-[0.24em] text-[#8C827A] bg-white/[0.03] border border-white/[0.08] px-3 py-1 rounded-full">
+            [ Literary Note · Unsent Correspondence ]
+          </span>
+        );
+      case "ORIGINAL EDITORIAL":
+      default:
+        return (
+          <span className="font-mono text-[9px] uppercase tracking-[0.24em] text-[#8C827A] bg-white/[0.03] border border-white/[0.08] px-3 py-1 rounded-full">
+            [ Original Editorial · Cultural Inquiry ]
+          </span>
+        );
+    }
+  };
+
   return (
     <div className="relative min-h-screen bg-[#0C0B0A] text-[#EDE8E0] pb-24 pt-8 sm:pt-12">
       {/* Soft atmospheric radial ambient glow matching mineral palette */}
@@ -56,7 +93,7 @@ export default function JournalArticleView({
 
       <div className="relative z-10 max-w-3xl mx-auto px-6 sm:px-8">
         {/* Navigation / Return Bar */}
-        <div className="flex items-center justify-between border-b border-white/[0.07] pb-6 mb-12">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/[0.07] pb-6 mb-12">
           <button
             onClick={onBack}
             className="group flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.22em] text-[#8C827A] hover:text-[#EDE8E0] transition-colors cursor-pointer"
@@ -65,7 +102,7 @@ export default function JournalArticleView({
             <span>Return to Journal Index</span>
           </button>
 
-          <div className="flex items-center gap-3 text-[10px] font-mono uppercase tracking-[0.2em] text-[#8C827A]">
+          <div className="flex items-center gap-4 text-[10px] font-mono uppercase tracking-[0.2em] text-[#8C827A]">
             <PaletteDots dots={palette.dots} size="sm" />
             <span>{entry.readingTime}</span>
           </div>
@@ -73,13 +110,12 @@ export default function JournalArticleView({
 
         {/* Article Header */}
         <header className="space-y-6 pb-12 border-b border-white/[0.07]">
-          {/* Series & Entry Number */}
-          <div className="flex flex-wrap items-center gap-3 text-[9.5px] font-mono uppercase tracking-[0.26em] text-[#8C827A]">
-            <span className="text-[#EDE8E0] font-semibold">{entry.seriesName}</span>
-            <span className="text-white/20">/</span>
-            <span>{entry.entryNumber}</span>
-            <span className="text-white/20">/</span>
-            <span>{entry.date}</span>
+          {/* Series & Source Type Badging */}
+          <div className="flex flex-wrap items-center gap-3">
+            {renderSourceTypeBadge()}
+            <span className="text-[9.5px] font-mono uppercase tracking-[0.24em] text-[#736B63]">
+              {entry.entryNumber} · {entry.date}
+            </span>
           </div>
 
           {/* Title */}
@@ -91,10 +127,27 @@ export default function JournalArticleView({
           <p className="font-serif italic text-lg sm:text-xl md:text-2xl text-[#A8A196] leading-relaxed max-w-2xl font-light">
             {entry.subtitle}
           </p>
+
+          {/* Research Focus Metadata (if research note) */}
+          {entry.researchFocus && entry.researchFocus.length > 0 && (
+            <div className="pt-2 border-t border-white/[0.05] flex flex-wrap items-center gap-2">
+              <span className="font-mono text-[9px] uppercase tracking-[0.22em] text-[#736B63] mr-1">
+                Literature Discussed:
+              </span>
+              {entry.researchFocus.map((focus, i) => (
+                <span
+                  key={i}
+                  className="font-mono text-[9px] tracking-wider text-[#A8A196] bg-[#141312] border border-white/[0.07] px-2.5 py-0.5 rounded"
+                >
+                  {focus}
+                </span>
+              ))}
+            </div>
+          )}
         </header>
 
-        {/* Article Body */}
-        <article className="pt-12 pb-16 max-w-2xl mx-auto space-y-7">
+        {/* Main Article Body */}
+        <article className="pt-12 pb-14 max-w-2xl mx-auto space-y-7">
           {entry.paragraphs.map((paragraph, index) => (
             <React.Fragment key={index}>
               <p className="font-serif text-[17px] sm:text-[19px] text-[#EDE8E0]/90 leading-[1.8] font-normal tracking-[-0.005em]">
@@ -124,42 +177,241 @@ export default function JournalArticleView({
           ))}
         </article>
 
-        {/* Research Context & Formal Citations (if present) */}
-        {entry.researchContext && (
-          <section className="max-w-2xl mx-auto my-12 rounded-xl border border-white/[0.08] bg-[#121110] p-6 sm:p-8 space-y-6">
-            <div className="space-y-2">
-              <span className="font-mono text-[9px] uppercase tracking-[0.26em] text-[#C29B68] block font-medium">
-                [ Research Findings & Literature ]
-              </span>
-              <h3 className="font-serif text-xl text-[#EDE8E0]">
-                Methodological Context
-              </h3>
-              <p className="font-serif text-sm text-[#A8A196] leading-relaxed">
-                {entry.researchContext.finding}
+        {/* =====================================================================
+            RESEARCH NOTE: DISTINCTION BETWEEN RESEARCH SAYS AND OUR READING
+            ===================================================================== */}
+        {entry.sourceType === "RESEARCH NOTE" && entry.researchFindings && (
+          <section className="max-w-2xl mx-auto my-12 space-y-6">
+            {/* Box 1: Empirical Findings (Research Says) */}
+            <div className="rounded-xl border border-white/[0.08] bg-[#121110] p-6 sm:p-8 space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-[9px] uppercase tracking-[0.26em] text-[#C29B68] font-semibold">
+                  [ Empirical Observation ]
+                </span>
+                <span className="text-white/20 font-mono text-xs">/</span>
+                <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#8C827A]">
+                  What the Research Found
+                </span>
+              </div>
+              <p className="font-serif text-[15px] sm:text-base text-[#EDE8E0]/90 leading-relaxed font-light">
+                {entry.researchFindings}
               </p>
             </div>
 
-            {/* Source Citations */}
-            <div className="space-y-3 border-t border-white/[0.06] pt-4">
-              <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#736B63] block">
-                Primary Literature Cited:
+            {/* Box 2: Editorial Interpretation (Our Reading) */}
+            {entry.editorialReading && (
+              <div className="rounded-xl border border-white/[0.06] bg-[#141312]/80 p-6 sm:p-8 space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="font-mono text-[9px] uppercase tracking-[0.26em] text-[#A8A196] font-semibold">
+                    [ Editorial Reading ]
+                  </span>
+                  <span className="text-white/20 font-mono text-xs">/</span>
+                  <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#736B63]">
+                    Archival Interpretation
+                  </span>
+                </div>
+                <p className="font-serif italic text-[15px] sm:text-base text-[#A8A196] leading-relaxed">
+                  {entry.editorialReading}
+                </p>
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* =====================================================================
+            COMMUNITY FIELD NOTE CONTEXT (e.g. Reddit r/Journaling)
+            ===================================================================== */}
+        {entry.sourceType === "COMMUNITY FIELD NOTE" && entry.communityContext && (
+          <section className="max-w-2xl mx-auto my-12 rounded-xl border border-white/[0.08] bg-[#131211] p-6 sm:p-8 space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="font-mono text-[9px] uppercase tracking-[0.26em] text-[#A8A196] font-medium">
+                [ Community Observation Context ]
               </span>
-              <ul className="space-y-2.5 font-mono text-[11px] text-[#8C827A]">
-                {entry.researchContext.sources.map((src, i) => (
-                  <li key={i} className="leading-relaxed border-l border-white/[0.1] pl-3">
-                    <span className="text-[#EDE8E0] font-medium">{src.title}</span> ({src.year}).{" "}
-                    <span className="text-[#736B63]">{src.authors}. </span>
-                    {src.publication && (
-                      <span className="italic text-[#8C827A]">{src.publication}.</span>
-                    )}
-                  </li>
-                ))}
-              </ul>
+              <span className="font-mono text-[9px] uppercase tracking-wider text-[#736B63]">
+                {entry.communityContext.platform}
+              </span>
+            </div>
+            <p className="font-serif text-sm text-[#A8A196] leading-relaxed">
+              {entry.communityContext.description}
+            </p>
+            <div className="pt-2 border-t border-white/[0.05] flex flex-wrap items-center justify-between gap-3 text-[9.5px] font-mono uppercase tracking-[0.2em]">
+              <span className="text-[#736B63] text-[8.5px]">
+                *Cultural observation of public rituals; not clinical evidence.
+              </span>
+              <a
+                href={entry.communityContext.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#C29B68] hover:text-[#EDE8E0] transition-colors inline-flex items-center gap-1.5"
+              >
+                <span>Read Community Forum</span>
+                <span>↗</span>
+              </a>
             </div>
           </section>
         )}
 
-        {/* Authentic Vault Voices (Connecting Journal to Real Firebase Archive) */}
+        {/* =====================================================================
+            BEAUTIFUL EDITORIAL SOURCES / REFERENCES SECTION
+            ===================================================================== */}
+        {entry.sources && entry.sources.length > 0 && (
+          <section className="max-w-2xl mx-auto my-16 border-t border-white/[0.08] pt-10 space-y-8">
+            <div className="flex items-center justify-between">
+              <span className="font-mono text-[9.5px] uppercase tracking-[0.28em] text-[#8C827A]">
+                [ Verified Primary Literature Cited ]
+              </span>
+              <span className="font-mono text-[9px] uppercase tracking-widest text-[#736B63]">
+                {entry.sources.length} {entry.sources.length === 1 ? "Study" : "Studies"}
+              </span>
+            </div>
+
+            <div className="space-y-6">
+              {entry.sources.map((src, index) => {
+                const sourceNumber = String(index + 1).padStart(2, "0");
+
+                return (
+                  <div
+                    key={index}
+                    className="group border-l border-white/[0.1] pl-5 sm:pl-6 py-1 space-y-2 transition-colors hover:border-[#C29B68]"
+                  >
+                    <div className="flex items-center gap-3 text-[9px] font-mono text-[#736B63] uppercase tracking-[0.2em]">
+                      <span className="text-[#C29B68] font-semibold">{sourceNumber}</span>
+                      <span>·</span>
+                      <span>{src.year}</span>
+                      {src.isOpenAccess && (
+                        <>
+                          <span>·</span>
+                          <span className="text-[#8C827A]">[ Open Access ]</span>
+                        </>
+                      )}
+                    </div>
+
+                    <h4 className="font-serif text-base sm:text-lg text-[#EDE8E0] leading-snug font-normal">
+                      {src.title}
+                    </h4>
+
+                    <div className="font-mono text-[11px] text-[#8C827A] leading-relaxed">
+                      <span>{src.authors}</span>
+                      <span className="mx-1.5 text-white/20">/</span>
+                      <span className="italic text-[#A8A196]">{src.publication}</span>
+                    </div>
+
+                    {src.notes && (
+                      <p className="font-serif italic text-xs text-[#736B63]">
+                        {src.notes}
+                      </p>
+                    )}
+
+                    {/* Verified Destination Action Links */}
+                    <div className="pt-2 flex flex-wrap items-center gap-3 text-[9px] font-mono uppercase tracking-[0.2em]">
+                      {src.pmcId && (
+                        <a
+                          href={`https://www.ncbi.nlm.nih.gov/pmc/articles/${src.pmcId}/`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#C29B68] hover:text-[#EDE8E0] transition-colors inline-flex items-center gap-1 border border-[#C29B68]/30 px-2.5 py-1 rounded"
+                        >
+                          <span>PMC Full Text ({src.pmcId})</span>
+                          <span>↗</span>
+                        </a>
+                      )}
+
+                      {src.pubmedId && (
+                        <a
+                          href={`https://pubmed.ncbi.nlm.nih.gov/${src.pubmedId}/`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#8C827A] hover:text-[#EDE8E0] transition-colors inline-flex items-center gap-1 border border-white/[0.08] px-2.5 py-1 rounded"
+                        >
+                          <span>PubMed ID: {src.pubmedId}</span>
+                          <span>↗</span>
+                        </a>
+                      )}
+
+                      {src.doi && (
+                        <a
+                          href={`https://doi.org/${src.doi}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#8C827A] hover:text-[#EDE8E0] transition-colors inline-flex items-center gap-1 border border-white/[0.08] px-2.5 py-1 rounded"
+                        >
+                          <span>DOI: {src.doi}</span>
+                          <span>↗</span>
+                        </a>
+                      )}
+
+                      {!src.pmcId && !src.pubmedId && !src.doi && src.url && (
+                        <a
+                          href={src.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#C29B68] hover:text-[#EDE8E0] transition-colors inline-flex items-center gap-1 border border-white/[0.08] px-2.5 py-1 rounded"
+                        >
+                          <span>View Official Publication</span>
+                          <span>↗</span>
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Subtle Editorial Disclaimer */}
+            <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-[#6B655B] pt-4 border-t border-white/[0.05] leading-relaxed">
+              *Research literature is cited for educational, cultural, and archival inquiry. Interpretations belong to this publication and should not be construed as clinical or psychological advice.
+            </p>
+          </section>
+        )}
+
+        {/* =====================================================================
+            FURTHER READING (2–4 curated legitimate resources)
+            ===================================================================== */}
+        {entry.furtherReading && entry.furtherReading.length > 0 && (
+          <section className="max-w-2xl mx-auto my-12 border-t border-white/[0.06] pt-8 space-y-4">
+            <span className="font-mono text-[9px] uppercase tracking-[0.26em] text-[#8C827A] block">
+              [ Further Reading & Scholarly Reviews ]
+            </span>
+            <div className="space-y-3">
+              {entry.furtherReading.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="rounded-lg border border-white/[0.05] bg-[#121110] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                >
+                  <div className="space-y-1">
+                    <h5 className="font-serif text-sm text-[#EDE8E0] leading-snug">
+                      {item.title}
+                    </h5>
+                    {item.authorsOrSource && (
+                      <p className="font-mono text-[10px] text-[#736B63]">
+                        {item.authorsOrSource}
+                      </p>
+                    )}
+                    {item.description && (
+                      <p className="font-serif italic text-xs text-[#8C827A]">
+                        {item.description}
+                      </p>
+                    )}
+                  </div>
+                  {item.url && (
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-mono text-[9px] uppercase tracking-wider text-[#C29B68] hover:text-[#EDE8E0] transition-colors whitespace-nowrap self-start sm:self-center"
+                    >
+                      Read Review ↗
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* =====================================================================
+            AUTHENTIC VAULT VOICES (Real Firebase Archive Echoes)
+            ===================================================================== */}
         {matchingArchiveMessages.length > 0 && (
           <section className="max-w-2xl mx-auto my-16 border-t border-b border-white/[0.07] py-10 space-y-6">
             <div className="flex items-center justify-between text-[9.5px] font-mono uppercase tracking-[0.24em] text-[#8C827A]">
@@ -224,18 +476,25 @@ export default function JournalArticleView({
                 <article
                   key={related.id}
                   onClick={() => onSelectRelated(related)}
-                  className="group cursor-pointer rounded-xl border border-white/[0.07] bg-[#141312] p-5 space-y-3 transition-all duration-250 hover:border-white/[0.18] hover:bg-[#181615]"
+                  className="group cursor-pointer rounded-xl border border-white/[0.07] bg-[#141312] p-5 space-y-3 transition-all duration-250 hover:border-white/[0.18] hover:bg-[#181615] flex flex-col justify-between"
                 >
-                  <div className="flex items-center justify-between text-[8.5px] font-mono uppercase tracking-wider text-[#736B63]">
-                    <span>{related.seriesName}</span>
-                    <span>{related.readingTime}</span>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-[8.5px] font-mono uppercase tracking-wider text-[#736B63]">
+                      <span>{related.seriesName}</span>
+                      <span>{related.readingTime}</span>
+                    </div>
+                    <h4 className="font-serif text-base text-[#EDE8E0] leading-snug group-hover:text-[#C29B68] transition-colors line-clamp-2">
+                      {related.title}
+                    </h4>
+                    <p className="font-serif text-xs text-[#8C827A] line-clamp-2 leading-relaxed">
+                      {related.subtitle}
+                    </p>
                   </div>
-                  <h4 className="font-serif text-base text-[#EDE8E0] leading-snug group-hover:text-[#C29B68] transition-colors line-clamp-2">
-                    {related.title}
-                  </h4>
-                  <p className="font-serif text-xs text-[#8C827A] line-clamp-2 leading-relaxed">
-                    {related.subtitle}
-                  </p>
+
+                  <div className="pt-3 border-t border-white/[0.05] flex items-center justify-between text-[8.5px] font-mono uppercase tracking-widest text-[#736B63]">
+                    <span className="text-[#A8A196]">{related.sourceType}</span>
+                    <span className="group-hover:text-[#C29B68] transition-colors">Read →</span>
+                  </div>
                 </article>
               ))}
             </div>

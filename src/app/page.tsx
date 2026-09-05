@@ -273,7 +273,7 @@ export default function Home() {
 
               <div className="text-center font-mono text-[10px] uppercase tracking-widest text-[#7E786E] space-y-2">
                 <p>Pure Anonymity · Preserved in Stone & Charcoal</p>
-                <p>Curated with care by Sangan</p>
+                <p>A Public Repository of Unspoken Words</p>
               </div>
             </div>
           </section>
