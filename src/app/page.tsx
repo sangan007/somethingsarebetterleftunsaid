@@ -226,6 +226,7 @@ export default function Home() {
             onCardClick={handleOpenReader}
             searchTerm={searchTerm}
             onSearchChange={setSearchTerm}
+            onOpenWrite={() => setEditorOpen(true)}
           />
         )}
 
@@ -330,7 +331,7 @@ export default function Home() {
       </main>
 
       {/* Editorial Footer (With mobile clearance for floating bottom quick navigation) */}
-      <footer className="w-full border-t border-[rgba(255,255,255,0.07)] pt-10 sm:pt-12 pb-24 md:pb-12 px-4 sm:px-6 text-center text-[10px] font-mono tracking-[0.16em] uppercase text-[#6B655B] space-y-4">
+      <footer className="w-full border-t border-[rgba(255,255,255,0.07)] pt-10 sm:pt-12 pb-28 sm:pb-32 md:pb-12 px-4 sm:px-6 text-center text-[10px] font-mono tracking-[0.16em] uppercase text-[#6B655B] space-y-4">
         <div className="flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-6 gap-y-2">
           <button
             onClick={() => handleViewChange("home")}

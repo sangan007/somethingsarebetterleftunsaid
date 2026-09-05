@@ -13,6 +13,7 @@ interface ArchiveFeedProps {
   onCardClick: (index: number) => void;
   searchTerm: string;
   onSearchChange: (term: string) => void;
+  onOpenWrite?: () => void;
 }
 
 const PRIMARY_RESONANCE_FILTERS = [
@@ -28,6 +29,197 @@ const PRIMARY_RESONANCE_FILTERS = [
   "OTHER",
 ] as const;
 
+export interface EditorialLayoutConfig {
+  layoutVariant: "featured" | "wide" | "standard" | "compact";
+  layoutSpanClass: string;
+  showSectionDividerBefore?: {
+    label: string;
+    sublabel: string;
+    accentColor: string;
+  };
+}
+
+// Deterministically assign 12-column grid spans and rhythmic layout variants
+export function getEditorialLayout(
+  indexInPage: number,
+  totalInPage: number
+): EditorialLayoutConfig {
+  // Edge Case: 1 item on the page -> Centered Featured Record
+  if (totalInPage === 1) {
+    return {
+      layoutVariant: "featured",
+      layoutSpanClass: "col-span-12 md:col-span-6 md:col-start-1 lg:col-span-8 lg:col-start-3",
+    };
+  }
+
+  // Edge Case: 2 items on the page -> Asymmetric Pair (7 + 5 = 12)
+  if (totalInPage === 2) {
+    if (indexInPage === 0) {
+      return {
+        layoutVariant: "wide",
+        layoutSpanClass: "col-span-12 md:col-span-3 lg:col-span-7",
+      };
+    }
+    return {
+      layoutVariant: "standard",
+      layoutSpanClass: "col-span-12 md:col-span-3 lg:col-span-5",
+    };
+  }
+
+  // Edge Case: 3 items on the page -> Balanced Archival Trio (4 + 4 + 4 = 12)
+  if (totalInPage === 3) {
+    return {
+      layoutVariant: "standard",
+      layoutSpanClass: "col-span-12 md:col-span-2 lg:col-span-4",
+    };
+  }
+
+  // Edge Case: 4 items on the page -> Row 1 (8 + 4 = 12), Row 2 (6 + 6 = 12)
+  if (totalInPage === 4) {
+    if (indexInPage === 0) {
+      return {
+        layoutVariant: "featured",
+        layoutSpanClass: "col-span-12 md:col-span-6 lg:col-span-8",
+      };
+    }
+    if (indexInPage === 1) {
+      return {
+        layoutVariant: "standard",
+        layoutSpanClass: "col-span-12 md:col-span-6 lg:col-span-4",
+      };
+    }
+    return {
+      layoutVariant: "wide",
+      layoutSpanClass: "col-span-12 md:col-span-3 lg:col-span-6",
+    };
+  }
+
+  // General 13-Item Cadence:
+  // Row 1: 8 + 4 = 12 (Items 0, 1) -> Opening Feature Anchor
+  // Row 2: 4 + 4 + 4 = 12 (Items 2, 3, 4) -> Archival Trio
+  // [Divider: SELECTION / 02 · CORRESPONDENCE]
+  // Row 3: 5 + 7 = 12 (Items 5, 6) -> Asymmetric Duet (Compact + Wide)
+  // Row 4: 3 + 3 + 3 + 3 = 12 (Items 7, 8, 9, 10) -> Micro Fragment Quad
+  // [Divider: SELECTION / 03 · DISTANT WHISPERS]
+  // Row 5: 4 + 8 = 12 (Items 11, 12) -> Inverted Feature Anchor
+  const cycleIndex = indexInPage % 13;
+  const remaining = totalInPage - indexInPage;
+
+  // Row 1: The Accession Opening (8 + 4 = 12 cols)
+  if (cycleIndex === 0) {
+    return {
+      layoutVariant: "featured",
+      layoutSpanClass: "col-span-12 md:col-span-6 lg:col-span-8",
+    };
+  }
+  if (cycleIndex === 1) {
+    return {
+      layoutVariant: "standard",
+      layoutSpanClass: "col-span-12 md:col-span-6 lg:col-span-4",
+    };
+  }
+
+  // Row 2: The Archival Trio (4 + 4 + 4 = 12 cols)
+  if (cycleIndex === 2 || cycleIndex === 3) {
+    return {
+      layoutVariant: "standard",
+      layoutSpanClass: "col-span-12 md:col-span-3 lg:col-span-4",
+    };
+  }
+  if (cycleIndex === 4) {
+    return {
+      layoutVariant: "standard",
+      layoutSpanClass: "col-span-12 md:col-span-6 lg:col-span-4",
+    };
+  }
+
+  // Row 3: The Asymmetric Duet (starts at item 5 with section divider)
+  if (cycleIndex === 5) {
+    if (remaining === 1) {
+      return {
+        layoutVariant: "wide",
+        layoutSpanClass: "col-span-12 md:col-span-6 lg:col-span-12",
+        showSectionDividerBefore: {
+          label: "SELECTION / 02 · CORRESPONDENCE",
+          sublabel: "RECORDS IN CUSTODY",
+          accentColor: "#C29B68",
+        },
+      };
+    }
+    return {
+      layoutVariant: "compact",
+      layoutSpanClass: "col-span-12 md:col-span-3 lg:col-span-5",
+      showSectionDividerBefore: {
+        label: "SELECTION / 02 · CORRESPONDENCE",
+        sublabel: "RECORDS IN CUSTODY",
+        accentColor: "#C29B68",
+      },
+    };
+  }
+  if (cycleIndex === 6) {
+    return {
+      layoutVariant: "wide",
+      layoutSpanClass: "col-span-12 md:col-span-3 lg:col-span-7",
+    };
+  }
+
+  // Row 4: Micro Fragment Quad (Items 7, 8, 9, 10)
+  if (cycleIndex >= 7 && cycleIndex <= 10) {
+    if (remaining === 1) {
+      return {
+        layoutVariant: "wide",
+        layoutSpanClass: "col-span-12 md:col-span-6 lg:col-span-12",
+      };
+    }
+    if (remaining === 2) {
+      return {
+        layoutVariant: "standard",
+        layoutSpanClass: "col-span-12 md:col-span-3 lg:col-span-6",
+      };
+    }
+    if (remaining === 3) {
+      return {
+        layoutVariant: "standard",
+        layoutSpanClass: "col-span-12 md:col-span-3 lg:col-span-4",
+      };
+    }
+    return {
+      layoutVariant: "compact",
+      layoutSpanClass: "col-span-12 md:col-span-3 lg:col-span-3",
+    };
+  }
+
+  // Row 5: The Inverted Anchor (Items 11, 12)
+  if (cycleIndex === 11) {
+    if (remaining === 1) {
+      return {
+        layoutVariant: "featured",
+        layoutSpanClass: "col-span-12 md:col-span-6 lg:col-span-12",
+        showSectionDividerBefore: {
+          label: "SELECTION / 03 · DISTANT WHISPERS",
+          sublabel: "ARCHIVAL REGISTERS",
+          accentColor: "#7CA2CC",
+        },
+      };
+    }
+    return {
+      layoutVariant: "standard",
+      layoutSpanClass: "col-span-12 md:col-span-6 lg:col-span-4",
+      showSectionDividerBefore: {
+        label: "SELECTION / 03 · DISTANT WHISPERS",
+        sublabel: "ARCHIVAL REGISTERS",
+        accentColor: "#7CA2CC",
+      },
+    };
+  }
+
+  // cycleIndex === 12
+  return {
+    layoutVariant: "featured",
+    layoutSpanClass: "col-span-12 md:col-span-6 lg:col-span-8",
+  };
+}
+
 export default function ArchiveFeed({
   messages,
   loading,
@@ -36,6 +228,7 @@ export default function ArchiveFeed({
   onCardClick,
   searchTerm,
   onSearchChange,
+  onOpenWrite,
 }: ArchiveFeedProps) {
   const [selectedResonance, setSelectedResonance] = useState<string>("ALL");
   const [selectedPaletteId, setSelectedPaletteId] = useState<string | null>(null);
@@ -52,7 +245,7 @@ export default function ArchiveFeed({
     setExpandedCardKey((prev) => (prev === key ? null : key));
   };
 
-  const itemsPerPage = 12;
+  const itemsPerPage = 13;
 
   const term = searchTerm.toLowerCase().trim();
 
@@ -112,7 +305,7 @@ export default function ArchiveFeed({
   const totalCountFormatted = messages.length.toLocaleString();
 
   return (
-    <section id="view-archive" className="w-full max-w-[1180px] mx-auto px-4 sm:px-8 md:px-12 lg:px-16 py-8 sm:py-12 md:py-16 space-y-8 sm:space-y-12 md:space-y-16">
+    <section id="view-archive" className="w-full max-w-[1240px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 py-8 sm:py-12 md:py-14 space-y-8 sm:space-y-10 md:space-y-12">
       {/* Archive Masthead & Accession Counter */}
       <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-3 sm:gap-4 border-b border-[rgba(255,255,255,0.07)] pb-5 sm:pb-7">
         <div className="space-y-1.5 sm:space-y-2">
@@ -300,28 +493,67 @@ export default function ArchiveFeed({
             </p>
           </div>
 
-          {/* Subtle skeleton structure */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-9 md:gap-10 lg:gap-11">
+          {/* Subtle skeleton structure mirroring the 12-column editorial grid */}
+          <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-5 sm:gap-6 lg:gap-7">
+            {/* Opening Featured Skeleton (8 cols) */}
+            <div className="col-span-12 md:col-span-6 lg:col-span-8 rounded-[2px] p-6 sm:p-8 min-h-[260px] border border-[rgba(255,255,255,0.05)] bg-[#141312]/60 animate-pulse flex flex-col justify-between space-y-4">
+              <div className="flex justify-between items-center">
+                <div className="flex gap-1.5">
+                  <div className="w-2 h-2 rounded-full bg-white/[0.08]" />
+                  <div className="w-2 h-2 rounded-full bg-white/[0.06]" />
+                  <div className="w-2 h-2 rounded-full bg-white/[0.04]" />
+                </div>
+                <div className="h-2 w-16 bg-white/[0.06] rounded-xs" />
+              </div>
+              <div className="space-y-2.5">
+                <div className="h-2.5 w-24 bg-white/[0.06] rounded-xs" />
+                <div className="h-6 w-4/5 bg-white/[0.08] rounded-xs" />
+                <div className="h-6 w-3/5 bg-white/[0.06] rounded-xs" />
+              </div>
+              <div className="pt-2 border-t border-white/[0.04] flex justify-between">
+                <div className="h-2 w-16 bg-white/[0.05] rounded-xs" />
+                <div className="h-2 w-12 bg-white/[0.05] rounded-xs" />
+              </div>
+            </div>
+
+            {/* Companion Standard Skeleton (4 cols) */}
+            <div className="col-span-12 md:col-span-6 lg:col-span-4 rounded-[2px] p-6 min-h-[200px] border border-[rgba(255,255,255,0.05)] bg-[#141312]/60 animate-pulse flex flex-col justify-between space-y-4">
+              <div className="flex justify-between items-center">
+                <div className="flex gap-1.5">
+                  <div className="w-2 h-2 rounded-full bg-white/[0.08]" />
+                  <div className="w-2 h-2 rounded-full bg-white/[0.06]" />
+                </div>
+                <div className="h-2 w-14 bg-white/[0.06] rounded-xs" />
+              </div>
+              <div className="space-y-2">
+                <div className="h-2 w-16 bg-white/[0.06] rounded-xs" />
+                <div className="h-4 w-5/6 bg-white/[0.08] rounded-xs" />
+              </div>
+              <div className="pt-2 border-t border-white/[0.04] flex justify-between">
+                <div className="h-2 w-12 bg-white/[0.05] rounded-xs" />
+                <div className="h-2 w-10 bg-white/[0.05] rounded-xs" />
+              </div>
+            </div>
+
+            {/* Archival Trio Skeletons (4 + 4 + 4 = 12 cols) */}
             {[1, 2, 3].map((n) => (
               <div
                 key={n}
-                className="rounded-[2px] p-6 min-h-[200px] border border-[rgba(255,255,255,0.05)] bg-[#141312]/60 animate-pulse flex flex-col justify-between space-y-4"
+                className="col-span-12 md:col-span-3 lg:col-span-4 rounded-[2px] p-6 min-h-[190px] border border-[rgba(255,255,255,0.05)] bg-[#141312]/60 animate-pulse flex flex-col justify-between space-y-4"
               >
                 <div className="flex justify-between items-center">
                   <div className="flex gap-1.5">
                     <div className="w-2 h-2 rounded-full bg-white/[0.08]" />
                     <div className="w-2 h-2 rounded-full bg-white/[0.06]" />
-                    <div className="w-2 h-2 rounded-full bg-white/[0.04]" />
                   </div>
-                  <div className="h-2 w-16 bg-white/[0.06] rounded-xs" />
+                  <div className="h-2 w-14 bg-white/[0.06] rounded-xs" />
                 </div>
                 <div className="space-y-2">
-                  <div className="h-2 w-20 bg-white/[0.06] rounded-xs" />
+                  <div className="h-2 w-16 bg-white/[0.06] rounded-xs" />
                   <div className="h-4 w-5/6 bg-white/[0.08] rounded-xs" />
-                  <div className="h-4 w-3/5 bg-white/[0.06] rounded-xs" />
                 </div>
                 <div className="pt-2 border-t border-white/[0.04] flex justify-between">
-                  <div className="h-2 w-14 bg-white/[0.05] rounded-xs" />
+                  <div className="h-2 w-12 bg-white/[0.05] rounded-xs" />
                   <div className="h-2 w-10 bg-white/[0.05] rounded-xs" />
                 </div>
               </div>
@@ -330,25 +562,47 @@ export default function ArchiveFeed({
         </div>
       )}
 
-      {/* Active Editorial Archival Grid (Table of Preserved Fragments) */}
+      {/* Active Editorial Archival Grid (Curated 12-Column Archive Wall) */}
       {!loading && !error && pageMessages.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-9 md:gap-10 lg:gap-11 pt-6 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-5 sm:gap-6 lg:gap-7 pt-4 items-start">
           {pageMessages.map((msg, index) => {
             const originalIndex = messages.indexOf(msg);
             const cardIndex = originalIndex !== -1 ? originalIndex : startIndex + index;
             const cardKey = msg.id || (msg.createdAt?.seconds ? `${msg.createdAt.seconds}-${cardIndex}` : `${cardIndex}`);
             const isExpanded = expandedCardKey === cardKey;
+            const layoutConfig = getEditorialLayout(index, pageMessages.length);
 
             return (
-              <MessageCard
-                key={cardKey}
-                data={msg}
-                index={cardIndex}
-                isExpanded={isExpanded}
-                onToggleExpand={() => handleToggleExpand(cardKey)}
-                onOpenFullEntry={() => onCardClick(cardIndex)}
-                staggerArrival={isInitialMount}
-              />
+              <React.Fragment key={cardKey}>
+                {layoutConfig.showSectionDividerBefore && (
+                  <div className="col-span-12 flex items-center justify-between pt-6 pb-2 border-b border-white/[0.07] my-2">
+                    <div className="flex items-center gap-2.5">
+                      <span
+                        className="w-1.5 h-1.5 rounded-full"
+                        style={{ backgroundColor: layoutConfig.showSectionDividerBefore.accentColor }}
+                      />
+                      <span className="font-mono text-[9px] uppercase tracking-[0.24em] text-[#8E877C]">
+                        {layoutConfig.showSectionDividerBefore.label}
+                      </span>
+                    </div>
+                    <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-[#6B655B] hidden sm:inline">
+                      {layoutConfig.showSectionDividerBefore.sublabel}
+                    </span>
+                  </div>
+                )}
+
+                <MessageCard
+                  key={cardKey}
+                  data={msg}
+                  index={cardIndex}
+                  isExpanded={isExpanded}
+                  layoutVariant={layoutConfig.layoutVariant}
+                  layoutSpanClass={layoutConfig.layoutSpanClass}
+                  onToggleExpand={() => handleToggleExpand(cardKey)}
+                  onOpenFullEntry={() => onCardClick(cardIndex)}
+                  staggerArrival={isInitialMount}
+                />
+              </React.Fragment>
             );
           })}
         </div>
@@ -435,6 +689,26 @@ export default function ArchiveFeed({
           >
             <span>NEXT</span>
             <span>→</span>
+          </button>
+        </div>
+      )}
+
+      {/* Content CTA: + LEAVE SOMETHING UNSAID (Natural Editorial Invitation) */}
+      {!loading && !error && onOpenWrite && (
+        <div className="pt-14 sm:pt-16 pb-4 sm:pb-6 text-center flex flex-col items-center justify-center space-y-3.5 border-t border-[rgba(255,255,255,0.07)] mt-12 sm:mt-16">
+          <p className="font-serif italic text-xs sm:text-sm text-[#8E877C] max-w-sm px-4 leading-relaxed">
+            After looking through what other people left behind, you are invited to leave something of your own.
+          </p>
+
+          <button
+            type="button"
+            onClick={onOpenWrite}
+            id="archiveContentCta"
+            aria-label="Leave something unsaid in the archive"
+            className="group font-mono text-[9px] xs:text-[9.5px] sm:text-[10px] uppercase tracking-[0.18em] xs:tracking-[0.2em] text-[#EDE8E0] hover:text-white border border-white/[0.14] hover:border-[#C29B68]/70 active:border-[#C29B68] bg-white/[0.02] hover:bg-[#C29B68]/[0.06] active:bg-[#C29B68]/[0.12] px-6 xs:px-8 py-3 sm:py-3.5 rounded-full transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] cursor-pointer inline-flex items-center justify-center gap-2 select-none min-h-[44px] max-w-[90vw] active:scale-[0.98]"
+          >
+            <span className="text-[#C29B68] font-medium transition-transform duration-300 group-hover:rotate-45">+</span>
+            <span>LEAVE SOMETHING UNSAID</span>
           </button>
         </div>
       )}

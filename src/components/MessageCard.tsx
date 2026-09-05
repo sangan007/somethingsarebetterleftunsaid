@@ -37,6 +37,8 @@ export type CardVariant =
   | "letter-fragment"
   | "featured-fragment";
 
+export type LayoutVariant = "standard" | "wide" | "featured" | "compact";
+
 // Deterministically resolve the optimal card layout variant
 export function resolveCardVariant(
   data: MessageData,
@@ -44,12 +46,6 @@ export function resolveCardVariant(
 ): CardVariant {
   const cleanMsg = (data.msg || "").trim();
   const len = cleanMsg.length;
-
-  // Stagger featured editorial selections at indices that complement a 3-column grid
-  // (e.g. index 1 sits in cols 2-3 alongside index 0 at col 1; index 6 sits in cols 2-3 alongside index 5 at col 1)
-  if ((index % 8 === 1 || index % 8 === 6) && len >= 28) {
-    return "featured-fragment";
-  }
 
   if (len < 48) {
     return "compact-ledger";
@@ -71,6 +67,8 @@ export interface MessageCardProps {
   onOpenFullEntry?: () => void;
   overridePalette?: PaletteDefinition;
   variant?: CardVariant;
+  layoutVariant?: LayoutVariant;
+  layoutSpanClass?: string;
   className?: string;
   staggerArrival?: boolean;
 }
@@ -84,6 +82,8 @@ export default function MessageCard({
   onOpenFullEntry,
   overridePalette,
   variant: propVariant,
+  layoutVariant,
+  layoutSpanClass,
   className = "",
   staggerArrival = false,
 }: MessageCardProps) {
@@ -132,7 +132,17 @@ export default function MessageCard({
   };
 
   const palette = overridePalette || resolveMessagePalette(data, index);
-  const variant = propVariant || resolveCardVariant(data, index);
+  const variant =
+    propVariant ||
+    (layoutVariant === "featured"
+      ? "featured-fragment"
+      : layoutVariant === "wide"
+      ? "letter-fragment"
+      : layoutVariant === "compact"
+      ? "compact-ledger"
+      : layoutVariant === "standard"
+      ? "archival-slip"
+      : resolveCardVariant(data, index));
 
   const accessionNumber = `NO. ${String(index + 1).padStart(4, "0")}`;
   const emotionDisplay = (
@@ -155,9 +165,21 @@ export default function MessageCard({
   // Layered paper effect on Archival Slip, Letter Fragment, and Featured Fragment
   const hasLayeredSheet = variant !== "compact-ledger";
 
-  // Grid column span: Featured Fragments span 2 columns on medium/large screens
+  // Grid column span: explicit layoutSpanClass takes precedence,
+  // followed by layoutVariant mapping, followed by variant fallback
   const colSpanClass =
-    variant === "featured-fragment" ? "md:col-span-2" : "col-span-1";
+    layoutSpanClass ||
+    (layoutVariant === "featured"
+      ? "col-span-12 md:col-span-6 lg:col-span-8"
+      : layoutVariant === "wide"
+      ? "col-span-12 md:col-span-3 lg:col-span-7"
+      : layoutVariant === "compact"
+      ? "col-span-12 md:col-span-3 lg:col-span-3"
+      : layoutVariant === "standard"
+      ? "col-span-12 md:col-span-3 lg:col-span-4"
+      : variant === "featured-fragment"
+      ? "col-span-12 md:col-span-6 lg:col-span-8"
+      : "col-span-12 md:col-span-3 lg:col-span-4");
 
   // The "TO" Rule state (inspect or expanded triggers 100% width and pigment color)
   const isInspecting = isHovered || isExpanded;
