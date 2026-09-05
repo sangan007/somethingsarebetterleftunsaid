@@ -332,7 +332,7 @@ export default function ArchiveFeed({
 
       {/* Active Editorial Archival Grid (Table of Preserved Fragments) */}
       {!loading && !error && pageMessages.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-9 md:gap-10 lg:gap-11 pt-6 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-9 md:gap-10 lg:gap-11 pt-6 items-start">
           {pageMessages.map((msg, index) => {
             const originalIndex = messages.indexOf(msg);
             const cardIndex = originalIndex !== -1 ? originalIndex : startIndex + index;

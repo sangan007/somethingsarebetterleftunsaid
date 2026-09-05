@@ -221,7 +221,7 @@ export default function EditorModal({
                 id="recipient-input"
                 ref={toInputRef}
                 type="text"
-                placeholder="e.g. Someone, E., The stranger on the 7:15..."
+                placeholder="e.g. Someone, M., My best friend..."
                 maxLength={50}
                 value={toVal}
                 onChange={(e) => setToVal(e.target.value)}
@@ -243,7 +243,7 @@ export default function EditorModal({
                 required
                 rows={4}
                 maxLength={500}
-                placeholder="Write what was never brought to voice..."
+                placeholder="Write what you couldn't say..."
                 value={msgVal}
                 onChange={(e) => setMsgVal(e.target.value)}
                 className="w-full bg-[#0C0B0A] border border-[rgba(255,255,255,0.12)] focus:border-[#EDE8E0] p-3 font-serif text-base sm:text-lg text-[#EDE8E0] placeholder:text-[#6B655B] leading-relaxed resize-none rounded-[2px] outline-none transition-colors"
@@ -343,7 +343,7 @@ export default function EditorModal({
             </div>
 
             <p className="font-mono text-[9px] text-[#6B655B] leading-relaxed uppercase tracking-wide text-center pt-1">
-              Recorded in permanent anonymous custody.
+              Deposited into the public archive.
             </p>
           </div>
         </div>

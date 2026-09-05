@@ -365,7 +365,7 @@ export default function HomepageEditorial({
         </h3>
 
         <p className="font-serif text-[16px] sm:text-[18px] text-[#8E877C] leading-[1.6] max-w-lg mx-auto">
-          Your words will be given a permanent, anonymous resting place in the archive.
+          Your words will be preserved in the quiet repository of the archive.
           Nothing is delivered. Nothing is judged.
         </p>
 

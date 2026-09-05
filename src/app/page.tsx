@@ -294,7 +294,7 @@ export default function Home() {
             <div className="space-y-8 text-xs font-mono text-[#8E877C] leading-relaxed border-t border-[rgba(255,255,255,0.07)] pt-8">
               <div>
                 <h4 className="text-[#EDE8E0] font-semibold uppercase tracking-wider mb-2">
-                  1. Public & Anonymous
+                  1. Public Submission
                 </h4>
                 <p>
                   Everything submitted here becomes public to the archive but is strictly disconnected from your personal identity. We track no IP addresses, cookies, or user identifiers.
