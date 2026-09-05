@@ -42,12 +42,12 @@ export default function JournalIndex({
   }, [filteredEntries, selectedCategory, selectedDepth, searchQuery, featuredEntry.id]);
 
   return (
-    <section className="view-section active max-w-6xl mx-auto py-12 md:py-20 px-6 sm:px-8 space-y-16">
+    <section className="view-section active max-w-6xl mx-auto py-8 sm:py-12 md:py-20 px-4 sm:px-6 md:px-8 space-y-10 sm:space-y-14 md:space-y-16">
       {/* =====================================================================
           1. PUBLICATION MASTHEAD & MANIFESTO
           ===================================================================== */}
-      <header className="text-center space-y-5 max-w-3xl mx-auto">
-        <div className="flex items-center justify-center gap-3 text-[9.5px] font-mono uppercase tracking-[0.28em] text-[#8C827A]">
+      <header className="text-center space-y-4 sm:space-y-5 max-w-3xl mx-auto">
+        <div className="flex items-center justify-center gap-2.5 sm:gap-3 text-[9px] sm:text-[9.5px] font-mono uppercase tracking-[0.24em] sm:tracking-[0.28em] text-[#8C827A] flex-wrap">
           <span>[ THE UNTOLD REPOSITORY ]</span>
           <span className="text-white/20">·</span>
           <span>VOL. II</span>
@@ -55,7 +55,7 @@ export default function JournalIndex({
           <span className="text-[#C29B68]">{allEntries.length} Records</span>
         </div>
 
-        <h1 className="font-serif italic text-4xl sm:text-6xl md:text-[4rem] text-[#EDE8E0] font-normal tracking-[-0.025em] leading-[1.1]">
+        <h1 className="font-serif italic text-3xl sm:text-5xl md:text-[4rem] text-[#EDE8E0] font-normal tracking-[-0.025em] leading-[1.1]">
           The Journal of Interior Life
         </h1>
 

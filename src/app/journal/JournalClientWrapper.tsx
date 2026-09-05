@@ -64,37 +64,37 @@ export default function JournalClientWrapper({
       </main>
 
       {/* Editorial Footer */}
-      <footer className="w-full border-t border-[rgba(255,255,255,0.07)] py-12 px-6 text-center text-[10px] font-mono tracking-[0.16em] uppercase text-[#6B655B] space-y-4">
-        <div className="flex items-center justify-center gap-6">
+      <footer className="w-full border-t border-[rgba(255,255,255,0.07)] py-10 sm:py-12 px-4 sm:px-6 text-center text-[10px] font-mono tracking-[0.16em] uppercase text-[#6B655B] space-y-4">
+        <div className="flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-6 gap-y-2">
           <button
             onClick={() => router.push("/")}
-            className="hover:text-[#EDE8E0] cursor-pointer transition-colors"
+            className="hover:text-[#EDE8E0] cursor-pointer transition-colors py-1"
           >
             Home
           </button>
-          <span>·</span>
+          <span className="opacity-40">·</span>
           <button
             onClick={() => router.push("/?view=archive")}
-            className="hover:text-[#EDE8E0] cursor-pointer transition-colors"
+            className="hover:text-[#EDE8E0] cursor-pointer transition-colors py-1"
           >
             Archive
           </button>
-          <span>·</span>
+          <span className="opacity-40">·</span>
           <button
             onClick={() => router.push("/journal")}
-            className="hover:text-[#EDE8E0] cursor-pointer transition-colors text-[#EDE8E0] font-semibold"
+            className="hover:text-[#EDE8E0] cursor-pointer transition-colors text-[#EDE8E0] font-semibold py-1"
           >
             Journal
           </button>
-          <span>·</span>
+          <span className="opacity-40">·</span>
           <button
             onClick={() => router.push("/?view=about")}
-            className="hover:text-[#EDE8E0] cursor-pointer transition-colors"
+            className="hover:text-[#EDE8E0] cursor-pointer transition-colors py-1"
           >
             About
           </button>
         </div>
-        <div>A Collection of Unsaid Things · Archive MMXXVI</div>
+        <div className="text-[9px] sm:text-[10px]">A Collection of Unsaid Things · Archive MMXXVI</div>
       </footer>
 
       {/* Submission Modal */}

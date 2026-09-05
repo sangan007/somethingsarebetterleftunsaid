@@ -51,13 +51,13 @@ export default function HomepageEditorial({
               </span>
             </div>
 
-            <h1 className="font-masthead text-[46px] sm:text-[68px] md:text-[80px] lg:text-[94px] leading-[0.93] tracking-[-0.035em] text-[#EDE8E0] font-normal uppercase">
+            <h1 className="font-masthead text-[34px] xs:text-[42px] sm:text-[68px] md:text-[80px] lg:text-[94px] leading-[0.96] sm:leading-[0.93] tracking-[-0.03em] text-[#EDE8E0] font-normal uppercase break-words">
               A Collection<br />
               of Unsaid<br />
               <span className="italic font-normal lowercase tracking-[-0.02em] text-[#D8D2C7]">things</span>
             </h1>
 
-            <div className="pt-2 flex items-center gap-4 text-[9.5px] font-mono tracking-[0.22em] text-[#7A746B] uppercase">
+            <div className="pt-2 flex items-center gap-3 sm:gap-4 text-[9px] sm:text-[9.5px] font-mono tracking-[0.18em] sm:tracking-[0.22em] text-[#7A746B] uppercase flex-wrap">
               <span>Catalog MMXXIV</span>
               <span>—</span>
               <span>Preserved in Solitude</span>
@@ -67,11 +67,11 @@ export default function HomepageEditorial({
           {/* Right Column (5 cols): Intimate Curator Statement */}
           <div className="lg:col-span-5 lg:pt-16 space-y-8">
             <div className="border-t border-[rgba(255,255,255,0.1)] pt-7 space-y-5">
-              <p className="font-serif text-[19px] sm:text-[21px] md:text-[22px] text-[#C2BCB3] leading-[1.5] font-normal">
+              <p className="font-serif text-[18px] sm:text-[21px] md:text-[22px] text-[#C2BCB3] leading-[1.5] font-normal">
                 There are things we never say. Not because they weren&apos;t important,
                 but because saying them would have changed everything.
               </p>
-              <p className="font-serif text-[15px] sm:text-[16px] text-[#7E786E] leading-[1.62]">
+              <p className="font-serif text-[14px] sm:text-[16px] text-[#7E786E] leading-[1.62]">
                 This room is a resting place for words that were held back in throats,
                 confessions left in coats, and apologies that arrived too late—preserved
                 here in darkness, without names, accounts, or judgment.
@@ -79,10 +79,10 @@ export default function HomepageEditorial({
             </div>
 
             {/* Understated Editorial Actions */}
-            <div className="pt-1 flex flex-wrap items-center gap-4">
+            <div className="pt-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 sm:gap-4">
               <button
                 onClick={() => onViewChange("archive")}
-                className="group font-mono text-[9.5px] uppercase tracking-[0.2em] px-6 py-3 bg-[#EDE8E0] text-[#0C0B0A] hover:bg-[#FAF7F2] transition-all rounded-full cursor-pointer shadow-lg inline-flex items-center gap-2 font-medium"
+                className="group font-mono text-[9.5px] uppercase tracking-[0.2em] px-6 py-3 bg-[#EDE8E0] text-[#0C0B0A] hover:bg-[#FAF7F2] transition-all rounded-full cursor-pointer shadow-lg inline-flex items-center justify-center gap-2 font-medium min-h-[44px]"
               >
                 <span>Enter The Archive</span>
                 <span className="transition-transform duration-300 group-hover:translate-x-1">
@@ -92,7 +92,7 @@ export default function HomepageEditorial({
 
               <button
                 onClick={onOpenWrite}
-                className="font-mono text-[9.5px] uppercase tracking-[0.2em] px-6 py-3 border border-[rgba(255,255,255,0.18)] hover:border-[#EDE8E0] hover:bg-white/[0.04] text-[#EDE8E0] transition-all rounded-full cursor-pointer"
+                className="font-mono text-[9.5px] uppercase tracking-[0.2em] px-6 py-3 border border-[rgba(255,255,255,0.18)] hover:border-[#EDE8E0] hover:bg-white/[0.04] text-[#EDE8E0] transition-all rounded-full cursor-pointer text-center min-h-[44px]"
               >
                 Leave Something Unsaid
               </button>
@@ -296,10 +296,10 @@ export default function HomepageEditorial({
 
             <div className="pt-4 border-t border-[rgba(255,255,255,0.08)] flex items-center justify-between">
               <span className="font-mono text-[11px] uppercase tracking-[0.24em] text-[#EDE8E0] font-medium">
-                — S.
+                — The Custodian
               </span>
               <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#7E786E]">
-                Curator & Builder of the Archive
+                A Collection of Unsaid Things
               </span>
             </div>
           </div>

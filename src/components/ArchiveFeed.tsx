@@ -101,25 +101,25 @@ export default function ArchiveFeed({
   const totalCountFormatted = messages.length.toLocaleString();
 
   return (
-    <section id="view-archive" className="w-full max-w-[1180px] mx-auto px-6 sm:px-10 md:px-12 lg:px-16 py-10 md:py-16 space-y-12 md:space-y-16">
+    <section id="view-archive" className="w-full max-w-[1180px] mx-auto px-4 sm:px-8 md:px-12 lg:px-16 py-8 sm:py-12 md:py-16 space-y-8 sm:space-y-12 md:space-y-16">
       {/* Archive Masthead & Accession Counter */}
-      <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-4 border-b border-[rgba(255,255,255,0.07)] pb-7">
-        <div className="space-y-2">
-          <h2 className="font-serif text-4xl sm:text-5xl md:text-[3.6rem] text-[#EDE8E0] font-normal tracking-[-0.025em] leading-[1.05]">
+      <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-3 sm:gap-4 border-b border-[rgba(255,255,255,0.07)] pb-5 sm:pb-7">
+        <div className="space-y-1.5 sm:space-y-2">
+          <h2 className="font-serif text-3xl sm:text-5xl md:text-[3.6rem] text-[#EDE8E0] font-normal tracking-[-0.02em] leading-[1.08]">
             The Archive
           </h2>
-          <p className="font-serif italic text-base sm:text-lg text-[#8E877C] max-w-lg">
+          <p className="font-serif italic text-sm sm:text-base md:text-lg text-[#8E877C] max-w-lg">
             Fragments, feelings, and words that never found their way out.
           </p>
         </div>
 
-        <div className="font-mono text-[10px] md:text-[11px] uppercase tracking-[0.22em] text-[#6B655B] self-start md:self-baseline">
+        <div className="font-mono text-[9px] sm:text-[10px] md:text-[11px] uppercase tracking-[0.2em] text-[#6B655B] self-start md:self-baseline">
           {loading ? "CALCULATING ARCHIVE..." : `${totalCountFormatted} PRESERVED RECORDS`}
         </div>
       </div>
 
       {/* Accession Search and Catalog Sorting */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
         {/* Minimal Search Field */}
         <div className="relative flex-1 max-w-lg">
           <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-[#6B655B]">

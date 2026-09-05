@@ -25,7 +25,7 @@ export default function JournalCard({
     return (
       <article
         onClick={() => onSelect(entry)}
-        className="group relative cursor-pointer overflow-hidden rounded-2xl border border-white/[0.08] bg-[#141312]/90 p-8 sm:p-12 transition-all duration-300 hover:border-white/[0.18] hover:bg-[#181615]"
+        className="group relative cursor-pointer overflow-hidden rounded-2xl border border-white/[0.08] bg-[#141312]/90 p-5 sm:p-8 md:p-12 transition-all duration-300 hover:border-white/[0.18] hover:bg-[#181615]"
         style={{
           boxShadow: "0 12px 35px -8px rgba(0,0,0,0.6)",
         }}
@@ -36,10 +36,10 @@ export default function JournalCard({
           style={{ backgroundColor: palette.dots[0] }}
         />
 
-        <div className="relative z-10 space-y-6">
+        <div className="relative z-10 space-y-5 sm:space-y-6">
           {/* Metadata Row */}
-          <div className="flex flex-wrap items-center justify-between gap-3 text-[9.5px] font-mono uppercase tracking-[0.22em] text-[#8C827A]">
-            <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center justify-between gap-2.5 text-[9px] sm:text-[9.5px] font-mono uppercase tracking-[0.18em] sm:tracking-[0.22em] text-[#8C827A]">
+            <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
               <span className="text-[#EDE8E0] font-semibold">{entry.sourceType}</span>
               <span className="text-white/20">·</span>
               <span>{entry.seriesName}</span>
@@ -55,11 +55,11 @@ export default function JournalCard({
           </div>
 
           {/* Headline & Subtitle */}
-          <div className="space-y-3">
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-[#EDE8E0] font-normal tracking-[-0.02em] leading-[1.18] transition-colors duration-250 group-hover:text-white">
+          <div className="space-y-2.5 sm:space-y-3">
+            <h2 className="font-serif text-2xl sm:text-4xl md:text-5xl text-[#EDE8E0] font-normal tracking-[-0.02em] leading-[1.18] transition-colors duration-250 group-hover:text-white">
               {entry.title}
             </h2>
-            <p className="font-serif italic text-base sm:text-lg text-[#A8A196] leading-relaxed max-w-3xl">
+            <p className="font-serif italic text-sm sm:text-base md:text-lg text-[#A8A196] leading-relaxed max-w-3xl">
               {entry.subtitle}
             </p>
           </div>

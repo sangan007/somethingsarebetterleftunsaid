@@ -91,9 +91,9 @@ export default function JournalArticleView({
         style={{ backgroundColor: palette.dots[0] }}
       />
 
-      <div className="relative z-10 max-w-3xl mx-auto px-6 sm:px-8">
+      <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-8">
         {/* Navigation / Return Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/[0.07] pb-6 mb-12">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/[0.07] pb-5 sm:pb-6 mb-8 sm:mb-12">
           <button
             onClick={onBack}
             className="group flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.22em] text-[#8C827A] hover:text-[#EDE8E0] transition-colors cursor-pointer"
@@ -102,29 +102,29 @@ export default function JournalArticleView({
             <span>Return to Journal Index</span>
           </button>
 
-          <div className="flex items-center gap-4 text-[10px] font-mono uppercase tracking-[0.2em] text-[#8C827A]">
+          <div className="flex items-center gap-3 sm:gap-4 text-[10px] font-mono uppercase tracking-[0.2em] text-[#8C827A]">
             <PaletteDots dots={palette.dots} size="sm" />
             <span>{entry.readingTime}</span>
           </div>
         </div>
 
         {/* Article Header */}
-        <header className="space-y-6 pb-12 border-b border-white/[0.07]">
+        <header className="space-y-5 sm:space-y-6 pb-8 sm:pb-12 border-b border-white/[0.07]">
           {/* Series & Source Type Badging */}
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             {renderSourceTypeBadge()}
-            <span className="text-[9.5px] font-mono uppercase tracking-[0.24em] text-[#736B63]">
+            <span className="text-[9px] sm:text-[9.5px] font-mono uppercase tracking-[0.2em] sm:tracking-[0.24em] text-[#736B63]">
               {entry.entryNumber} · {entry.date}
             </span>
           </div>
 
           {/* Title */}
-          <h1 className="font-serif text-3xl sm:text-5xl md:text-[3.25rem] text-[#EDE8E0] font-normal tracking-[-0.02em] leading-[1.15]">
+          <h1 className="font-serif text-2xl xs:text-3xl sm:text-5xl md:text-[3.25rem] text-[#EDE8E0] font-normal tracking-[-0.02em] leading-[1.2] sm:leading-[1.15] break-words">
             {entry.title}
           </h1>
 
           {/* Subtitle / Deck */}
-          <p className="font-serif italic text-lg sm:text-xl md:text-2xl text-[#A8A196] leading-relaxed max-w-2xl font-light">
+          <p className="font-serif italic text-base sm:text-xl md:text-2xl text-[#A8A196] leading-relaxed max-w-2xl font-light">
             {entry.subtitle}
           </p>
 

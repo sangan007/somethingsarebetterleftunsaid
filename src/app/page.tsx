@@ -13,9 +13,7 @@ import FullScreenReader from "@/components/FullScreenReader";
 import EditorModal from "@/components/EditorModal";
 import HomepageEditorial from "@/components/HomepageEditorial";
 import JournalSection from "@/components/JournalSection";
-import MessageCard, { MessageData } from "@/components/MessageCard";
-import PaletteDots from "@/components/PaletteDots";
-import { resolveMessagePalette } from "@/lib/palettes";
+import { MessageData } from "@/components/MessageCard";
 import { fetchFirebaseMessages } from "@/lib/messages";
 import { normalizeFirestoreMessage, RawFirestoreDoc } from "@/lib/messageAdapter";
 
@@ -200,7 +198,7 @@ export default function Home() {
         onOpenWrite={() => setEditorOpen(true)}
       />
 
-      <main className="w-full min-h-screen pt-28 md:pt-36 pb-32 px-4 sm:px-6 md:px-12">
+      <main className="w-full min-h-screen pt-20 sm:pt-24 md:pt-36 pb-20 sm:pb-28 md:pb-36 px-4 sm:px-6 md:px-12">
         {/* ==================================================================
             VIEW: HOMEPAGE (The Literary & Archival Entry)
            ================================================================== */}
@@ -332,44 +330,44 @@ export default function Home() {
       </main>
 
       {/* Editorial Footer */}
-      <footer className="w-full border-t border-[rgba(255,255,255,0.07)] py-12 px-6 text-center text-[10px] font-mono tracking-[0.16em] uppercase text-[#6B655B] space-y-4">
-        <div className="flex items-center justify-center gap-6">
+      <footer className="w-full border-t border-[rgba(255,255,255,0.07)] py-10 sm:py-12 px-4 sm:px-6 text-center text-[10px] font-mono tracking-[0.16em] uppercase text-[#6B655B] space-y-4">
+        <div className="flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-6 gap-y-2">
           <button
             onClick={() => handleViewChange("home")}
-            className="hover:text-[#EDE8E0] cursor-pointer transition-colors"
+            className="hover:text-[#EDE8E0] cursor-pointer transition-colors py-1"
           >
             Home
           </button>
-          <span>·</span>
+          <span className="opacity-40">·</span>
           <button
             onClick={() => handleViewChange("archive")}
-            className="hover:text-[#EDE8E0] cursor-pointer transition-colors"
+            className="hover:text-[#EDE8E0] cursor-pointer transition-colors py-1"
           >
             Archive
           </button>
-          <span>·</span>
+          <span className="opacity-40">·</span>
           <button
             onClick={() => handleViewChange("journal")}
-            className="hover:text-[#EDE8E0] cursor-pointer transition-colors"
+            className="hover:text-[#EDE8E0] cursor-pointer transition-colors py-1"
           >
             Journal
           </button>
-          <span>·</span>
+          <span className="opacity-40">·</span>
           <button
             onClick={() => handleViewChange("about")}
-            className="hover:text-[#EDE8E0] cursor-pointer transition-colors"
+            className="hover:text-[#EDE8E0] cursor-pointer transition-colors py-1"
           >
             About
           </button>
-          <span>·</span>
+          <span className="opacity-40">·</span>
           <button
             onClick={() => handleViewChange("terms")}
-            className="hover:text-[#EDE8E0] cursor-pointer transition-colors"
+            className="hover:text-[#EDE8E0] cursor-pointer transition-colors py-1"
           >
             Terms
           </button>
         </div>
-        <div>A Collection of Unsaid Things · Archive MMXXIV</div>
+        <div className="text-[9px] sm:text-[10px]">A Collection of Unsaid Things · Archive MMXXIV</div>
       </footer>
 
       {/* Solitary Reading View */}

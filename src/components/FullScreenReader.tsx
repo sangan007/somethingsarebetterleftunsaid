@@ -128,22 +128,22 @@ export default function FullScreenReader({
 
       {/* Top Reading Navigation Bar */}
       <div
-        className="relative z-10 w-full max-w-4xl mx-auto px-6 py-6 flex items-center justify-between border-b"
+        className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 py-3.5 sm:py-6 flex items-center justify-between border-b"
         style={{ borderColor: palette.border }}
       >
         <button
           onClick={onClose}
-          className="font-mono text-[10px] uppercase tracking-[0.2em] flex items-center gap-2 cursor-pointer transition-colors hover:text-[#EDE8E0]"
+          className="font-mono text-[10px] uppercase tracking-[0.16em] sm:tracking-[0.2em] flex items-center gap-1.5 sm:gap-2 cursor-pointer transition-colors hover:text-[#EDE8E0] min-h-[40px] px-1"
           style={{ color: palette.muted }}
         >
           <span>←</span>
-          <span>Return to Archive</span>
+          <span><span className="hidden sm:inline">Return to </span>Archive</span>
         </button>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <PaletteDots dots={palette.dots} size="sm" />
           <span
-            className="font-mono text-[9px] uppercase tracking-[0.22em]"
+            className="font-mono text-[9px] uppercase tracking-[0.22em] hidden xs:inline"
             style={{ color: palette.muted }}
           >
             {palette.defaultEmotion}
@@ -152,7 +152,7 @@ export default function FullScreenReader({
 
         <button
           onClick={onClose}
-          className="font-mono text-[10px] uppercase tracking-widest cursor-pointer p-1 hover:text-[#EDE8E0] transition-colors"
+          className="font-mono text-[10px] uppercase tracking-widest cursor-pointer py-2 px-2.5 min-h-[40px] flex items-center hover:text-[#EDE8E0] transition-colors"
           style={{ color: palette.muted }}
           aria-label="Close record"
         >
@@ -227,18 +227,18 @@ export default function FullScreenReader({
 
       {/* Bottom Paging Controls */}
       <div
-        className="relative z-10 w-full max-w-4xl mx-auto px-6 py-6 border-t flex items-center justify-between font-mono text-[10px] uppercase tracking-widest"
+        className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6 border-t flex items-center justify-between font-mono text-[10px] uppercase tracking-widest"
         style={{ borderColor: palette.border, color: palette.muted }}
       >
         <button
           onClick={() => onNavigate(-1)}
           disabled={!hasPrevious}
-          className={`flex items-center gap-2 transition-colors ${
+          className={`flex items-center gap-1.5 sm:gap-2 transition-colors py-2 px-2 min-h-[44px] ${
             hasPrevious ? "hover:text-[#EDE8E0] cursor-pointer" : "opacity-25 cursor-not-allowed"
           }`}
         >
           <span>←</span>
-          <span>PREVIOUS</span>
+          <span><span className="hidden xs:inline">PREVIOUS</span><span className="xs:hidden">PREV</span></span>
         </button>
 
         <span className="hidden sm:inline text-[9px] tracking-[0.2em] opacity-50">
@@ -248,7 +248,7 @@ export default function FullScreenReader({
         <button
           onClick={() => onNavigate(1)}
           disabled={!hasNext}
-          className={`flex items-center gap-2 transition-colors ${
+          className={`flex items-center gap-1.5 sm:gap-2 transition-colors py-2 px-2 min-h-[44px] ${
             hasNext ? "hover:text-[#EDE8E0] cursor-pointer" : "opacity-25 cursor-not-allowed"
           }`}
         >

@@ -185,7 +185,7 @@ export default function EditorModal({
       aria-modal="true"
       aria-label="Leave something you never said"
     >
-      <div className="relative w-full max-w-4xl bg-[#141312] border border-[rgba(255,255,255,0.08)] rounded-[3px] p-6 sm:p-9 shadow-2xl space-y-7 my-auto max-h-[92vh] overflow-y-auto text-[#EDE8E0]">
+      <div className="relative w-full max-w-4xl bg-[#141312] border border-[rgba(255,255,255,0.08)] rounded-[3px] p-4 sm:p-6 md:p-9 shadow-2xl space-y-6 sm:space-y-7 my-auto max-h-[92vh] overflow-y-auto text-[#EDE8E0]">
         {/* Modal Top Masthead */}
         <div className="flex justify-between items-baseline border-b border-[rgba(255,255,255,0.07)] pb-4">
           <div className="space-y-0.5">
@@ -319,7 +319,7 @@ export default function EditorModal({
               <button
                 type="submit"
                 disabled={submitting || !msgVal.trim()}
-                className="font-sans text-[11px] uppercase tracking-[0.14em] font-medium px-5 py-2.5 border border-[#EDE8E0] bg-[#EDE8E0] text-[#0C0B0A] hover:bg-white transition-all rounded-[2px] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed shadow-md"
+                className="font-sans text-[11px] uppercase tracking-[0.14em] font-medium px-5 py-3 min-h-[44px] border border-[#EDE8E0] bg-[#EDE8E0] text-[#0C0B0A] hover:bg-white transition-all rounded-[2px] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed shadow-md"
               >
                 {submitting ? "Preserving..." : "Deposit into Archive"}
               </button>
