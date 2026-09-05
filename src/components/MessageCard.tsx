@@ -45,18 +45,14 @@ export function resolveCardVariant(
   const cleanMsg = (data.msg || "").trim();
   const len = cleanMsg.length;
 
-  // Selected Featured cadence: every 7 cards, pick an entry to feature (e.g. index 2, 5, 9, 12...)
-  // Spans 2 columns on desktop to establish intentional editorial asymmetry
   if ((index % 7 === 2 || index % 7 === 5) && len >= 35) {
     return "featured-fragment";
   }
 
-  // Very short messages (< 48 chars): Compact Ledger slip
   if (len < 48) {
     return "compact-ledger";
   }
 
-  // Alternating between Letter Fragment and Archival Slip for rich correspondence variation
   if (index % 2 === 1 || len > 130) {
     return "letter-fragment";
   }
@@ -67,33 +63,69 @@ export function resolveCardVariant(
 export interface MessageCardProps {
   data: MessageData;
   index: number;
-  onClick: () => void;
+  onClick?: () => void;
+  isExpanded?: boolean;
+  onToggleExpand?: () => void;
+  onOpenFullEntry?: () => void;
   overridePalette?: PaletteDefinition;
   variant?: CardVariant;
   className?: string;
+  staggerArrival?: boolean;
 }
 
 export default function MessageCard({
   data,
   index,
   onClick,
+  isExpanded = false,
+  onToggleExpand,
+  onOpenFullEntry,
   overridePalette,
   variant: propVariant,
   className = "",
+  staggerArrival = false,
 }: MessageCardProps) {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(!staggerArrival);
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    if (staggerArrival) {
+      const delay = Math.min(index * 40, 240);
+      const timer = setTimeout(() => {
+        setVisible(true);
+      }, delay);
+      return () => clearTimeout(timer);
+    } else {
       setVisible(true);
-    }, Math.min(index * 30, 250));
-    return () => clearTimeout(timer);
-  }, [index]);
+    }
+  }, [index, staggerArrival]);
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    // If clicking directly on a button or link inside, allow its own handler
+    const target = e.target as HTMLElement;
+    if (target.closest("button") || target.closest("a")) {
+      return;
+    }
+
+    if (onToggleExpand) {
+      onToggleExpand();
+    } else if (onClick) {
+      onClick();
+    }
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" || e.key === " ") {
+      // Don't intercept if focus is on a child button
+      if ((e.target as HTMLElement).tagName.toLowerCase() === "button") {
+        return;
+      }
       e.preventDefault();
-      onClick();
+      if (onToggleExpand) {
+        onToggleExpand();
+      } else if (onClick) {
+        onClick();
+      }
     }
   };
 
@@ -110,6 +142,14 @@ export default function MessageCard({
   const msgText = (data.msg || "").trim();
   const msgLength = msgText.length;
 
+  const dateStr = data.createdAt?.seconds
+    ? new Date(data.createdAt.seconds * 1000).toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      })
+    : "Archived Record";
+
   // Layered paper effect on Archival Slip, Letter Fragment, and Featured Fragment
   const hasLayeredSheet = variant !== "compact-ledger";
 
@@ -117,23 +157,31 @@ export default function MessageCard({
   const colSpanClass =
     variant === "featured-fragment" ? "md:col-span-2" : "col-span-1";
 
+  // The "TO" Rule state (inspect or expanded triggers 100% width and pigment color)
+  const isInspecting = isHovered || isExpanded;
+
   return (
     <div
-      className={`group relative transition-transform duration-300 ease-out cursor-pointer ${colSpanClass} ${className} ${
-        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"
+      className={`group relative ${colSpanClass} ${className} transition-opacity duration-300 ${
+        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
       }`}
-      onClick={onClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={handleCardClick}
       onKeyDown={handleKeyDown}
       role="button"
       tabIndex={0}
-      aria-label={`Unsaid record to ${recipientDisplay} - ${accessionNumber}`}
+      aria-expanded={isExpanded}
+      aria-label={`Archival record to ${recipientDisplay}, accession ${accessionNumber}. ${
+        isExpanded ? "Expanded." : "Click to unfold record."
+      }`}
     >
       {/* 1-2px Offset Secondary Paper Underlay (Tactile layered paper effect) */}
       {hasLayeredSheet && (
         <div
-          className="absolute inset-0 pointer-events-none rounded-[2px] transition-transform duration-300 ease-out group-hover:translate-x-[3px] group-hover:translate-y-[3px]"
+          className="absolute inset-0 pointer-events-none rounded-[2px] transition-transform duration-350 ease-[cubic-bezier(0.22,1,0.36,1)]"
           style={{
-            transform: "translate(2px, 2px)",
+            transform: isHovered && !isExpanded ? "translate(3px, 3px)" : "translate(2px, 2px)",
             backgroundColor: palette.underlay,
             border: `1px solid ${palette.border}`,
             zIndex: 0,
@@ -142,19 +190,39 @@ export default function MessageCard({
         />
       )}
 
-      {/* Primary Card Paper Surface */}
+      {/* Primary Card Paper Surface — Physical Three-State Archival Object */}
       <article
-        className="relative z-10 w-full h-full flex flex-col justify-between rounded-[2px] border transition-all duration-300 ease-out group-hover:-translate-y-[2px]"
+        className={`relative z-10 w-full flex flex-col justify-between rounded-[2px] border cursor-pointer select-none transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] focus-visible:ring-1 focus-visible:ring-[#C29B68] focus-visible:outline-none ${
+          isHovered && !isExpanded ? "-translate-y-1" : ""
+        }`}
         style={{
           backgroundColor: palette.surface,
-          borderColor: palette.border,
+          borderColor: isExpanded
+            ? palette.accent
+            : isHovered
+            ? "rgba(255, 255, 255, 0.22)"
+            : palette.border,
           color: palette.text,
-          boxShadow:
-            "0 4px 24px -2px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.3)",
+          boxShadow: isExpanded
+            ? "0 20px 48px -12px rgba(0, 0, 0, 0.75), 0 2px 8px rgba(0, 0, 0, 0.5)"
+            : isHovered
+            ? "0 16px 36px -12px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.3)"
+            : "0 4px 24px -2px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.3)",
         }}
       >
+        {/* Subtle Atmospheric Color Presence */}
+        {isExpanded && (
+          <div
+            className="absolute inset-0 pointer-events-none opacity-[0.06] rounded-[2px]"
+            style={{
+              background: `radial-gradient(circle at 50% 30%, ${palette.dots[1]} 0%, transparent 70%)`,
+            }}
+            aria-hidden="true"
+          />
+        )}
+
         {/* ===================================================================
-            VARIANT 1: COMPACT LEDGER (Very Restrained, Tight Slip)
+            VARIANT 1: COMPACT LEDGER (Tight Slip)
             =================================================================== */}
         {variant === "compact-ledger" && (
           <div className="flex flex-col justify-between h-full p-5 sm:p-6 space-y-4">
@@ -169,21 +237,33 @@ export default function MessageCard({
               </span>
             </div>
 
-            {/* Recipient & Quote */}
+            {/* Recipient & The "TO" Rule */}
             <div className="space-y-1.5">
-              <div
-                className="font-mono text-[9.5px] uppercase tracking-[0.16em] font-medium opacity-75"
-                style={{ color: palette.muted }}
-              >
-                TO: {recipientDisplay}
+              <div>
+                <span
+                  className="font-mono text-[9.5px] uppercase tracking-[0.16em] font-medium transition-colors duration-300"
+                  style={{ color: isInspecting ? palette.accent : palette.muted }}
+                >
+                  TO: {recipientDisplay}
+                </span>
+                {/* The "TO" Rule: 30% default, expands to 100% on inspect */}
+                <div
+                  className="h-[1px] mt-1 transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                  style={{
+                    width: isInspecting ? "100%" : "30%",
+                    backgroundColor: isInspecting ? palette.accent : "rgba(255, 255, 255, 0.12)",
+                    opacity: isInspecting ? 0.85 : 0.4,
+                  }}
+                  aria-hidden="true"
+                />
               </div>
 
-              <blockquote className="w-full">
+              <blockquote className="w-full pt-1">
                 <p
-                  className={`font-serif font-normal break-words transition-transform duration-300 group-hover:translate-x-[1px] tracking-[-0.015em] ${
+                  className={`font-serif font-normal break-words tracking-[-0.015em] ${
                     msgLength < 35
-                      ? "text-[25px] sm:text-[28px] leading-[1.28]"
-                      : "text-[20px] sm:text-[23px] leading-[1.35]"
+                      ? "text-[23px] sm:text-[26px] leading-[1.28]"
+                      : "text-[19px] sm:text-[21px] leading-[1.35]"
                   }`}
                   style={{ color: palette.text }}
                 >
@@ -192,19 +272,70 @@ export default function MessageCard({
               </blockquote>
             </div>
 
-            {/* Footer: Quiet Sentiment */}
+            {/* In-Place Accordion Unfolding Section */}
+            <div
+              className="grid transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+              style={{
+                gridTemplateRows: isExpanded ? "1fr" : "0fr",
+              }}
+            >
+              <div className="overflow-hidden">
+                <div className="pt-4 border-t border-white/[0.08] space-y-3">
+                  <div className="grid grid-cols-2 gap-2 text-[9px] font-mono uppercase tracking-[0.16em]" style={{ color: palette.muted }}>
+                    <div>
+                      <span className="opacity-50 block">DEPOSITED</span>
+                      <span className="text-[#EDE8E0]">{dateStr}</span>
+                    </div>
+                    <div>
+                      <span className="opacity-50 block">STATUS</span>
+                      <span className="text-[#EDE8E0]">UNSPOKEN</span>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 flex items-center justify-between gap-2">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (onOpenFullEntry) onOpenFullEntry();
+                      }}
+                      className="press-tactile font-mono text-[9px] uppercase tracking-[0.18em] px-3.5 py-1.5 rounded-full border border-white/[0.18] hover:border-[#EDE8E0] bg-white/[0.05] hover:bg-white/[0.1] text-[#EDE8E0] transition-all flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <span>SOLITARY VIEW</span>
+                      <span className="text-[#C29B68]">↗</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (onToggleExpand) onToggleExpand();
+                      }}
+                      className="font-mono text-[9px] uppercase tracking-[0.16em] text-[#8E877C] hover:text-[#EDE8E0] cursor-pointer"
+                    >
+                      FOLD —
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer: Quiet Sentiment & Unfold Hint */}
             <div className="pt-2 flex items-center justify-between border-t border-white/[0.07]">
               <span
                 className="font-mono text-[8.5px] uppercase tracking-[0.2em] font-medium opacity-75"
-                style={{ color: palette.muted }}
+                style={{ color: isInspecting ? palette.accent : palette.muted }}
               >
                 {emotionDisplay}
               </span>
               <span
-                className="font-mono text-[8.5px] uppercase tracking-[0.18em] opacity-0 group-hover:opacity-75 transition-opacity"
-                style={{ color: palette.muted }}
+                className="font-mono text-[8.5px] uppercase tracking-[0.18em] transition-opacity duration-250"
+                style={{
+                  color: isInspecting ? palette.accent : palette.muted,
+                  opacity: isExpanded ? 0.9 : isHovered ? 0.8 : 0.4,
+                }}
               >
-                OPEN →
+                {isExpanded ? "UNFOLDED" : "INSPECT ↘"}
               </span>
             </div>
           </div>
@@ -234,21 +365,33 @@ export default function MessageCard({
               </span>
             </div>
 
-            {/* Recipient sits cleanly below header */}
+            {/* Recipient & The "TO" Rule */}
             <div className="space-y-2 flex-1 flex flex-col justify-start">
-              <div
-                className="font-mono text-[9.5px] uppercase tracking-[0.16em] font-medium opacity-70"
-                style={{ color: palette.muted }}
-              >
-                TO: {recipientDisplay}
+              <div>
+                <span
+                  className="font-mono text-[9.5px] uppercase tracking-[0.16em] font-medium transition-colors duration-300"
+                  style={{ color: isInspecting ? palette.accent : palette.muted }}
+                >
+                  TO: {recipientDisplay}
+                </span>
+                {/* The "TO" Rule: 30% default, expands to 100% on inspect */}
+                <div
+                  className="h-[1px] mt-1 transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                  style={{
+                    width: isInspecting ? "100%" : "30%",
+                    backgroundColor: isInspecting ? palette.accent : "rgba(255, 255, 255, 0.12)",
+                    opacity: isInspecting ? 0.85 : 0.4,
+                  }}
+                  aria-hidden="true"
+                />
               </div>
 
               {/* Message as dominant element */}
-              <blockquote className="w-full pt-0.5">
+              <blockquote className="w-full pt-1">
                 <p
-                  className={`font-serif font-normal break-words transition-transform duration-300 group-hover:translate-x-[1px] tracking-[-0.015em] ${
+                  className={`font-serif font-normal break-words tracking-[-0.015em] ${
                     msgLength < 80
-                      ? "text-[21px] sm:text-[24px] leading-[1.38]"
+                      ? "text-[21px] sm:text-[23px] leading-[1.38]"
                       : "text-[18px] sm:text-[20px] leading-[1.44]"
                   }`}
                   style={{ color: palette.text }}
@@ -258,12 +401,60 @@ export default function MessageCard({
               </blockquote>
             </div>
 
+            {/* In-Place Accordion Unfolding Section */}
+            <div
+              className="grid transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+              style={{
+                gridTemplateRows: isExpanded ? "1fr" : "0fr",
+              }}
+            >
+              <div className="overflow-hidden">
+                <div className="pt-4 border-t border-white/[0.08] space-y-3.5">
+                  <div className="grid grid-cols-2 gap-2 text-[9px] font-mono uppercase tracking-[0.16em]" style={{ color: palette.muted }}>
+                    <div>
+                      <span className="opacity-50 block">ACCESSION RECORD</span>
+                      <span className="text-[#EDE8E0]">{accessionNumber}</span>
+                    </div>
+                    <div>
+                      <span className="opacity-50 block">DATE RECORDED</span>
+                      <span className="text-[#EDE8E0]">{dateStr}</span>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 flex items-center justify-between gap-2">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (onOpenFullEntry) onOpenFullEntry();
+                      }}
+                      className="press-tactile font-mono text-[9px] uppercase tracking-[0.18em] px-3.5 py-1.5 rounded-full border border-white/[0.18] hover:border-[#EDE8E0] bg-white/[0.05] hover:bg-white/[0.1] text-[#EDE8E0] transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                    >
+                      <span>READ IN SOLITARY VIEW</span>
+                      <span className="text-[#C29B68]">↗</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (onToggleExpand) onToggleExpand();
+                      }}
+                      className="font-mono text-[9px] uppercase tracking-[0.16em] text-[#8E877C] hover:text-[#EDE8E0] cursor-pointer"
+                    >
+                      FOLD RECORD —
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Footer: Quiet Bottom Metadata */}
             <div className="pt-3 flex items-center justify-between border-t border-white/[0.07]">
               <div className="flex items-center gap-2">
                 <span
-                  className="font-mono text-[9px] uppercase tracking-[0.18em] font-medium opacity-80"
-                  style={{ color: palette.muted }}
+                  className="font-mono text-[9px] uppercase tracking-[0.18em] font-medium transition-colors"
+                  style={{ color: isInspecting ? palette.accent : palette.muted }}
                 >
                   {emotionDisplay}
                 </span>
@@ -282,17 +473,20 @@ export default function MessageCard({
               </div>
 
               <span
-                className="font-mono text-[9px] uppercase tracking-[0.16em] opacity-0 group-hover:opacity-100 transition-opacity"
-                style={{ color: palette.accent }}
+                className="font-mono text-[9px] uppercase tracking-[0.16em] transition-opacity duration-250"
+                style={{
+                  color: palette.accent,
+                  opacity: isExpanded ? 1 : isHovered ? 0.9 : 0.45,
+                }}
               >
-                READ →
+                {isExpanded ? "UNFOLDED" : "READ →"}
               </span>
             </div>
           </div>
         )}
 
         {/* ===================================================================
-            VARIANT 3: LETTER FRAGMENT (Fragment of Correspondence)
+            VARIANT 3: LETTER FRAGMENT (Correspondence)
             =================================================================== */}
         {variant === "letter-fragment" && (
           <div className="flex flex-col justify-between h-full p-6 sm:p-7 space-y-4">
@@ -305,11 +499,23 @@ export default function MessageCard({
                 >
                   {accessionNumber}
                 </div>
-                <div
-                  className="font-mono text-[10px] uppercase tracking-[0.16em] font-medium opacity-80"
-                  style={{ color: palette.muted }}
-                >
-                  TO: {recipientDisplay}
+                <div>
+                  <span
+                    className="font-mono text-[10px] uppercase tracking-[0.16em] font-medium transition-colors duration-300"
+                    style={{ color: isInspecting ? palette.accent : palette.muted }}
+                  >
+                    TO: {recipientDisplay}
+                  </span>
+                  {/* The "TO" Rule: 30% default, expands to 100% on inspect */}
+                  <div
+                    className="h-[1px] mt-1 transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                    style={{
+                      width: isInspecting ? "100%" : "30%",
+                      backgroundColor: isInspecting ? palette.accent : "rgba(255, 255, 255, 0.12)",
+                      opacity: isInspecting ? 0.85 : 0.4,
+                    }}
+                    aria-hidden="true"
+                  />
                 </div>
               </div>
 
@@ -327,10 +533,10 @@ export default function MessageCard({
 
               <blockquote className="w-full pl-0.5">
                 <p
-                  className={`font-serif font-normal break-words transition-transform duration-300 group-hover:translate-x-[1px] tracking-[-0.015em] ${
+                  className={`font-serif font-normal break-words tracking-[-0.015em] ${
                     msgLength < 80
-                      ? "text-[20px] sm:text-[23px] leading-[1.4]"
-                      : "text-[17px] sm:text-[19.5px] leading-[1.46]"
+                      ? "text-[20px] sm:text-[22px] leading-[1.4]"
+                      : "text-[17px] sm:text-[19px] leading-[1.46]"
                   }`}
                   style={{ color: palette.text }}
                 >
@@ -339,12 +545,60 @@ export default function MessageCard({
               </blockquote>
             </div>
 
+            {/* In-Place Accordion Unfolding Section */}
+            <div
+              className="grid transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+              style={{
+                gridTemplateRows: isExpanded ? "1fr" : "0fr",
+              }}
+            >
+              <div className="overflow-hidden">
+                <div className="pt-4 border-t border-white/[0.08] space-y-3.5">
+                  <div className="grid grid-cols-2 gap-2 text-[9px] font-mono uppercase tracking-[0.16em]" style={{ color: palette.muted }}>
+                    <div>
+                      <span className="opacity-50 block">LETTER ORIGIN</span>
+                      <span className="text-[#EDE8E0]">ANONYMOUS</span>
+                    </div>
+                    <div>
+                      <span className="opacity-50 block">DATE WITNESSED</span>
+                      <span className="text-[#EDE8E0]">{dateStr}</span>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 flex items-center justify-between gap-2">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (onOpenFullEntry) onOpenFullEntry();
+                      }}
+                      className="press-tactile font-mono text-[9px] uppercase tracking-[0.18em] px-3.5 py-1.5 rounded-full border border-white/[0.18] hover:border-[#EDE8E0] bg-white/[0.05] hover:bg-white/[0.1] text-[#EDE8E0] transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                    >
+                      <span>READ IN SOLITARY VIEW</span>
+                      <span className="text-[#C29B68]">↗</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (onToggleExpand) onToggleExpand();
+                      }}
+                      className="font-mono text-[9px] uppercase tracking-[0.16em] text-[#8E877C] hover:text-[#EDE8E0] cursor-pointer"
+                    >
+                      FOLD LETTER —
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Footer: LOVE · UNSAID */}
             <div className="pt-3 flex items-center justify-between border-t border-white/[0.07]">
               <div className="flex items-center gap-2">
                 <span
-                  className="font-mono text-[9px] uppercase tracking-[0.18em] font-medium opacity-80"
-                  style={{ color: palette.muted }}
+                  className="font-mono text-[9px] uppercase tracking-[0.18em] font-medium"
+                  style={{ color: isInspecting ? palette.accent : palette.muted }}
                 >
                   {emotionDisplay}
                 </span>
@@ -363,18 +617,20 @@ export default function MessageCard({
               </div>
 
               <span
-                className="font-mono text-[10px] tracking-widest opacity-35 group-hover:opacity-80 transition-opacity"
-                style={{ color: palette.muted }}
-                aria-hidden="true"
+                className="font-mono text-[9px] tracking-widest transition-opacity duration-250"
+                style={{
+                  color: palette.accent,
+                  opacity: isExpanded ? 1 : isHovered ? 0.9 : 0.45,
+                }}
               >
-                ···
+                {isExpanded ? "UNFOLDED" : "INSPECT ↘"}
               </span>
             </div>
           </div>
         )}
 
         {/* ===================================================================
-            VARIANT 4: FEATURED FRAGMENT (Generous Editorial Centerpiece)
+            VARIANT 4: FEATURED FRAGMENT (Editorial Centerpiece)
             =================================================================== */}
         {variant === "featured-fragment" && (
           <div className="flex flex-col justify-between h-full p-7 sm:p-9 space-y-6">
@@ -398,21 +654,33 @@ export default function MessageCard({
               </span>
             </div>
 
-            {/* Body: Recipient & High-Impact Serif Typography */}
+            {/* Body: Recipient & The "TO" Rule */}
             <div className="space-y-2.5 flex-1 flex flex-col justify-center py-2">
-              <div
-                className="font-mono text-[10px] uppercase tracking-[0.18em] font-medium opacity-75"
-                style={{ color: palette.muted }}
-              >
-                TO: {recipientDisplay}
+              <div>
+                <span
+                  className="font-mono text-[10px] uppercase tracking-[0.18em] font-medium transition-colors duration-300"
+                  style={{ color: isInspecting ? palette.accent : palette.muted }}
+                >
+                  TO: {recipientDisplay}
+                </span>
+                {/* The "TO" Rule: 30% default, expands to 100% on inspect */}
+                <div
+                  className="h-[1px] mt-1 transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                  style={{
+                    width: isInspecting ? "100%" : "30%",
+                    backgroundColor: isInspecting ? palette.accent : "rgba(255, 255, 255, 0.12)",
+                    opacity: isInspecting ? 0.85 : 0.4,
+                  }}
+                  aria-hidden="true"
+                />
               </div>
 
-              <blockquote className="w-full">
+              <blockquote className="w-full pt-1">
                 <p
-                  className={`font-serif font-normal break-words transition-transform duration-300 group-hover:translate-x-[2px] tracking-[-0.018em] ${
+                  className={`font-serif font-normal break-words tracking-[-0.018em] ${
                     msgLength < 90
-                      ? "text-[26px] sm:text-[32px] md:text-[35px] leading-[1.26]"
-                      : "text-[21px] sm:text-[25px] md:text-[28px] leading-[1.34]"
+                      ? "text-[26px] sm:text-[31px] md:text-[34px] leading-[1.26]"
+                      : "text-[21px] sm:text-[24px] md:text-[27px] leading-[1.34]"
                   }`}
                   style={{ color: palette.text }}
                 >
@@ -421,12 +689,60 @@ export default function MessageCard({
               </blockquote>
             </div>
 
+            {/* In-Place Accordion Unfolding Section */}
+            <div
+              className="grid transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
+              style={{
+                gridTemplateRows: isExpanded ? "1fr" : "0fr",
+              }}
+            >
+              <div className="overflow-hidden">
+                <div className="pt-4 border-t border-white/[0.08] space-y-3.5">
+                  <div className="grid grid-cols-2 gap-3 text-[9.5px] font-mono uppercase tracking-[0.16em]" style={{ color: palette.muted }}>
+                    <div>
+                      <span className="opacity-50 block">RECORD CLASSIFICATION</span>
+                      <span className="text-[#EDE8E0]">SELECTION · {emotionDisplay}</span>
+                    </div>
+                    <div>
+                      <span className="opacity-50 block">RECORDED TIMESTAMP</span>
+                      <span className="text-[#EDE8E0]">{dateStr}</span>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 flex items-center justify-between gap-3">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (onOpenFullEntry) onOpenFullEntry();
+                      }}
+                      className="press-tactile font-mono text-[9.5px] uppercase tracking-[0.18em] px-4 py-2 rounded-full border border-white/[0.2] hover:border-[#EDE8E0] bg-white/[0.06] hover:bg-white/[0.12] text-[#EDE8E0] transition-all flex items-center gap-2 cursor-pointer shadow-md"
+                    >
+                      <span>READ IN SOLITARY VIEW</span>
+                      <span className="text-[#C29B68]">↗</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (onToggleExpand) onToggleExpand();
+                      }}
+                      className="font-mono text-[9px] uppercase tracking-[0.16em] text-[#8E877C] hover:text-[#EDE8E0] cursor-pointer"
+                    >
+                      FOLD RECORD —
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Footer: Rich Archival Provenance */}
             <div className="pt-4 flex items-center justify-between border-t border-white/[0.07]">
               <div className="flex items-center gap-3">
                 <span
-                  className="font-mono text-[9.5px] uppercase tracking-[0.2em] font-medium opacity-80"
-                  style={{ color: palette.muted }}
+                  className="font-mono text-[9.5px] uppercase tracking-[0.2em] font-medium"
+                  style={{ color: isInspecting ? palette.accent : palette.muted }}
                 >
                   {emotionDisplay}
                 </span>
@@ -445,11 +761,11 @@ export default function MessageCard({
               </div>
 
               <div
-                className="font-mono text-[9.5px] uppercase tracking-[0.18em] flex items-center gap-1.5 transition-colors group-hover:text-[#EDE8E0]"
+                className="font-mono text-[9.5px] uppercase tracking-[0.18em] flex items-center gap-1.5 transition-colors"
                 style={{ color: palette.accent }}
               >
-                <span>READ IN SOLITARY VIEW</span>
-                <span>→</span>
+                <span>{isExpanded ? "UNFOLDED" : "READ IN SOLITARY VIEW"}</span>
+                <span>{isExpanded ? "↑" : "→"}</span>
               </div>
             </div>
           </div>
@@ -458,4 +774,3 @@ export default function MessageCard({
     </div>
   );
 }
-

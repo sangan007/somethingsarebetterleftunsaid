@@ -107,9 +107,10 @@ export default function Navigation({
           <button
             id="btnOpenWrite"
             onClick={onOpenWrite}
-            className="font-mono text-[9px] md:text-[9.5px] uppercase tracking-[0.18em] text-[#EDE8E0] border border-[rgba(255,255,255,0.16)] hover:border-[#EDE8E0] px-4 md:px-5 py-2 md:py-2.5 rounded-full transition-all duration-250 bg-transparent hover:bg-white/[0.04] cursor-pointer whitespace-nowrap"
+            className="group press-tactile font-mono text-[9px] md:text-[9.5px] uppercase tracking-[0.18em] text-[#EDE8E0] border border-[rgba(255,255,255,0.16)] hover:border-[#EDE8E0] px-4 md:px-5 py-2 md:py-2.5 rounded-full transition-all duration-300 bg-transparent hover:bg-white/[0.04] cursor-pointer whitespace-nowrap flex items-center gap-1.5"
           >
-            + Leave Something Unsaid
+            <span className="inline-block text-[#C29B68] transition-transform duration-300 group-hover:rotate-45 font-medium">+</span>
+            <span>Leave Something Unsaid</span>
           </button>
         </div>
 

@@ -477,11 +477,19 @@ function LeadArchivalFragment({ message, index, onClick }: FragmentProps) {
 
         {/* Content: Recipient + Large Editorial Typography */}
         <div className="py-8 sm:py-10 space-y-3">
-          <div
-            className="font-mono text-[10.5px] uppercase tracking-[0.2em] font-medium opacity-80"
-            style={{ color: palette.muted }}
-          >
-            TO: {recipient}
+          <div>
+            <div
+              className="font-mono text-[10.5px] uppercase tracking-[0.2em] font-medium opacity-80"
+              style={{ color: palette.muted }}
+            >
+              TO: {recipient}
+            </div>
+            {/* The "TO" Rule: 30% default, expands to 100% on hover */}
+            <div
+              className="h-[1px] mt-1.5 transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] w-[30%] group-hover:w-full"
+              style={{ backgroundColor: palette.accent || "#C29B68", opacity: 0.75 }}
+              aria-hidden="true"
+            />
           </div>
 
           <blockquote className="w-full">
@@ -570,11 +578,19 @@ function EditorialSlip({ message, index, onClick }: FragmentProps) {
         </div>
 
         <div className="space-y-1.5 py-1">
-          <div
-            className="font-mono text-[9.5px] uppercase tracking-[0.16em] font-medium opacity-75"
-            style={{ color: palette.muted }}
-          >
-            TO: {recipient}
+          <div>
+            <div
+              className="font-mono text-[9.5px] uppercase tracking-[0.16em] font-medium opacity-75"
+              style={{ color: palette.muted }}
+            >
+              TO: {recipient}
+            </div>
+            {/* The "TO" Rule: 30% default, expands to 100% on hover */}
+            <div
+              className="h-[1px] mt-1 transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] w-[30%] group-hover:w-full"
+              style={{ backgroundColor: palette.accent || "#C29B68", opacity: 0.75 }}
+              aria-hidden="true"
+            />
           </div>
 
           <blockquote className="w-full">
@@ -635,9 +651,16 @@ function HorizontalLedgerFragment({ message, index, onClick }: FragmentProps) {
           <span className="font-mono text-[9.5px] uppercase tracking-[0.2em] text-[#8E877C]">
             {accession}
           </span>
-          <span className="font-mono text-[9.5px] uppercase tracking-[0.18em] text-[#EDE8E0] font-medium">
-            TO: {recipient}
-          </span>
+          <div className="relative inline-block">
+            <span className="font-mono text-[9.5px] uppercase tracking-[0.18em] text-[#EDE8E0] font-medium">
+              TO: {recipient}
+            </span>
+            <div
+              className="h-[1px] mt-0.5 transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] w-[30%] group-hover:w-full"
+              style={{ backgroundColor: palette.accent || "#C29B68", opacity: 0.75 }}
+              aria-hidden="true"
+            />
+          </div>
         </div>
 
         <blockquote className="flex-1 md:px-8">

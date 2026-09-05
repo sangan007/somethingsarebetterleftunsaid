@@ -12,11 +12,8 @@ interface JournalSectionProps {
   onNavigateHome?: () => void;
 }
 
-export default function JournalSection({
-  initialArticleSlug = null,
-  archiveMessages = [],
-  onNavigateHome,
-}: JournalSectionProps) {
+export default function JournalSection(props: JournalSectionProps) {
+  const { initialArticleSlug = null, archiveMessages = [] } = props;
   const [activeSlug, setActiveSlug] = useState<string | null>(initialArticleSlug);
 
   // Sync initial slug from URL params if present

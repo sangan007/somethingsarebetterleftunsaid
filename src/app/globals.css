@@ -20,6 +20,7 @@
   /* Spring physics & motion */
   --ease-editorial: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-soft: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-archival: cubic-bezier(0.22, 1, 0.36, 1);
 
   /* Safe Insets */
   --safe-top: env(safe-area-inset-top, 0px);
@@ -151,6 +152,62 @@ textarea:focus-visible {
 .btn-editorial:hover {
   border-color: var(--ink-primary);
   background-color: rgba(255, 255, 255, 0.05);
+}
+
+.btn-editorial:active,
+button:active.press-tactile,
+.press-tactile:active {
+  transform: translateY(1px);
+}
+
+/* Archival Hover Lift (Desktop only) */
+@media (hover: hover) {
+  .card-archival-lift {
+    transition: transform 350ms var(--ease-archival), box-shadow 350ms var(--ease-archival), border-color 350ms var(--ease-archival), background-color 350ms var(--ease-archival);
+  }
+  .card-archival-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Subtle Text Link Reveal */
+.link-archival {
+  position: relative;
+  display: inline-block;
+  color: var(--ink-secondary);
+  transition: color 250ms var(--ease-archival);
+}
+.link-archival::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background-color: var(--accent-gold);
+  transition: width 350ms var(--ease-archival);
+}
+.link-archival:hover {
+  color: var(--ink-primary);
+}
+.link-archival:hover::after {
+  width: 100%;
+}
+
+/* Reduced Motion Respect */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .card-archival-lift:hover {
+    transform: none !important;
+  }
 }
 
 /* Background Receding in Focused Reading Modes */

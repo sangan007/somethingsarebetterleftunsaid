@@ -1,5 +1,5 @@
 import { MessageData } from "@/components/MessageCard";
-import { getPaletteById, ARCHIVAL_PALETTES } from "./palettes";
+import { ARCHIVAL_PALETTES } from "./palettes";
 
 export interface RawFirestoreDoc {
   id?: string;

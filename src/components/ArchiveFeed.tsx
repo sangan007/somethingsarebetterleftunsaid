@@ -41,6 +41,17 @@ export default function ArchiveFeed({
   const [selectedPaletteId, setSelectedPaletteId] = useState<string | null>(null);
   const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [expandedCardKey, setExpandedCardKey] = useState<string | null>(null);
+  const [isInitialMount, setIsInitialMount] = useState<boolean>(true);
+
+  React.useEffect(() => {
+    setIsInitialMount(false);
+  }, []);
+
+  const handleToggleExpand = (key: string) => {
+    setExpandedCardKey((prev) => (prev === key ? null : key));
+  };
+
   const itemsPerPage = 12;
 
   const term = searchTerm.toLowerCase().trim();
@@ -253,92 +264,68 @@ export default function ArchiveFeed({
 
       {/* Error State */}
       {error && !loading && (
-        <div className="text-center py-24 max-w-md mx-auto space-y-4 border border-[rgba(255,255,255,0.08)] bg-[#141312] p-8 rounded-sm">
-          <span className="font-mono text-[9px] uppercase tracking-[0.24em] text-[#D9828A] block">
-            [ Connection Notice ]
+        <div className="text-center py-20 max-w-md mx-auto space-y-4 border border-white/[0.08] bg-[#141312] p-8 rounded-[2px]">
+          <span className="font-mono text-[9px] uppercase tracking-[0.24em] text-[#C29B68] block">
+            [ ARCHIVAL NOTICE ]
           </span>
           <h3 className="font-serif text-2xl text-[#EDE8E0]">
-            The Archive Could Not Be Reached
+            ARCHIVE TEMPORARILY UNAVAILABLE
           </h3>
-          <p className="font-sans text-xs text-[#8E877C] leading-relaxed">
-            {error}
+          <p className="font-serif italic text-xs text-[#8E877C] leading-relaxed">
+            The records could not be retrieved from custody at this moment.
           </p>
-          {onRetry && (
+          <div className="pt-2">
             <button
-              onClick={onRetry}
-              className="font-mono text-[10px] uppercase tracking-widest px-5 py-2.5 border border-[#EDE8E0] bg-[#EDE8E0] text-[#0C0B0A] rounded-full hover:bg-white transition-all cursor-pointer font-medium"
+              onClick={onRetry || (() => window.location.reload())}
+              className="press-tactile font-mono text-[9.5px] uppercase tracking-[0.2em] px-5 py-2.5 border border-white/[0.2] hover:border-white/50 text-[#EDE8E0] bg-white/[0.04] hover:bg-white/[0.08] rounded-full transition-all cursor-pointer"
             >
-              Retry Connection
+              TRY AGAIN →
             </button>
-          )}
+          </div>
         </div>
       )}
 
-      {/* Loading Skeleton Placeholders */}
+      {/* Loading State: Quiet Archival Loading */}
       {loading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-9 md:gap-10 lg:gap-11 pt-6">
-          {/* Skeleton 1 */}
-          <div className="animate-pulse flex flex-col justify-between rounded-[2px] p-6 sm:p-7 min-h-[210px] border border-[rgba(255,255,255,0.06)] bg-[#141312]">
-            <div className="flex items-center justify-between">
-              <div className="flex gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-white/[0.1]" />
-                <div className="w-2.5 h-2.5 rounded-full bg-white/[0.08]" />
-                <div className="w-2.5 h-2.5 rounded-full bg-white/[0.06]" />
-                <div className="w-2.5 h-2.5 rounded-full bg-white/[0.04] border border-white/[0.08]" />
-              </div>
-              <div className="h-2.5 w-14 rounded-xs bg-white/[0.06]" />
+        <div className="space-y-8 pt-4">
+          <div className="flex flex-col items-center justify-center py-12 space-y-3.5 text-center">
+            <span className="font-mono text-[9.5px] uppercase tracking-[0.26em] text-[#8C827A] animate-pulse">
+              ACCESSING ARCHIVE
+            </span>
+            <div className="w-20 h-[1px] bg-white/[0.1] overflow-hidden relative">
+              <div className="absolute inset-0 bg-[#C29B68]/60 w-1/2 animate-pulse" />
             </div>
-            <div className="space-y-2.5 my-3">
-              <div className="h-2 w-16 rounded-xs bg-white/[0.06]" />
-              <div className="h-4 w-5/6 rounded-xs bg-white/[0.08]" />
-              <div className="h-4 w-3/6 rounded-xs bg-white/[0.06]" />
-            </div>
-            <div className="flex justify-between items-center pt-3 border-t border-white/[0.04]">
-              <div className="h-2 w-12 rounded-xs bg-white/[0.06]" />
-              <div className="h-2 w-6 rounded-xs bg-white/[0.06]" />
-            </div>
+            <p className="font-serif italic text-xs text-[#736B63]">
+              Retrieving records from the quiet repository...
+            </p>
           </div>
 
-          {/* Skeleton 2 */}
-          <div className="md:col-span-2 animate-pulse flex flex-col justify-between rounded-[2px] p-7 sm:p-8 min-h-[250px] border border-[rgba(255,255,255,0.06)] bg-[#141312]">
-            <div className="flex items-center justify-between border-b border-white/[0.04] pb-3">
-              <div className="flex items-center gap-2">
-                <div className="flex gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-full bg-white/[0.1]" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-white/[0.08]" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-white/[0.06]" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-white/[0.04]" />
+          {/* Subtle skeleton structure */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-9 md:gap-10 lg:gap-11">
+            {[1, 2, 3].map((n) => (
+              <div
+                key={n}
+                className="rounded-[2px] p-6 min-h-[200px] border border-[rgba(255,255,255,0.05)] bg-[#141312]/60 animate-pulse flex flex-col justify-between space-y-4"
+              >
+                <div className="flex justify-between items-center">
+                  <div className="flex gap-1.5">
+                    <div className="w-2 h-2 rounded-full bg-white/[0.08]" />
+                    <div className="w-2 h-2 rounded-full bg-white/[0.06]" />
+                    <div className="w-2 h-2 rounded-full bg-white/[0.04]" />
+                  </div>
+                  <div className="h-2 w-16 bg-white/[0.06] rounded-xs" />
                 </div>
-                <div className="h-2.5 w-24 rounded-xs bg-white/[0.06]" />
+                <div className="space-y-2">
+                  <div className="h-2 w-20 bg-white/[0.06] rounded-xs" />
+                  <div className="h-4 w-5/6 bg-white/[0.08] rounded-xs" />
+                  <div className="h-4 w-3/5 bg-white/[0.06] rounded-xs" />
+                </div>
+                <div className="pt-2 border-t border-white/[0.04] flex justify-between">
+                  <div className="h-2 w-14 bg-white/[0.05] rounded-xs" />
+                  <div className="h-2 w-10 bg-white/[0.05] rounded-xs" />
+                </div>
               </div>
-              <div className="h-2.5 w-14 rounded-xs bg-white/[0.06]" />
-            </div>
-            <div className="space-y-3 my-4">
-              <div className="h-2 w-20 rounded-xs bg-white/[0.06]" />
-              <div className="h-6 w-11/12 rounded-xs bg-white/[0.08]" />
-              <div className="h-6 w-4/6 rounded-xs bg-white/[0.06]" />
-            </div>
-            <div className="flex justify-between items-center pt-3 border-t border-white/[0.04]">
-              <div className="h-2.5 w-20 rounded-xs bg-white/[0.06]" />
-              <div className="h-2.5 w-28 rounded-xs bg-white/[0.06]" />
-            </div>
-          </div>
-
-          {/* Skeleton 3 */}
-          <div className="animate-pulse flex flex-col justify-between rounded-[2px] p-5 min-h-[160px] border border-[rgba(255,255,255,0.06)] bg-[#141312]">
-            <div className="flex items-center justify-between">
-              <div className="flex gap-1">
-                <div className="w-2 h-2 rounded-full bg-white/[0.08]" />
-                <div className="w-2 h-2 rounded-full bg-white/[0.06]" />
-                <div className="w-2 h-2 rounded-full bg-white/[0.04]" />
-              </div>
-              <div className="h-2 w-12 rounded-xs bg-white/[0.06]" />
-            </div>
-            <div className="space-y-2 my-2">
-              <div className="h-2 w-14 rounded-xs bg-white/[0.06]" />
-              <div className="h-5 w-4/5 rounded-xs bg-white/[0.08]" />
-            </div>
-            <div className="h-2 w-12 rounded-xs bg-white/[0.06]" />
+            ))}
           </div>
         </div>
       )}
@@ -349,12 +336,18 @@ export default function ArchiveFeed({
           {pageMessages.map((msg, index) => {
             const originalIndex = messages.indexOf(msg);
             const cardIndex = originalIndex !== -1 ? originalIndex : startIndex + index;
+            const cardKey = msg.id || (msg.createdAt?.seconds ? `${msg.createdAt.seconds}-${cardIndex}` : `${cardIndex}`);
+            const isExpanded = expandedCardKey === cardKey;
+
             return (
               <MessageCard
-                key={msg.id || (msg.createdAt?.seconds ? `${msg.createdAt.seconds}-${cardIndex}` : cardIndex)}
+                key={cardKey}
                 data={msg}
                 index={cardIndex}
-                onClick={() => onCardClick(cardIndex)}
+                isExpanded={isExpanded}
+                onToggleExpand={() => handleToggleExpand(cardKey)}
+                onOpenFullEntry={() => onCardClick(cardIndex)}
+                staggerArrival={isInitialMount}
               />
             );
           })}
@@ -376,26 +369,32 @@ export default function ArchiveFeed({
         </div>
       )}
 
-      {/* Filter Yielded 0 Results State */}
+      {/* Filter / Search Yielded 0 Results State */}
       {!loading && !error && messages.length > 0 && pageMessages.length === 0 && (
-        <div className="text-center py-28 max-w-md mx-auto space-y-4">
-          <p className="font-serif italic text-2xl text-[#EDE8E0]">
-            No records matched your search.
+        <div className="text-center py-20 max-w-md mx-auto space-y-4">
+          <span className="font-mono text-[9px] uppercase tracking-[0.24em] text-[#736B63] block">
+            [ ARCHIVAL INVENTORY ]
+          </span>
+          <h3 className="font-serif text-2xl sm:text-3xl text-[#EDE8E0] tracking-[-0.015em]">
+            NO RECORDS FOUND
+          </h3>
+          <p className="font-serif italic text-sm text-[#A8A196] leading-relaxed">
+            Nothing in the archive matches this search. Try another word, another memory, or simply leave the field empty.
           </p>
-          <p className="font-sans text-xs text-[#8E877C] leading-relaxed font-light">
-            Perhaps these words were never spoken under this specific sentiment.
-          </p>
-          <button
-            onClick={() => {
-              onSearchChange("");
-              setSelectedResonance("ALL");
-              setSelectedPaletteId(null);
-              setCurrentPage(1);
-            }}
-            className="font-mono text-[10px] uppercase tracking-widest text-[#EDE8E0] underline underline-offset-4 hover:text-[#C29B68] cursor-pointer pt-2"
-          >
-            Clear All Filters
-          </button>
+          <div className="pt-2">
+            <button
+              onClick={() => {
+                onSearchChange("");
+                setSelectedResonance("ALL");
+                setSelectedPaletteId(null);
+                setCurrentPage(1);
+              }}
+              className="press-tactile font-mono text-[9.5px] uppercase tracking-[0.2em] text-[#C29B68] hover:text-[#EDE8E0] border border-white/[0.12] hover:border-white/[0.25] px-4 py-2 rounded-full transition-all cursor-pointer inline-flex items-center gap-2"
+            >
+              <span>RESET FILTERS</span>
+              <span>↺</span>
+            </button>
+          </div>
         </div>
       )}
 

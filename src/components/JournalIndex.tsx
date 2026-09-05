@@ -17,10 +17,8 @@ interface JournalIndexProps {
   archiveMessages?: MessageData[];
 }
 
-export default function JournalIndex({
-  onSelectArticle,
-  archiveMessages = [],
-}: JournalIndexProps) {
+export default function JournalIndex(props: JournalIndexProps) {
+  const { onSelectArticle } = props;
   const allEntries = useMemo(() => getAllJournalEntries(), []);
   const featuredEntry = useMemo(() => getFeaturedJournalEntry(), []);
 
