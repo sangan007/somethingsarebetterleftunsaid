@@ -1,0 +1,444 @@
+@import "tailwindcss";
+
+:root {
+  /* Nocturnal Gallery Base Tokens */
+  --bg-canvas: #0C0B0A;
+  --bg-surface: #141312;
+  --bg-surface-elevated: #1A1917;
+  --bg-paper: #181716;
+  --bg-paper-hover: #22201D;
+  --ink-primary: #EDE8E0;
+  --ink-secondary: #948E84;
+  --ink-whisper: #5E584E;
+  --ink-rule: rgba(255, 255, 255, 0.07);
+  --ink-rule-strong: rgba(255, 255, 255, 0.14);
+  --accent-gold: #C29B68;
+
+  /* Backward compatibility token */
+  --bg-parchment: #0C0B0A;
+
+  /* Spring physics & motion */
+  --ease-editorial: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-soft: cubic-bezier(0.25, 1, 0.5, 1);
+
+  /* Safe Insets */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  /* Font Families */
+  --font-editorial: var(--font-newsreader), var(--font-eb-garamond), Garamond, Georgia, serif;
+  --font-grotesk: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-catalog: var(--font-jetbrains-mono), Menlo, monospace;
+}
+
+/* Base Document Styling */
+body {
+  background-color: var(--bg-canvas);
+  color: var(--ink-primary);
+  font-family: var(--font-grotesk);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+}
+
+/* Accessibility Focus States */
+*:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(194, 155, 104, 0.6);
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: none;
+  border-color: var(--accent-gold);
+}
+
+/* Typography Utility Classes */
+.font-masthead {
+  font-family: var(--font-newsreader), Georgia, serif;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+}
+
+.font-serif {
+  font-family: var(--font-editorial);
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  font-variant-numeric: oldstyle-nums proportional-nums;
+}
+
+.font-sans {
+  font-family: var(--font-grotesk);
+  letter-spacing: -0.01em;
+}
+
+.font-mono {
+  font-family: var(--font-catalog);
+  font-feature-settings: "zero" 1;
+}
+
+/* Editorial Dividers */
+.rule-hairline {
+  height: 1px;
+  background-color: var(--ink-rule);
+  width: 100%;
+}
+
+.rule-hairline-strong {
+  height: 1px;
+  background-color: var(--ink-rule-strong);
+  width: 100%;
+}
+
+/* Catalog Numbers & Monogram Meta */
+.catalog-meta {
+  font-family: var(--font-catalog);
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+
+/* Navigation Links */
+.nav-editorial-link {
+  font-family: var(--font-grotesk);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--ink-secondary);
+  transition: color 0.25s var(--ease-editorial);
+  cursor: pointer;
+  position: relative;
+  padding: 4px 0;
+}
+
+.nav-editorial-link:hover {
+  color: var(--ink-primary);
+}
+
+.nav-editorial-link.active {
+  color: var(--ink-primary);
+  font-weight: 500;
+}
+
+.nav-editorial-link.active::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--ink-primary);
+}
+
+/* Editorial Buttons */
+.btn-editorial {
+  font-family: var(--font-catalog);
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  padding: 0.5rem 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: transparent;
+  color: var(--ink-primary);
+  border-radius: 9999px;
+  transition: all 0.25s var(--ease-editorial);
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.btn-editorial:hover {
+  border-color: var(--ink-primary);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Background Receding in Focused Reading Modes */
+main, nav, header, footer {
+  transition: filter 0.6s var(--ease-editorial), opacity 0.6s var(--ease-editorial), transform 0.6s var(--ease-editorial);
+}
+
+body.mode-focused main,
+body.mode-focused nav,
+body.mode-focused header,
+body.mode-focused footer {
+  filter: blur(8px) opacity(0.15);
+  transform: scale(0.985);
+  pointer-events: none;
+}
+
+/* View Section Animations */
+.view-section {
+  display: none;
+  opacity: 0;
+}
+
+.view-section.active {
+  display: block;
+  opacity: 1;
+  animation: editorialFadeIn 0.8s var(--ease-editorial) forwards;
+}
+
+@keyframes editorialFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================================================
+   PALETTE DEFINITIONS (10 Nocturnal Archival Palettes)
+   ========================================================================== */
+
+/* 01. Warm Parchment (Memory) */
+.palette-parchment {
+  --card-bg: #171513;
+  --card-underlay: #110F0E;
+  --card-border: rgba(212, 163, 115, 0.22);
+  --card-ink: #EDE8E0;
+  --card-muted: #9E968A;
+  --card-accent: #D4A373;
+  --card-shadow: rgba(0, 0, 0, 0.5);
+}
+
+/* 02. Dusty Rose (Love, Tenderness) */
+.palette-rose {
+  --card-bg: #191416;
+  --card-underlay: #130E10;
+  --card-border: rgba(217, 130, 138, 0.24);
+  --card-ink: #EDE8E0;
+  --card-muted: #A89698;
+  --card-accent: #E28E95;
+  --card-shadow: rgba(0, 0, 0, 0.5);
+}
+
+/* 03. Terracotta (Anger, Conflict, Heat) */
+.palette-terracotta {
+  --card-bg: #191412;
+  --card-underlay: #130E0C;
+  --card-border: rgba(217, 119, 95, 0.24);
+  --card-ink: #EDE8E0;
+  --card-muted: #A89690;
+  --card-accent: #E2856E;
+  --card-shadow: rgba(0, 0, 0, 0.5);
+}
+
+/* 04. Sage (Hope, Quiet, Renewal) */
+.palette-sage {
+  --card-bg: #131814;
+  --card-underlay: #0E130F;
+  --card-border: rgba(134, 168, 138, 0.24);
+  --card-ink: #EDE8E0;
+  --card-muted: #94A396;
+  --card-accent: #98BA9C;
+  --card-shadow: rgba(0, 0, 0, 0.5);
+}
+
+/* 05. Deep Blue (Regret, Melancholy) */
+.palette-blue {
+  --card-bg: #12161E;
+  --card-underlay: #0C1016;
+  --card-border: rgba(124, 162, 204, 0.24);
+  --card-ink: #EDE8E0;
+  --card-muted: #909EAE;
+  --card-accent: #8EB2DB;
+  --card-shadow: rgba(0, 0, 0, 0.5);
+}
+
+/* 06. Forest (Family, Grief, Roots) */
+.palette-forest {
+  --card-bg: #131914;
+  --card-underlay: #0D130E;
+  --card-border: rgba(118, 166, 128, 0.24);
+  --card-ink: #EDE8E0;
+  --card-muted: #92A696;
+  --card-accent: #87B891;
+  --card-shadow: rgba(0, 0, 0, 0.5);
+}
+
+/* 07. Dusty Plum (Longing, Yearning) */
+.palette-plum {
+  --card-bg: #18131B;
+  --card-underlay: #120D14;
+  --card-border: rgba(179, 122, 194, 0.24);
+  --card-ink: #EDE8E0;
+  --card-muted: #A494A8;
+  --card-accent: #C289D1;
+  --card-shadow: rgba(0, 0, 0, 0.5);
+}
+
+/* 08. Ochre (Gratitude, Warmth) */
+.palette-ochre {
+  --card-bg: #181510;
+  --card-underlay: #120F0A;
+  --card-border: rgba(212, 165, 89, 0.24);
+  --card-ink: #EDE8E0;
+  --card-muted: #A69B88;
+  --card-accent: #DFB269;
+  --card-shadow: rgba(0, 0, 0, 0.5);
+}
+
+/* 09. Faded Brick (Unsaid, Raw, Regret) */
+.palette-brick {
+  --card-bg: #1A1212;
+  --card-underlay: #130C0C;
+  --card-border: rgba(214, 118, 118, 0.24);
+  --card-ink: #EDE8E0;
+  --card-muted: #A89494;
+  --card-accent: #E08585;
+  --card-shadow: rgba(0, 0, 0, 0.5);
+}
+
+/* 10. Midnight Ink (Secrets, Nocturne) */
+.palette-midnight {
+  --card-bg: #11141B;
+  --card-underlay: #0B0D12;
+  --card-border: rgba(122, 141, 174, 0.24);
+  --card-ink: #EDE8E0;
+  --card-muted: #96A0B0;
+  --card-accent: #8DA0C2;
+  --card-shadow: rgba(0, 0, 0, 0.6);
+}
+
+/* ==========================================================================
+   ARCHIVAL FRAGMENT CARD ARCHITECTURE (THE UNSAID FRAGMENT)
+   ========================================================================== */
+
+.archival-fragment {
+  position: relative;
+  background-color: var(--card-bg, #141312);
+  border: 1px solid var(--card-border, rgba(255, 255, 255, 0.08));
+  color: var(--card-ink, #EDE8E0);
+  box-shadow: 0 4px 24px -2px var(--card-shadow, rgba(0, 0, 0, 0.5)), 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: transform 0.4s var(--ease-editorial), box-shadow 0.4s var(--ease-editorial), border-color 0.3s;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.archival-fragment:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px -6px var(--card-shadow, rgba(0, 0, 0, 0.6)), 0 2px 6px rgba(0, 0, 0, 0.4);
+  border-color: var(--card-accent, #C29B68);
+}
+
+/* Archival Ledger Format */
+.archival-ledger {
+  position: relative;
+  border-top: 1px solid var(--ink-rule);
+  border-bottom: 1px solid var(--ink-rule);
+  padding: 2.25rem 1rem;
+  transition: background-color 0.3s var(--ease-editorial);
+  cursor: pointer;
+}
+
+.archival-ledger:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* ==========================================================================
+   SOLITARY READING VIEW
+   ========================================================================== */
+#full-screen-view {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s var(--ease-editorial), visibility 0.5s step-end;
+  padding: 2rem 1.5rem;
+  padding-top: calc(max(2rem, var(--safe-top)));
+  padding-bottom: calc(max(2rem, var(--safe-bottom)));
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+#full-screen-view.active {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.5s var(--ease-editorial), visibility 0s;
+}
+
+/* ==========================================================================
+   SUBMISSION MODAL (THE QUIET RITUAL)
+   ========================================================================== */
+#writeModal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background-color: var(--bg-canvas);
+  overflow-y: auto;
+  transition: opacity 0.4s var(--ease-editorial);
+}
+
+/* ==========================================================================
+   SPLASH SCREEN & EMOTIONAL LAYERS
+   ========================================================================== */
+#splash-screen {
+  position: fixed;
+  inset: 0;
+  background-color: var(--bg-canvas);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 1.2s var(--ease-editorial), visibility 1.2s step-end;
+}
+
+#splash-screen.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+#splash-text {
+  font-family: var(--font-editorial);
+  font-style: italic;
+  font-size: clamp(1.75rem, 4.5vw, 2.75rem);
+  color: var(--ink-primary);
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 1.4s var(--ease-editorial), transform 1.4s var(--ease-editorial);
+  text-align: center;
+  max-width: 85%;
+  line-height: 1.35;
+}
+
+#splash-text.visible {
+  opacity: 0.95;
+  transform: translateY(0);
+}
+
+#emotional-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 1.2s var(--ease-editorial);
+}
+
+#emotional-layer.active {
+  opacity: 1;
+}
+
+#emotional-text {
+  font-family: var(--font-editorial);
+  font-style: italic;
+  font-size: clamp(1.25rem, 3vw, 1.85rem);
+  color: var(--ink-primary);
+  background-color: rgba(20, 19, 18, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--ink-rule);
+  padding: 1.5rem 2.5rem;
+  border-radius: 9999px;
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+}

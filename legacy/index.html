@@ -17,7 +17,13 @@
             --bg-void: #050505;
             --text-main: #f3f3f3;
             --text-muted: rgba(243, 243, 243, 0.4);
-            --soft-ease: cubic-bezier(0.19, 1, 0.22, 1);
+            
+            /* Cinematic Spring & Motion Physics */
+            --spring-craft: cubic-bezier(0.16, 1, 0.3, 1);      /* Elegant, fluid, luxury ease (Vercel/Apple) */
+            --spring-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);  /* Natural tactile overshoot (Linear) */
+            --spring-gentle: cubic-bezier(0.19, 1, 0.22, 1);    /* Soft deceleration */
+            
+            --soft-ease: var(--spring-craft);
             --safe-top: env(safe-area-inset-top);
             --safe-bottom: env(safe-area-inset-bottom);
         }
@@ -29,12 +35,14 @@
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
+            line-height: 1.6;
         }
 
         /* --- ACCESSIBILITY & FOCUS --- */
         *:focus-visible {
             outline: none;
-            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4);
+            transition: box-shadow 0.2s var(--spring-craft);
         }
         
         button:focus-visible, input:focus-visible, textarea:focus-visible {
@@ -45,60 +53,86 @@
         /* --- PRODUCT NAVIGATION --- */
         .nav-link {
             font-family: 'Inter', sans-serif;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
+            font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.12em;
             color: var(--text-muted);
-            transition: color 0.3s ease;
+            transition: color 0.4s var(--spring-craft), transform 0.4s var(--spring-craft);
             cursor: pointer;
             position: relative;
             padding: 8px;
+            display: inline-flex;
+            align-items: center;
         }
         .nav-link:hover, .nav-link.active {
             color: var(--text-main);
         }
-        .nav-link.active::after {
+        .nav-link::after {
             content: '';
             position: absolute;
-            bottom: 4px;
+            bottom: 2px;
             left: 8px;
             right: 8px;
-            height: 1px;
+            height: 1.5px;
             background-color: var(--text-main);
-            opacity: 0.5;
+            opacity: 0;
+            transform: scaleX(0.85);
+            transition: transform 0.4s var(--spring-craft), opacity 0.4s var(--spring-craft);
+        }
+        .nav-link.active::after {
+            opacity: 0.8;
+            transform: scaleX(1);
         }
 
         /* --- BACKGROUND RECEDING EFFECT --- */
         main, nav, .md\:hidden.fixed.bottom-6 {
-            transition: filter 0.6s var(--soft-ease), transform 0.6s var(--soft-ease), opacity 0.6s ease;
+            transition: filter 0.8s var(--spring-craft), transform 0.8s var(--spring-craft), opacity 0.8s var(--spring-craft);
             transform-origin: center top;
         }
         
         body.mode-focused main, 
         body.mode-focused nav, 
         body.mode-focused .md\:hidden.fixed.bottom-6 {
-            filter: blur(8px) grayscale(80%);
-            opacity: 0.2;
-            transform: scale(0.96);
+            filter: blur(12px) grayscale(50%);
+            opacity: 0.15;
+            transform: scale(0.975) translateY(-4px);
             pointer-events: none;
         }
 
-        /* --- PAGE TRANSITIONS --- */
+        /* --- PREMIUM CINEMATIC VIEW TRANSITIONS --- */
         .view-section {
             display: none;
             opacity: 0;
-            transition: opacity 0.8s ease;
         }
         .view-section.active {
             display: block;
             opacity: 1;
-            animation: fadeView 0.8s var(--soft-ease);
         }
-        @keyframes fadeView {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Staggered layered content elements inside view sections */
+        .view-section.active > * {
+            animation: cinematicSlideUp 1.1s var(--spring-craft) both;
+        }
+        /* Layered delays for sibling children to create deep physical flow */
+        .view-section.active > *:nth-child(1) { animation-delay: 0ms; }
+        .view-section.active > *:nth-child(2) { animation-delay: 80ms; }
+        .view-section.active > *:nth-child(3) { animation-delay: 160ms; }
+        .view-section.active > *:nth-child(4) { animation-delay: 240ms; }
+
+        @keyframes cinematicSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(28px) scale(0.985);
+                filter: blur(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
         }
 
+        /* --- SPLASH SCREEN --- */
         /* --- SPLASH SCREEN --- */
         #splash-screen {
             position: fixed;
@@ -108,11 +142,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 1.2s ease-in-out, visibility 1.2s step-end;
+            transition: opacity 1.2s var(--spring-craft), transform 1.2s var(--spring-craft), visibility 1.2s step-end;
         }
         
         #splash-screen.fade-out {
             opacity: 0;
+            transform: scale(1.05);
             visibility: hidden;
             pointer-events: none;
         }
@@ -120,19 +155,20 @@
         #splash-text {
             font-family: 'EB Garamond', serif;
             font-style: italic;
-            font-size: clamp(1.5rem, 4vw, 2.5rem);
-            color: rgba(255, 255, 255, 0.9);
+            font-size: clamp(1.6rem, 5vw, 2.8rem);
+            color: rgba(255, 255, 255, 0.95);
             opacity: 0;
-            transform: translateY(15px);
-            transition: opacity 1.5s ease-out, transform 1.5s var(--soft-ease);
-            letter-spacing: 0.05em;
+            transform: translateY(20px) scale(0.99);
+            transition: opacity 1.8s var(--spring-craft), transform 1.8s var(--spring-craft), letter-spacing 1.8s var(--spring-craft);
+            letter-spacing: -0.01em;
             text-align: center;
             max-width: 80%;
         }
 
         #splash-text.visible {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
+            letter-spacing: 0.03em;
         }
 
         /* --- EMOTIONAL ACKNOWLEDGMENT LAYER --- */
@@ -145,22 +181,29 @@
             align-items: center;
             justify-content: center;
             opacity: 0;
-            transition: opacity 1.5s ease-in-out;
+            backdrop-filter: blur(0px);
+            transition: opacity 1.5s var(--spring-craft), backdrop-filter 1.5s var(--spring-craft);
         }
         
         #emotional-text {
             font-family: 'EB Garamond', serif;
             font-style: italic;
-            font-size: 1.25rem;
-            color: rgba(255, 255, 255, 0.4);
-            letter-spacing: 0.05em;
+            font-size: clamp(1.2rem, 3vw, 1.6rem);
+            color: rgba(243, 243, 243, 0.7);
+            letter-spacing: 0.02em;
             text-align: center;
-            text-shadow: 0 0 20px rgba(0,0,0,0.5);
+            text-shadow: 0 0 40px rgba(0,0,0,0.8);
             padding: 0 2rem;
+            transform: scale(0.98);
+            transition: transform 1.5s var(--spring-craft);
         }
 
         #emotional-layer.active {
             opacity: 1;
+            backdrop-filter: blur(4px);
+        }
+        #emotional-layer.active #emotional-text {
+            transform: scale(1);
         }
 
         /* --- FULL SCREEN READING VIEW --- */
@@ -172,7 +215,9 @@
             flex-direction: column;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.4s var(--soft-ease), visibility 0.4s step-end;
+            background-color: rgba(5, 5, 5, 0.98);
+            backdrop-filter: blur(20px);
+            transition: opacity 0.6s var(--spring-craft), visibility 0.6s step-end, backdrop-filter 0.6s var(--spring-craft);
             padding: 1.5rem;
             /* Safe area handling + breathing room */
             padding-top: calc(max(1.5rem, var(--safe-top)));
@@ -184,7 +229,8 @@
         #full-screen-view.active {
             opacity: 1;
             visibility: visible;
-            transition: opacity 0.4s var(--soft-ease), visibility 0s;
+            backdrop-filter: blur(40px);
+            transition: opacity 0.6s var(--spring-craft), visibility 0s, backdrop-filter 0.6s var(--spring-craft);
         }
 
         .fs-content {
@@ -204,8 +250,8 @@
             margin-top: 2rem; /* Reduced from 4rem for mobile */
             margin-bottom: 2rem;
             opacity: 0;
-            transform: translateY(-10px);
-            transition: all 0.6s 0.1s var(--soft-ease);
+            transform: translateY(-20px);
+            transition: opacity 0.8s 0.1s var(--spring-craft), transform 0.8s 0.1s var(--spring-craft);
         }
         @media (min-width: 768px) {
             .fs-header { margin-top: 4rem; } /* Restore on desktop */
@@ -215,9 +261,10 @@
         .fs-to {
             font-family: 'EB Garamond', serif;
             font-style: italic;
-            font-size: 1.5rem;
-            color: rgba(255,255,255,0.9);
+            font-size: clamp(1.4rem, 4vw, 2.2rem);
+            color: rgba(255,255,255,0.95);
             margin-bottom: 0.5rem;
+            letter-spacing: -0.015em;
         }
 
         .fs-meta {
@@ -235,10 +282,10 @@
             justify-content: center;
             padding: 1rem 0 4rem 0;
             opacity: 0;
-            transform: scale(0.98);
-            transition: all 0.7s 0.2s var(--soft-ease);
+            transform: scale(0.96) translateY(24px);
+            transition: opacity 0.8s 0.2s var(--spring-craft), transform 0.8s 0.2s var(--spring-craft);
         }
-        #full-screen-view.active .fs-body { opacity: 1; transform: scale(1); }
+        #full-screen-view.active .fs-body { opacity: 1; transform: scale(1) translateY(0); }
 
         .fs-text {
             width: 100%;
@@ -252,42 +299,69 @@
             right: 1.5rem;
             cursor: pointer;
             opacity: 0.5;
-            transition: opacity 0.3s;
+            transition: opacity 0.3s var(--spring-craft), transform 0.3s var(--spring-craft), background-color 0.3s var(--spring-craft);
             z-index: 100;
             background: rgba(255,255,255,0.08);
             border-radius: 50%;
             padding: 10px;
         }
-        .fs-close:hover { opacity: 1; background: rgba(255,255,255,0.15); }
+        .fs-close:hover { opacity: 1; background: rgba(255,255,255,0.15); transform: scale(1.08); }
+        .fs-close:active { transform: scale(0.92); }
 
         /* --- THE MODERN STRUCTURED CARD --- */
         .message-fragment {
             width: 100%;
             opacity: 0;
-            transform: scale(0.98) translateY(20px);
-            transition: opacity 0.8s ease-out, transform 0.8s var(--soft-ease);
+            transform: translateY(24px) scale(0.995);
+            transition: opacity 0.8s var(--spring-craft), transform 0.8s var(--spring-craft);
             margin-bottom: 0;
             cursor: pointer;
             -webkit-user-select: none;
             user-select: none;
         }
 
+        /* Layered tactile inner elements stagger transitions */
+        .message-fragment .card-header {
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.8s var(--spring-craft), transform 0.8s var(--spring-craft);
+        }
+        .message-fragment .card-body {
+            opacity: 0;
+            transform: translateY(14px) scale(0.995);
+            transition: opacity 0.9s 0.05s var(--spring-craft), transform 0.9s 0.05s var(--spring-craft);
+        }
+        .message-fragment .card-footer {
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity 0.8s 0.1s var(--spring-craft), transform 0.8s 0.1s var(--spring-craft);
+        }
+
+        .message-fragment.visible .card-header,
+        .message-fragment.visible .card-body,
+        .message-fragment.visible .card-footer {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
         .message-fragment:active .fragment-content {
-            transform: scale(0.98);
-            border-color: rgba(255, 255, 255, 0.4);
+            transform: scale(0.975);
+            border-color: rgba(255, 255, 255, 0.35);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
         }
 
         .message-fragment:hover .fragment-content {
-            border-color: rgba(255, 255, 255, 0.4);
-            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-8px) scale(1.015);
+            box-shadow: 0 24px 50px -12px rgba(255, 255, 255, 0.06), 0 0 50px -5px rgba(0, 0, 0, 0.8);
         }
         @media (hover: none) {
-            .message-fragment:hover .fragment-content { transform: none; }
+            .message-fragment:hover .fragment-content { transform: none; box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5); }
         }
 
         .message-fragment.visible {
             opacity: 1;
-            transform: scale(1) translateY(0);
+            transform: translateY(0) scale(1);
         }
 
         .fragment-content {
@@ -297,13 +371,13 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 12px;
             padding: 2rem;
-            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 40px -12px rgba(0,0,0,0.6);
             background-clip: padding-box;
             overflow: hidden;
-            transition: all 0.4s var(--soft-ease);
+            transition: transform 0.6s var(--spring-craft), border-color 0.4s var(--spring-craft), box-shadow 0.6s var(--spring-craft);
         }
 
         /* Dynamic Classes - Responsive Padding */
@@ -342,7 +416,7 @@
             font-size: 0.75rem;
             font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.12em;
             color: rgba(255,255,255,0.5);
             display: flex;
             flex-direction: column;
@@ -354,9 +428,10 @@
             font-family: 'EB Garamond', serif;
             font-style: italic;
             text-transform: none;
-            font-size: 1.2rem;
+            font-size: clamp(1.1rem, 2.5vw, 1.35rem);
             color: rgba(255,255,255,0.9);
             opacity: 1;
+            letter-spacing: -0.01em;
         }
 
         .header-icon {
@@ -382,25 +457,21 @@
         }
 
         /* Typography Utilities */
-        .font-sans { font-family: 'Inter', sans-serif; }
-        .font-serif { font-family: 'EB Garamond', serif; }
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .font-sans { font-family: 'Inter', sans-serif; letter-spacing: -0.015em; }
+        .font-serif { font-family: 'EB Garamond', serif; letter-spacing: -0.01em; word-spacing: 0.02em; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; letter-spacing: -0.01em; }
 
         .weight-light { font-weight: 300; }
         .weight-normal { font-weight: 400; }
         .weight-medium { font-weight: 600; }
 
-        .size-small { font-size: 1.25rem; }
-        .size-medium { font-size: 1.6rem; } /* Mobile optimized */
-        .size-large { font-size: 2.2rem; line-height: 1.1; }
-        @media (min-width: 768px) {
-            .size-medium { font-size: 1.8rem; }
-            .size-large { font-size: 2.8rem; }
-        }
+        .size-small { font-size: clamp(1.1rem, 2.5vw, 1.25rem); }
+        .size-medium { font-size: clamp(1.35rem, 3.2vw, 1.7rem); } /* Mobile optimized fluid typography */
+        .size-large { font-size: clamp(1.75rem, 4.8vw, 2.6rem); line-height: 1.2; letter-spacing: -0.025em; }
 
-        .leading-tight { line-height: 1.1; }
-        .leading-normal { line-height: 1.4; }
-        .leading-airy { line-height: 1.7; }
+        .leading-tight { line-height: 1.2; letter-spacing: -0.02em; }
+        .leading-normal { line-height: 1.55; letter-spacing: -0.01em; }
+        .leading-airy { line-height: 1.85; letter-spacing: 0em; }
 
         .align-left { text-align: left; }
         .align-center { text-align: center; }
@@ -481,21 +552,23 @@
         .tab-btn.active { background: rgba(255,255,255,0.1); color: #fff; font-weight: 600; }
 
         .control-group {
-            display: none; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 12px; align-items: start; animation: fadeIn 0.3s ease;
+            display: none; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 12px; align-items: start; animation: fadeIn 0.4s var(--spring-craft);
         }
         .control-group.active { display: grid; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
         .control-item { display: flex; flex-direction: column; gap: 6px; }
         .control-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.05em; color: rgba(255,255,255,0.3); }
         .toggle-row { display: flex; gap: 4px; background: rgba(255,255,255,0.05); border-radius: 8px; padding: 2px; }
-        .micro-btn { flex: 1; text-align: center; font-size: 0.65rem; padding: 10px 0; border-radius: 6px; color: rgba(255,255,255,0.5); transition: all 0.2s; }
-        .micro-btn:hover { background: rgba(255,255,255,0.05); }
+        .micro-btn { flex: 1; text-align: center; font-size: 0.65rem; padding: 10px 0; border-radius: 6px; color: rgba(255,255,255,0.5); transition: all 0.3s var(--spring-craft); }
+        .micro-btn:hover { background: rgba(255,255,255,0.06); transform: translateY(-1px); }
+        .micro-btn:active { transform: translateY(0) scale(0.97); }
         .micro-btn.active { background: rgba(255,255,255,0.2); color: #fff; }
         
-        .color-swatch { width: 100%; height: 32px; border-radius: 6px; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s; }
+        .color-swatch { width: 100%; height: 32px; border-radius: 6px; cursor: pointer; border: 2px solid transparent; transition: transform 0.4s var(--spring-craft), border-color 0.4s var(--spring-craft); }
         .color-swatch:focus-visible { transform: scale(1.1); border-color: rgba(255,255,255,0.8); }
-        .color-swatch.active { border-color: #fff; transform: scale(0.95); }
+        .color-swatch:hover { transform: scale(1.08); }
+        .color-swatch.active { border-color: #fff; transform: scale(0.92); }
 
         .feed-grid {
             display: grid;
@@ -509,9 +582,10 @@
 
         #writeModal { transition: background-color 0.6s var(--soft-ease); padding-top: var(--safe-top); }
         
-        .input-card-container { width: 100%; max-width: 600px; min-height: 500px; transition: all 0.3s ease; }
-        #toInput { background: transparent; font-family: inherit; font-size: inherit; color: #fff; width: 100%; outline: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 8px 0; }
+        .input-card-container { width: 100%; max-width: 600px; min-height: 500px; transition: all 0.6s var(--spring-craft); }
+        #toInput { background: transparent; font-family: inherit; font-size: inherit; color: #fff; width: 100%; outline: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 8px 0; transition: border-color 0.4s var(--spring-craft); }
         #toInput::placeholder { color: rgba(255,255,255,0.3); font-style: normal; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; }
+        #toInput:focus { border-bottom-color: rgba(255,255,255,0.4); }
         #msgInput { background: transparent; outline: none; width: 100%; height: 100%; padding: 10px; }
         .releasing-overlay { position: fixed; inset: 0; background: rgba(5,5,5,0.95); z-index: 100; display: none; align-items: center; justify-content: center; }
 
@@ -535,14 +609,21 @@
             font-size: 1.5rem;
             color: white;
             text-align: center;
-            transition: border-color 0.3s;
+            transition: border-color 0.4s var(--spring-craft);
             border-radius: 0;
         }
-        .search-input:focus { outline: none; border-bottom-color: rgba(255,255,255,0.3); }
+        .search-input:focus { outline: none; border-bottom-color: rgba(255,255,255,0.4); }
         .search-input::placeholder { color: rgba(255,255,255,0.2); }
     </style>
 </head>
 <body class="selection:bg-white/20 selection:text-white">
+
+    <!-- Cinematic Grain & Vignette Overlay -->
+    <div class="fixed inset-0 pointer-events-none z-[999] opacity-[0.035] mix-blend-mode-overlay" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E'); background-repeat: repeat;"></div>
+    <div class="fixed inset-0 pointer-events-none z-[998] bg-[radial-gradient(circle_at_center,transparent_30%,rgba(5,5,5,0.75)_100%)]"></div>
+
+    <!-- Ambient Cinematic Aura -->
+    <div id="ambient-aura" class="fixed -inset-[20%] pointer-events-none z-[-1] opacity-0 transition-opacity duration-[1500ms] ease-in-out" style="background: radial-gradient(circle at 50% 50%, var(--aura-color, transparent) 0%, transparent 60%); filter: blur(80px);"></div>
 
     <!-- Splash Screen -->
     <div id="splash-screen">
@@ -554,8 +635,10 @@
         <div id="emotional-text"></div>
     </div>
 
-    <div id="releasingOverlay" class="releasing-overlay">
-        <div class="text-[10px] uppercase tracking-[0.5em] animate-pulse font-light">Releasing...</div>
+    <!-- Elevated A24 Releasing Overlay -->
+    <div id="releasingOverlay" class="releasing-overlay flex flex-col justify-center items-center">
+        <div class="font-serif italic text-xl md:text-2xl text-white/95 mb-4 opacity-0 transform translate-y-3 transition-all duration-[1200ms] var(--spring-craft)" id="releasing-text">releasing your words to the void...</div>
+        <div class="text-[8px] uppercase tracking-[0.4em] text-white/30 font-mono" id="releasing-sub">quietly shipping.</div>
     </div>
 
     <!-- Product Navigation -->
@@ -897,12 +980,26 @@
             ui.publishError.classList.add('hidden');
             updateUI();
             toggleScrollLock(true);
+            
+            // Fade in ambient aura to match selected editor color
+            const ambientAura = document.getElementById('ambient-aura');
+            if (ambientAura) {
+                ambientAura.style.setProperty('--aura-color', state.bg || '#0a0a0a');
+                ambientAura.style.opacity = '0.35';
+            }
+            
             setTimeout(() => ui.toInput.focus(), 50);
         };
 
         const hideEditor = () => {
             ui.modal.classList.add('hidden');
             toggleScrollLock(false);
+            
+            // Fade out ambient aura
+            const ambientAura = document.getElementById('ambient-aura');
+            if (ambientAura) {
+                ambientAura.style.opacity = '0';
+            }
         };
 
         // --- ROUTER LOGIC ---
@@ -952,6 +1049,25 @@
                 ui.fsView.style.backgroundColor = data.bg || '#0a0a0a';
                 ui.fsMsg.className = `${data.size || 'size-medium'} ${data.font || 'font-sans'} ${data.weight || 'weight-normal'} ${data.leading || 'leading-normal'} ${data.align || 'align-center'}`;
                 
+                // Dynamic ambient atmospheric color bleed (A24 / Apple luxury focus effect)
+                const auraColor = data.bg || '#0a0a0a';
+                const ambientAura = document.getElementById('ambient-aura');
+                if (ambientAura) {
+                    ambientAura.style.setProperty('--aura-color', auraColor);
+                    ambientAura.style.opacity = '0.35';
+                }
+
+                // Reset any inline swipe transitions from navigateFullScreen
+                const msgContainer = ui.fsView.querySelector('.fs-body');
+                const headerContainer = ui.fsView.querySelector('.fs-header');
+                msgContainer.style.transition = '';
+                msgContainer.style.transform = '';
+                msgContainer.style.opacity = '';
+                msgContainer.style.filter = '';
+                headerContainer.style.transition = '';
+                headerContainer.style.transform = '';
+                headerContainer.style.opacity = '';
+
                 // Meta
                 const dateStr = data.createdAt?.seconds ? new Date(data.createdAt.seconds * 1000).toLocaleDateString() : 'Just now';
                 const moodName = moodMap[data.bg] || 'Silence';
@@ -973,7 +1089,7 @@
                 ui.fsView.dataset.isOpening = 'true';
                 setTimeout(() => ui.fsView.dataset.isOpening = 'false', 500);
 
-                // Animation Sequence
+                // Animation Sequence managed beautifully via CSS classes + active trigger
                 requestAnimationFrame(() => {
                     ui.fsView.querySelector('.fs-header').classList.remove('opacity-0', 'translate-y-[-10px]');
                     ui.fsView.querySelector('.fs-body').classList.remove('opacity-0', 'scale-95');
@@ -985,7 +1101,7 @@
                     // Focus trap for accessibility
                     const closeBtn = ui.fsView.querySelector('button[aria-label="Close"]');
                     if (closeBtn) closeBtn.focus();
-                }, 500); 
+                }, 600); 
             },
             closeFullScreen: () => {
                 // Strict State Check
@@ -1000,6 +1116,12 @@
                 // Restore Background
                 document.body.classList.remove('mode-focused');
 
+                // Fade out ambient aura
+                const ambientAura = document.getElementById('ambient-aura');
+                if (ambientAura) {
+                    ambientAura.style.opacity = '0';
+                }
+
                 ui.fsView.classList.remove('active'); // Start fade out
                 ui.fsView.querySelector('.fs-header').classList.add('opacity-0', 'translate-y-[-10px]');
                 ui.fsView.querySelector('.fs-body').classList.add('opacity-0', 'scale-95');
@@ -1009,22 +1131,31 @@
                     toggleScrollLock(false);
                     currentFullScreenIndex = -1;
                     viewState = ViewState.CLOSED;
-                }, 500); // match transition duration
+                }, 600); // match transition duration
             },
             navigateFullScreen: (direction) => {
                 if (viewState !== ViewState.OPEN || currentFullScreenIndex === -1) return;
                 const newIndex = currentFullScreenIndex + direction;
                 if (newIndex >= 0 && newIndex < displayedMessages.length) {
-                    // Quick fade out content
                     const msgContainer = ui.fsView.querySelector('.fs-body');
-                    msgContainer.style.transition = 'opacity 0.2s';
-                    msgContainer.style.opacity = '0';
-                    msgContainer.style.transform = 'scale(0.98)';
+                    const headerContainer = ui.fsView.querySelector('.fs-header');
                     
-                    // Switch
+                    // Directional translation: Swiping right (prev, direction = -1) moves content to right.
+                    // Swiping left (next, direction = 1) moves content to left.
+                    const exitX = direction * -80; 
+                    const enterX = direction * 80;
+                    
+                    // Animate current message out with springy ease and slight rotation
+                    msgContainer.style.transition = 'opacity 0.4s var(--spring-craft), transform 0.4s var(--spring-craft), filter 0.4s var(--spring-craft)';
+                    msgContainer.style.opacity = '0';
+                    msgContainer.style.transform = `translateX(${exitX}px) scale(0.95) rotate(${direction * -2}deg)`;
+                    msgContainer.style.filter = 'blur(6px)';
+                    
+                    headerContainer.style.transition = 'opacity 0.3s var(--spring-craft), transform 0.3s var(--spring-craft)';
+                    headerContainer.style.opacity = '0';
+                    headerContainer.style.transform = 'translateY(-12px)';
+                    
                     setTimeout(() => {
-                        // Reset state slightly to allow re-opening logic reuse or direct update
-                        // Better: Update content in place
                         const data = displayedMessages[newIndex];
                         currentFullScreenIndex = newIndex;
                         ui.fsTo.textContent = data.to || 'Unknown';
@@ -1035,10 +1166,31 @@
                         const moodName = moodMap[data.bg] || 'Silence';
                         ui.fsMeta.textContent = `Posted on ${dateStr} in ${moodName}`;
 
-                        // Fade in
+                        // Transition the ambient aura color to match new mood card
+                        const ambientAura = document.getElementById('ambient-aura');
+                        if (ambientAura) {
+                            ambientAura.style.setProperty('--aura-color', data.bg || '#0a0a0a');
+                        }
+
+                        // Set start position of incoming card instantly
+                        msgContainer.style.transition = 'none';
+                        msgContainer.style.opacity = '0';
+                        msgContainer.style.transform = `translateX(${enterX}px) scale(0.95) rotate(${direction * 2}deg)`;
+                        msgContainer.style.filter = 'blur(6px)';
+                        
+                        // Force layout reflow
+                        void msgContainer.offsetWidth;
+                        
+                        // Animate incoming card with beautiful bouncy spring physics
+                        msgContainer.style.transition = 'opacity 0.7s var(--spring-craft), transform 0.7s var(--spring-craft), filter 0.7s var(--spring-craft)';
                         msgContainer.style.opacity = '1';
-                        msgContainer.style.transform = 'scale(1)';
-                    }, 200); 
+                        msgContainer.style.transform = 'translateX(0) scale(1) rotate(0deg)';
+                        msgContainer.style.filter = 'blur(0)';
+                        
+                        headerContainer.style.transition = 'opacity 0.6s var(--spring-craft), transform 0.6s var(--spring-craft)';
+                        headerContainer.style.opacity = '1';
+                        headerContainer.style.transform = 'translateY(0)';
+                    }, 250); 
                 }
             }
         };
@@ -1144,6 +1296,12 @@
             ui.toLabel.className = `header-to ${state.toOpacity}`;
             ui.headerIcon.style.opacity = state.icon === 'show' ? '0.5' : '0';
             ui.cardFooter.style.opacity = state.footer === 'show' ? '1' : '0';
+
+            // Adapt ambient aura dynamically during editor mood swaps
+            const ambientAura = document.getElementById('ambient-aura');
+            if (ambientAura && !ui.modal.classList.contains('hidden')) {
+                ambientAura.style.setProperty('--aura-color', state.bg);
+            }
         };
 
         const createFragment = (data, index) => {
@@ -1251,7 +1409,19 @@
         ui.submitBtn.onclick = async () => {
             const msg = ui.msgInput.value.trim();
             if (!msg || !user) return;
-            ui.releasingOverlay.style.display = 'flex'; ui.submitBtn.disabled = true;
+            
+            ui.submitBtn.disabled = true;
+            ui.releasingOverlay.style.display = 'flex'; 
+            
+            // Reflow to kick off keyframes/classes
+            void ui.releasingOverlay.offsetWidth;
+            
+            const relText = document.getElementById('releasing-text');
+            if (relText) {
+                relText.classList.remove('opacity-0', 'translate-y-3');
+                relText.classList.add('opacity-100', 'translate-y-0');
+            }
+            
             try {
                 await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'messages'), {
                     msg, to: ui.toInput.value.trim(), bg: state.bg,
@@ -1260,11 +1430,30 @@
                     toOpacity: state.toOpacity, icon: state.icon, footer: state.footer,
                     createdAt: serverTimestamp(), uid: user.uid
                 });
-                ui.msgInput.value = ''; ui.toInput.value = ''; 
-                hideEditor();
-                triggerEmotional("released"); // Trigger emotional layer on submit
-                ui.releasingOverlay.style.display = 'none'; ui.submitBtn.disabled = false;
-            } catch (err) { ui.releasingOverlay.style.display = 'none'; ui.submitBtn.disabled = false; ui.publishError.textContent = "Error."; ui.publishError.classList.remove('hidden'); }
+                
+                // Allow user to absorb the quiet transition (A24 / Apple luxury patient duration)
+                setTimeout(() => {
+                    ui.msgInput.value = ''; 
+                    ui.toInput.value = ''; 
+                    hideEditor();
+                    
+                    if (relText) {
+                        relText.classList.remove('opacity-100', 'translate-y-0');
+                        relText.classList.add('opacity-0', 'translate-y-[-10px]');
+                    }
+                    
+                    setTimeout(() => {
+                        ui.releasingOverlay.style.display = 'none'; 
+                        ui.submitBtn.disabled = false;
+                        triggerEmotional("released"); // Trigger emotional layer on submit
+                    }, 600);
+                }, 1500);
+            } catch (err) { 
+                ui.releasingOverlay.style.display = 'none'; 
+                ui.submitBtn.disabled = false; 
+                ui.publishError.textContent = "Error."; 
+                ui.publishError.classList.remove('hidden'); 
+            }
         };
 
         const splashText = document.getElementById('splash-text');
