@@ -12,6 +12,7 @@ import ArchiveFeed from "@/components/ArchiveFeed";
 import FullScreenReader from "@/components/FullScreenReader";
 import EditorModal from "@/components/EditorModal";
 import HomepageEditorial from "@/components/HomepageEditorial";
+import JournalSection from "@/components/JournalSection";
 import MessageCard, { MessageData } from "@/components/MessageCard";
 import PaletteDots from "@/components/PaletteDots";
 import { resolveMessagePalette } from "@/lib/palettes";
@@ -231,78 +232,13 @@ export default function Home() {
         )}
 
         {/* ==================================================================
-            VIEW: JOURNAL (Reflections from the Archive)
+            VIEW: JOURNAL (The Journal of Interior Life)
            ================================================================== */}
         {currentView === "journal" && (
-          <section className="view-section active max-w-3xl mx-auto py-12 md:py-20 space-y-16">
-            <div className="text-center space-y-4 max-w-xl mx-auto">
-              <span className="font-mono text-[9px] uppercase tracking-[0.26em] text-[#8E877C] block font-medium">
-                [ Editorial Journal ]
-              </span>
-              <h2 className="font-serif italic text-4xl sm:text-5xl text-[#EDE8E0] font-normal tracking-[-0.02em]">
-                Notes on Silence
-              </h2>
-              <p className="font-serif text-base sm:text-lg text-[#9E968A] leading-relaxed">
-                Reflections, essays, and observations gathered from years of curating the unsaid.
-              </p>
-            </div>
-
-            <div className="space-y-16 divide-y divide-[rgba(255,255,255,0.07)]">
-              {/* Essay 01 */}
-              <article className="pt-12 space-y-3.5">
-                <div className="flex items-center gap-3 text-[9.5px] font-mono tracking-[0.2em] text-[#8E877C] uppercase">
-                  <span>Essay 01</span>
-                  <span>·</span>
-                  <span>Autumn 2024</span>
-                </div>
-                <h3 className="font-serif text-2xl sm:text-[1.75rem] text-[#EDE8E0] hover:text-[#C29B68] transition-colors cursor-pointer tracking-[-0.015em] font-normal leading-[1.25]">
-                  The Geography of Unsent Love Letters
-                </h3>
-                <p className="font-serif text-base sm:text-lg text-[#A8A196] leading-[1.6]">
-                  Why is it that the sentences hardest to speak are almost always addressed to someone standing three feet away from us? A look into the physics of proximity and fear.
-                </p>
-                <div className="text-[9.5px] font-mono tracking-[0.2em] uppercase text-[#C29B68] pt-1">
-                  Read Reflection — 5 min
-                </div>
-              </article>
-
-              {/* Essay 02 */}
-              <article className="pt-12 space-y-3.5">
-                <div className="flex items-center gap-3 text-[9.5px] font-mono tracking-[0.2em] text-[#8E877C] uppercase">
-                  <span>Essay 02</span>
-                  <span>·</span>
-                  <span>Summer 2024</span>
-                </div>
-                <h3 className="font-serif text-2xl sm:text-[1.75rem] text-[#EDE8E0] hover:text-[#C29B68] transition-colors cursor-pointer tracking-[-0.015em] font-normal leading-[1.25]">
-                  On Forgiving People Who Will Never Know
-                </h3>
-                <p className="font-serif text-base sm:text-lg text-[#A8A196] leading-[1.6]">
-                  How an anonymous paragraph, left on digital paper, can close a decade-long wound without requiring the other party to apologize or even understand.
-                </p>
-                <div className="text-[9.5px] font-mono tracking-[0.2em] uppercase text-[#C29B68] pt-1">
-                  Read Reflection — 4 min
-                </div>
-              </article>
-
-              {/* Essay 03 */}
-              <article className="pt-12 space-y-3.5">
-                <div className="flex items-center gap-3 text-[9.5px] font-mono tracking-[0.2em] text-[#8E877C] uppercase">
-                  <span>Essay 03</span>
-                  <span>·</span>
-                  <span>Spring 2024</span>
-                </div>
-                <h3 className="font-serif text-2xl sm:text-[1.75rem] text-[#EDE8E0] hover:text-[#C29B68] transition-colors cursor-pointer tracking-[-0.015em] font-normal leading-[1.25]">
-                  The Words Left in Train Stations
-                </h3>
-                <p className="font-serif text-base sm:text-lg text-[#A8A196] leading-[1.6]">
-                  A study in platform goodbyes, hesitations, and the specific cadence of farewells that dissolved into the sound of closing doors.
-                </p>
-                <div className="text-[9.5px] font-mono tracking-[0.2em] uppercase text-[#C29B68] pt-1">
-                  Read Reflection — 6 min
-                </div>
-              </article>
-            </div>
-          </section>
+          <JournalSection
+            archiveMessages={messages}
+            onNavigateHome={() => handleViewChange("home")}
+          />
         )}
 
         {/* ==================================================================
