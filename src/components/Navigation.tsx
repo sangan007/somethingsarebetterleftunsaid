@@ -212,6 +212,56 @@ export default function Navigation({
           </div>
         </div>
       )}
+
+      {/* ====================================================================
+          MOBILE FLOATING BOTTOM QUICK NAVIGATION (Mobile-only, md:hidden)
+          Archival Control Strip
+          ==================================================================== */}
+      <nav
+        aria-label="Mobile quick navigation"
+        className={`md:hidden fixed left-1/2 -translate-x-1/2 z-30 transition-all duration-250 pointer-events-auto select-none ${
+          mobileMenuOpen ? "opacity-0 pointer-events-none scale-95" : "opacity-100 scale-100"
+        }`}
+        style={{
+          bottom: "calc(14px + env(safe-area-inset-bottom, 0px))",
+          maxWidth: "calc(100vw - 28px)",
+        }}
+      >
+        <div className="bg-[#121110]/92 backdrop-blur-xl border border-[rgba(255,255,255,0.13)] rounded-full px-2 xs:px-3 py-1.5 flex items-center justify-center gap-1 xs:gap-1.5 shadow-2xl shadow-black/80 ring-1 ring-white/[0.04]">
+          {navItems.map((item, index) => {
+            const isActive = currentView === item.id;
+            return (
+              <React.Fragment key={item.id}>
+                <button
+                  onClick={() => onViewChange(item.id)}
+                  aria-current={isActive ? "page" : undefined}
+                  className={`group relative flex flex-col items-center justify-center min-h-[38px] px-2 xs:px-3 py-1 font-mono text-[9px] xs:text-[9.5px] uppercase tracking-[0.14em] xs:tracking-[0.18em] transition-all cursor-pointer rounded-full whitespace-nowrap active:scale-95 ${
+                    isActive
+                      ? "text-[#EDE8E0] font-semibold"
+                      : "text-[#8E877C] hover:text-[#EDE8E0]"
+                  }`}
+                >
+                  <span className="leading-none pt-0.5">{item.label}</span>
+                  {/* Subtle active underline indicator */}
+                  <span
+                    className={`h-[1.5px] rounded-full mt-1 transition-all duration-200 ${
+                      isActive
+                        ? "w-full bg-[#C29B68]"
+                        : "w-0 bg-transparent group-hover:w-1/2 group-hover:bg-white/20"
+                    }`}
+                  />
+                </button>
+                {index < navItems.length - 1 && (
+                  <span
+                    className="w-px h-2.5 bg-white/[0.08] shrink-0"
+                    aria-hidden="true"
+                  />
+                )}
+              </React.Fragment>
+            );
+          })}
+        </div>
+      </nav>
     </>
   );
 }
