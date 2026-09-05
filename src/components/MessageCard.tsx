@@ -263,7 +263,7 @@ export default function MessageCard({
 
               <blockquote className="w-full pt-1">
                 <p
-                  className={`font-serif font-normal break-words tracking-[-0.015em] ${
+                  className={`font-serif font-normal break-words whitespace-pre-line tracking-[-0.015em] ${
                     msgLength < 35
                       ? "text-[23px] sm:text-[26px] leading-[1.28]"
                       : "text-[19px] sm:text-[21px] leading-[1.35]"
@@ -392,7 +392,7 @@ export default function MessageCard({
               {/* Message as dominant element */}
               <blockquote className="w-full pt-1">
                 <p
-                  className={`font-serif font-normal break-words tracking-[-0.015em] ${
+                  className={`font-serif font-normal break-words whitespace-pre-line tracking-[-0.015em] ${
                     msgLength < 80
                       ? "text-[21px] sm:text-[23px] leading-[1.38]"
                       : "text-[18px] sm:text-[20px] leading-[1.44]"
@@ -536,7 +536,7 @@ export default function MessageCard({
 
               <blockquote className="w-full pl-0.5">
                 <p
-                  className={`font-serif font-normal break-words tracking-[-0.015em] ${
+                  className={`font-serif font-normal break-words whitespace-pre-line tracking-[-0.015em] ${
                     msgLength < 80
                       ? "text-[20px] sm:text-[22px] leading-[1.4]"
                       : "text-[17px] sm:text-[19px] leading-[1.46]"
@@ -680,7 +680,7 @@ export default function MessageCard({
 
               <blockquote className="w-full pt-1">
                 <p
-                  className={`font-serif font-normal break-words tracking-[-0.018em] ${
+                  className={`font-serif font-normal break-words whitespace-pre-line tracking-[-0.018em] ${
                     msgLength < 90
                       ? "text-[26px] sm:text-[31px] md:text-[34px] leading-[1.26]"
                       : "text-[21px] sm:text-[24px] md:text-[27px] leading-[1.34]"

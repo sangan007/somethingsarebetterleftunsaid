@@ -196,7 +196,7 @@ export default function FullScreenReader({
         >
           <blockquote className="space-y-4">
             <p
-              className={`font-serif tracking-[-0.018em] leading-[1.32] break-words font-normal ${
+              className={`font-serif tracking-[-0.018em] leading-[1.32] break-words whitespace-pre-line font-normal ${
                 localData.msg.length > 200
                   ? "text-xl sm:text-2xl md:text-3xl"
                   : localData.msg.length > 80

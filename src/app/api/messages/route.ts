@@ -78,7 +78,19 @@ export async function GET() {
         (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)
     );
 
-    if (messages.length === 0) {
+    // Keep authentic human confessions while filtering crude spam/debug posts
+    const filteredMessages = messages.filter((m: { msg?: string; to?: string }) => {
+      const text = (m.msg || "").trim().toLowerCase();
+      const to = (m.to || "").trim().toLowerCase();
+      if (text === "i love tits" || text === "fuck you" || text === "imma goon all day") return false;
+      if (text.includes("buttons under posts? they apparently do nothing")) return false;
+      if (text.includes("you know reddit is going mainstream")) return false;
+      if (text === "fuck you without respect!" || text === "hate you") return false;
+      if (to === "tits" || to === "epstein") return false;
+      return true;
+    });
+
+    if (filteredMessages.length === 0) {
       return NextResponse.json({
         success: true,
         count: SAMPLE_ARCHIVE_RECORDS.length,
@@ -88,8 +100,8 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-      count: messages.length,
-      messages,
+      count: filteredMessages.length,
+      messages: filteredMessages,
     });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "Unknown error";

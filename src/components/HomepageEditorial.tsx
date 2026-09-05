@@ -494,7 +494,7 @@ function LeadArchivalFragment({ message, index, onClick }: FragmentProps) {
 
           <blockquote className="w-full">
             <p
-              className="font-serif text-[24px] sm:text-[32px] md:text-[38px] leading-[1.28] tracking-[-0.02em] font-normal transition-transform duration-300 group-hover:translate-x-1"
+              className="font-serif text-[24px] sm:text-[32px] md:text-[38px] leading-[1.28] tracking-[-0.02em] font-normal transition-transform duration-300 group-hover:translate-x-1 whitespace-pre-line"
               style={{ color: palette.text }}
             >
               &ldquo;{msgText}&rdquo;
@@ -595,7 +595,7 @@ function EditorialSlip({ message, index, onClick }: FragmentProps) {
 
           <blockquote className="w-full">
             <p
-              className="font-serif text-[19px] sm:text-[22px] leading-[1.36] tracking-[-0.015em] font-normal transition-transform duration-300 group-hover:translate-x-0.5"
+              className="font-serif text-[19px] sm:text-[22px] leading-[1.36] tracking-[-0.015em] font-normal transition-transform duration-300 group-hover:translate-x-0.5 whitespace-pre-line"
               style={{ color: palette.text }}
             >
               &ldquo;{msgText}&rdquo;
