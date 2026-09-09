@@ -180,12 +180,12 @@ export default function EditorModal({
   return (
     <div
       id="writeModal"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-8 bg-[#0C0B0A]/92 backdrop-blur-md overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 md:p-8 bg-[#0C0B0A]/92 backdrop-blur-md overflow-y-auto max-w-full box-border"
       role="dialog"
       aria-modal="true"
       aria-label="Leave something you never said"
     >
-      <div className="relative w-full max-w-4xl bg-[#141312] border border-[rgba(255,255,255,0.08)] rounded-[3px] p-4 sm:p-6 md:p-9 shadow-2xl space-y-6 sm:space-y-7 my-auto max-h-[92vh] overflow-y-auto text-[#EDE8E0]">
+      <div className="relative w-full max-w-4xl bg-[#141312] border border-[rgba(255,255,255,0.08)] rounded-[3px] p-4 sm:p-6 md:p-9 shadow-2xl space-y-6 sm:space-y-7 my-auto max-h-[92vh] overflow-y-auto text-[#EDE8E0] min-w-0 box-border">
         {/* Modal Top Masthead */}
         <div className="flex justify-between items-baseline border-b border-[rgba(255,255,255,0.07)] pb-4">
           <div className="space-y-0.5">

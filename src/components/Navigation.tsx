@@ -59,11 +59,11 @@ export default function Navigation({
           TOP MASTHEAD (Desktop + Compact Mobile Header)
           ==================================================================== */}
       <header
-        className="fixed top-0 left-0 w-full z-40 px-4 sm:px-6 md:px-12 py-3.5 sm:py-4 md:py-6 flex justify-between items-center bg-[#0C0B0A]/90 backdrop-blur-md border-b border-[rgba(255,255,255,0.07)] transition-all duration-300 min-h-[64px] sm:min-h-[72px] md:min-h-[80px]"
+        className="fixed top-0 left-0 w-full z-40 px-4 sm:px-6 md:px-12 py-3.5 sm:py-4 md:py-6 flex justify-between items-center bg-[#0C0B0A]/90 backdrop-blur-md border-b border-[rgba(255,255,255,0.07)] transition-all duration-300 min-h-[64px] sm:min-h-[72px] md:min-h-[80px] box-border"
         style={{ paddingTop: "max(0.875rem, var(--safe-top))" }}
       >
         {/* Left: Publication Masthead (Brand Never Disappears, Wraps Naturally) */}
-        <div className="flex items-center min-w-0 pr-2">
+        <div className="flex items-center min-w-0 flex-1 pr-2">
           <div
             onClick={() => {
               onViewChange("home");
@@ -75,10 +75,10 @@ export default function Navigation({
             className="cursor-pointer group text-left min-w-0"
             aria-label="Return to Homepage"
           >
-            <span className="block font-mono text-[9px] xs:text-[9.5px] md:text-[9.5px] tracking-[0.14em] xs:tracking-[0.2em] uppercase text-[#EDE8E0] font-medium transition-opacity group-hover:opacity-75 leading-snug">
+            <span className="block font-mono text-[9px] xs:text-[9.5px] md:text-[9.5px] tracking-[0.12em] xs:tracking-[0.2em] uppercase text-[#EDE8E0] font-medium transition-opacity group-hover:opacity-75 leading-snug">
               A Collection of Unsaid Things
             </span>
-            <span className="font-serif italic text-[11px] sm:text-[12px] text-[#8E877C] tracking-normal mt-0.5 block leading-snug">
+            <span className="font-serif italic text-[11px] sm:text-[12px] text-[#8E877C] tracking-normal mt-0.5 block leading-snug truncate">
               An archive of the human interior
             </span>
           </div>
@@ -92,9 +92,8 @@ export default function Navigation({
               onClick={() => onViewChange(item.id)}
               onKeyDown={handleKeyDown(item.id)}
               id={`nav-${item.id}`}
-              className={`nav-editorial-link ${
-                currentView === item.id ? "active" : ""
-              }`}
+              className={`nav-editorial-link ${currentView === item.id ? "active" : ""
+                }`}
               tabIndex={0}
             >
               {item.label}
@@ -118,7 +117,7 @@ export default function Navigation({
         <div className="flex md:hidden items-center shrink-0">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="flex items-center justify-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] px-4 py-2 min-h-[42px] rounded-full border border-white/[0.16] hover:border-white/30 text-[#EDE8E0] bg-white/[0.05] transition-all cursor-pointer select-none active:scale-95"
+            className="flex items-center justify-center gap-1.5 xs:gap-2 font-mono text-[9.5px] xs:text-[10px] uppercase tracking-[0.16em] xs:tracking-[0.2em] px-3 xs:px-4 py-2 min-h-[40px] rounded-full border border-white/[0.16] hover:border-white/30 text-[#EDE8E0] bg-white/[0.05] transition-all cursor-pointer select-none active:scale-95 whitespace-nowrap"
             aria-expanded={mobileMenuOpen}
             aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
           >
@@ -174,11 +173,10 @@ export default function Navigation({
                       onViewChange(item.id);
                       setMobileMenuOpen(false);
                     }}
-                    className={`flex items-center justify-between py-3.5 text-left font-mono text-[11px] sm:text-xs uppercase tracking-[0.22em] transition-colors border-b border-white/[0.04] cursor-pointer ${
-                      isActive
+                    className={`flex items-center justify-between py-3.5 text-left font-mono text-[11px] sm:text-xs uppercase tracking-[0.22em] transition-colors border-b border-white/[0.04] cursor-pointer ${isActive
                         ? "text-[#EDE8E0] font-semibold"
                         : "text-[#8E877C] hover:text-[#EDE8E0]"
-                    }`}
+                      }`}
                   >
                     <span>{item.label}</span>
                     {isActive ? (
@@ -220,15 +218,14 @@ export default function Navigation({
           ==================================================================== */}
       <nav
         aria-label="Mobile quick navigation"
-        className={`md:hidden fixed left-1/2 -translate-x-1/2 z-30 transition-all duration-250 pointer-events-auto select-none ${
-          mobileMenuOpen ? "opacity-0 pointer-events-none scale-95" : "opacity-100 scale-100"
-        }`}
+        className={`md:hidden fixed left-1/2 -translate-x-1/2 z-30 transition-all duration-250 pointer-events-auto select-none box-border ${mobileMenuOpen ? "opacity-0 pointer-events-none scale-95" : "opacity-100 scale-100"
+          }`}
         style={{
           bottom: "calc(14px + env(safe-area-inset-bottom, 0px))",
-          maxWidth: "calc(100vw - 28px)",
+          maxWidth: "calc(100vw - 24px)",
         }}
       >
-        <div className="bg-[#121110]/92 backdrop-blur-xl border border-[rgba(255,255,255,0.13)] rounded-full px-2 xs:px-3 py-1.5 flex items-center justify-center gap-1 xs:gap-1.5 shadow-2xl shadow-black/80 ring-1 ring-white/[0.04]">
+        <div className="bg-[#121110]/92 backdrop-blur-xl border border-[rgba(255,255,255,0.13)] rounded-full px-1.5 xs:px-3 py-1.5 flex items-center justify-center gap-0.5 xs:gap-1.5 shadow-2xl shadow-black/80 ring-1 ring-white/[0.04] max-w-full box-border">
           {navItems.map((item, index) => {
             const isActive = currentView === item.id;
             return (
@@ -236,20 +233,18 @@ export default function Navigation({
                 <button
                   onClick={() => onViewChange(item.id)}
                   aria-current={isActive ? "page" : undefined}
-                  className={`group relative flex flex-col items-center justify-center min-h-[38px] px-2 xs:px-3 py-1 font-mono text-[9px] xs:text-[9.5px] uppercase tracking-[0.14em] xs:tracking-[0.18em] transition-all cursor-pointer rounded-full whitespace-nowrap active:scale-95 ${
-                    isActive
+                  className={`group relative flex flex-col items-center justify-center min-h-[36px] px-2 xs:px-3 py-1 font-mono text-[8.5px] xs:text-[9.5px] uppercase tracking-[0.11em] xs:tracking-[0.18em] transition-all cursor-pointer rounded-full whitespace-nowrap active:scale-95 ${isActive
                       ? "text-[#EDE8E0] font-semibold"
                       : "text-[#8E877C] hover:text-[#EDE8E0]"
-                  }`}
+                    }`}
                 >
                   <span className="leading-none pt-0.5">{item.label}</span>
                   {/* Subtle active underline indicator */}
                   <span
-                    className={`h-[1.5px] rounded-full mt-1 transition-all duration-200 ${
-                      isActive
+                    className={`h-[1.5px] rounded-full mt-1 transition-all duration-200 ${isActive
                         ? "w-full bg-[#C29B68]"
                         : "w-0 bg-transparent group-hover:w-1/2 group-hover:bg-white/20"
-                    }`}
+                      }`}
                   />
                 </button>
                 {index < navItems.length - 1 && (

@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import PaletteDots from "./PaletteDots";
 import { MessageData } from "./MessageCard";
 import { resolveMessagePalette } from "@/lib/palettes";
+import ArchivalContentRenderer from "./ArchivalContentRenderer";
 
 interface FullScreenReaderProps {
   viewState: "closed" | "opening" | "open" | "closing";
@@ -104,7 +105,7 @@ export default function FullScreenReader({
       id="full-screen-view"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
-      className={`fixed inset-0 z-50 flex flex-col transition-opacity duration-500 overflow-y-auto ${
+      className={`fixed inset-0 z-50 flex flex-col transition-opacity duration-500 max-w-full overflow-x-hidden overflow-y-auto box-border ${
         viewState === "opening" || viewState === "open"
           ? "active opacity-100"
           : "opacity-0 pointer-events-none"
@@ -128,7 +129,7 @@ export default function FullScreenReader({
 
       {/* Top Reading Navigation Bar */}
       <div
-        className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 py-3.5 sm:py-6 flex items-center justify-between border-b"
+        className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 py-3.5 sm:py-6 flex items-center justify-between border-b min-w-0 box-border"
         style={{ borderColor: palette.border }}
       >
         <button
@@ -161,13 +162,13 @@ export default function FullScreenReader({
       </div>
 
       {/* Main Solitary Content Area */}
-      <div className="relative z-10 flex-1 flex flex-col justify-center items-center max-w-3xl mx-auto w-full px-6 py-12 md:py-24 text-center">
+      <div className="relative z-10 flex-1 flex flex-col justify-center items-center max-w-3xl mx-auto w-full px-4 sm:px-6 py-12 md:py-24 text-center min-w-0 box-border">
         {/* Archival Provenance */}
-        <div className="mb-10 sm:mb-14 space-y-3">
+        <div className="mb-10 sm:mb-14 space-y-3 max-w-full">
           <PaletteDots dots={palette.dots} size="md" className="justify-center" />
 
           <h2
-            className="font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-medium"
+            className="font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.2em] font-medium break-words px-2"
             style={{ color: palette.muted }}
           >
             TO &thinsp;/&thinsp; {(localData.to || "Someone").toUpperCase()}
@@ -192,21 +193,21 @@ export default function FullScreenReader({
         {/* The Hero Unsaid Message - Dominant in the quiet darkness */}
         <div
           ref={msgContainerRef}
-          className="w-full my-auto transition-all duration-500 max-w-2xl px-2"
+          className="w-full my-auto transition-all duration-500 max-w-2xl px-2 min-w-0 box-border"
         >
-          <blockquote className="space-y-4">
-            <p
-              className={`font-serif tracking-[-0.018em] leading-[1.32] break-words whitespace-pre-line font-normal ${
+          <blockquote className="w-full max-w-full min-w-0">
+            <ArchivalContentRenderer
+              content={localData.msg}
+              variant="solitary"
+              className={
                 localData.msg.length > 200
                   ? "text-xl sm:text-2xl md:text-3xl"
                   : localData.msg.length > 80
                   ? "text-2xl sm:text-3xl md:text-4xl"
                   : "text-3xl sm:text-4xl md:text-5xl"
-              }`}
-              style={{ color: palette.text }}
-            >
-              &ldquo;{localData.msg}&rdquo;
-            </p>
+              }
+              color={palette.text}
+            />
           </blockquote>
         </div>
 
@@ -227,7 +228,7 @@ export default function FullScreenReader({
 
       {/* Bottom Paging Controls */}
       <div
-        className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6 border-t flex items-center justify-between font-mono text-[10px] uppercase tracking-widest"
+        className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6 border-t flex items-center justify-between font-mono text-[10px] uppercase tracking-widest min-w-0 box-border"
         style={{ borderColor: palette.border, color: palette.muted }}
       >
         <button

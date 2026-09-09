@@ -305,7 +305,7 @@ export default function ArchiveFeed({
   const totalCountFormatted = messages.length.toLocaleString();
 
   return (
-    <section id="view-archive" className="w-full max-w-[1240px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 py-8 sm:py-12 md:py-14 space-y-8 sm:space-y-10 md:space-y-12">
+    <section id="view-archive" className="w-full max-w-[1240px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10 py-8 sm:py-12 md:py-14 space-y-8 sm:space-y-10 md:space-y-12 min-w-0 box-border">
       {/* Archive Masthead & Accession Counter */}
       <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-3 sm:gap-4 border-b border-[rgba(255,255,255,0.07)] pb-5 sm:pb-7">
         <div className="space-y-1.5 sm:space-y-2">
@@ -564,7 +564,7 @@ export default function ArchiveFeed({
 
       {/* Active Editorial Archival Grid (Curated 12-Column Archive Wall) */}
       {!loading && !error && pageMessages.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-5 sm:gap-6 lg:gap-7 pt-4 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-6 lg:grid-cols-12 gap-5 sm:gap-6 lg:gap-7 pt-4 items-start w-full max-w-full min-w-0 box-border">
           {pageMessages.map((msg, index) => {
             const originalIndex = messages.indexOf(msg);
             const cardIndex = originalIndex !== -1 ? originalIndex : startIndex + index;

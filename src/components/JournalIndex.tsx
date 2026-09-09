@@ -40,7 +40,7 @@ export default function JournalIndex(props: JournalIndexProps) {
   }, [filteredEntries, selectedCategory, selectedDepth, searchQuery, featuredEntry.id]);
 
   return (
-    <section className="view-section active max-w-6xl mx-auto py-8 sm:py-12 md:py-20 px-4 sm:px-6 md:px-8 space-y-10 sm:space-y-14 md:space-y-16">
+    <section className="view-section active max-w-6xl mx-auto py-8 sm:py-12 md:py-20 px-4 sm:px-6 md:px-8 space-y-10 sm:space-y-14 md:space-y-16 w-full min-w-0 box-border">
       {/* =====================================================================
           1. PUBLICATION MASTHEAD & MANIFESTO
           ===================================================================== */}

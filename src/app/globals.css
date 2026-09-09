@@ -33,6 +33,20 @@
 }
 
 /* Base Document Styling */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
 body {
   background-color: var(--bg-canvas);
   color: var(--ink-primary);
@@ -40,8 +54,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.6;
-  overflow-x: hidden;
   text-rendering: optimizeLegibility;
+  position: relative;
 }
 
 /* Accessibility Focus States */
@@ -165,6 +179,7 @@ button:active.press-tactile,
   .card-archival-lift {
     transition: transform 350ms var(--ease-archival), box-shadow 350ms var(--ease-archival), border-color 350ms var(--ease-archival), background-color 350ms var(--ease-archival);
   }
+
   .card-archival-lift:hover {
     transform: translateY(-4px);
     box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.3);
@@ -178,6 +193,7 @@ button:active.press-tactile,
   color: var(--ink-secondary);
   transition: color 250ms var(--ease-archival);
 }
+
 .link-archival::after {
   content: "";
   position: absolute;
@@ -188,15 +204,18 @@ button:active.press-tactile,
   background-color: var(--accent-gold);
   transition: width 350ms var(--ease-archival);
 }
+
 .link-archival:hover {
   color: var(--ink-primary);
 }
+
 .link-archival:hover::after {
   width: 100%;
 }
 
 /* Reduced Motion Respect */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
@@ -205,13 +224,17 @@ button:active.press-tactile,
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+
   .card-archival-lift:hover {
     transform: none !important;
   }
 }
 
 /* Background Receding in Focused Reading Modes */
-main, nav, header, footer {
+main,
+nav,
+header,
+footer {
   transition: filter 0.6s var(--ease-editorial), opacity 0.6s var(--ease-editorial), transform 0.6s var(--ease-editorial);
 }
 
@@ -241,6 +264,7 @@ body.mode-focused footer {
     opacity: 0;
     transform: translateY(14px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

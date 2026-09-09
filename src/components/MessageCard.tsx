@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import PaletteDots from "./PaletteDots";
+import ArchivalContentRenderer from "./ArchivalContentRenderer";
 import { resolveMessagePalette, PaletteDefinition } from "@/lib/palettes";
 
 export interface MessageData {
@@ -186,7 +187,7 @@ export default function MessageCard({
 
   return (
     <div
-      className={`group relative self-start h-fit w-full ${colSpanClass} ${className} transition-opacity duration-300 ${
+      className={`group relative self-start h-fit w-full max-w-full min-w-0 ${colSpanClass} ${className} transition-opacity duration-300 ${
         visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
       }`}
       onMouseEnter={() => setIsHovered(true)}
@@ -203,9 +204,9 @@ export default function MessageCard({
       {/* 1-2px Offset Secondary Paper Underlay (Subtle secondary paper sheet) */}
       {hasLayeredSheet && (
         <div
-          className="absolute inset-0 pointer-events-none rounded-[2px] transition-transform duration-350 ease-[cubic-bezier(0.22,1,0.36,1)]"
+          className="absolute inset-0 pointer-events-none rounded-[2px] transition-transform duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] max-w-full"
           style={{
-            transform: isHovered && !isExpanded ? "translate(3px, 3px)" : "translate(2px, 2px)",
+            transform: isHovered && !isExpanded ? "translate(2px, 2px)" : "translate(1px, 1px)",
             backgroundColor: palette.underlay,
             border: "1px solid rgba(255, 255, 255, 0.05)",
             opacity: 0.65,
@@ -217,7 +218,7 @@ export default function MessageCard({
 
       {/* Primary Card Paper Surface — Physical Three-State Archival Object */}
       <article
-        className={`relative z-10 w-full flex flex-col rounded-[2px] border cursor-pointer select-none transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] focus-visible:ring-1 focus-visible:ring-[#C29B68] focus-visible:outline-none ${
+        className={`relative z-10 w-full max-w-full min-w-0 flex flex-col rounded-[2px] border cursor-pointer select-none transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] focus-visible:ring-1 focus-visible:ring-[#C29B68] focus-visible:outline-none box-border overflow-hidden ${
           isHovered && !isExpanded ? "-translate-y-1" : ""
         }`}
         style={{
@@ -250,12 +251,12 @@ export default function MessageCard({
             VARIANT 1: COMPACT LEDGER (Tight Slip)
             =================================================================== */}
         {variant === "compact-ledger" && (
-          <div className="flex flex-col p-5 sm:p-6 space-y-4">
+          <div className="flex flex-col p-4 sm:p-6 space-y-3.5 sm:space-y-4 w-full max-w-full min-w-0 overflow-hidden box-border">
             {/* Header: Swatch Dots + Accession No. */}
-            <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center justify-between gap-3 border-b border-white/[0.04] pb-2">
               <PaletteDots dots={palette.dots} size="sm" />
               <span
-                className="font-mono text-[9px] uppercase tracking-[0.2em] font-normal opacity-60"
+                className="font-mono text-[8.5px] sm:text-[9px] uppercase tracking-[0.2em] font-normal opacity-60"
                 style={{ color: palette.muted }}
               >
                 {accessionNumber}
@@ -263,10 +264,10 @@ export default function MessageCard({
             </div>
 
             {/* Recipient & The "TO" Rule */}
-            <div className="space-y-1.5">
-              <div>
+            <div className="space-y-1.5 w-full max-w-full min-w-0 overflow-hidden">
+              <div className="max-w-full">
                 <span
-                  className="font-mono text-[9.5px] uppercase tracking-[0.16em] font-medium transition-colors duration-300"
+                  className="font-mono text-[9px] sm:text-[9.5px] uppercase tracking-[0.16em] font-medium transition-colors duration-300 truncate block"
                   style={{ color: isInspecting ? palette.accent : palette.muted }}
                 >
                   TO: {recipientDisplay}
@@ -283,17 +284,17 @@ export default function MessageCard({
                 />
               </div>
 
-              <blockquote className="w-full pt-1">
-                <p
-                  className={`font-serif font-normal break-words whitespace-pre-line tracking-[-0.015em] ${
+              <blockquote className="w-full max-w-full min-w-0 pt-1 overflow-hidden">
+                <ArchivalContentRenderer
+                  content={msgText}
+                  variant="card"
+                  className={`font-serif font-normal tracking-[-0.015em] ${
                     msgLength < 35
-                      ? "text-[23px] sm:text-[26px] leading-[1.28]"
-                      : "text-[19px] sm:text-[21px] leading-[1.35]"
+                      ? "text-[21px] sm:text-[24px] leading-[1.28]"
+                      : "text-[18px] sm:text-[20px] leading-[1.35]"
                   }`}
-                  style={{ color: palette.text }}
-                >
-                  &ldquo;{msgText}&rdquo;
-                </p>
+                  color={palette.text}
+                />
               </blockquote>
             </div>
 
@@ -370,12 +371,12 @@ export default function MessageCard({
             VARIANT 2: ARCHIVAL SLIP (Balanced Specimen Slip)
             =================================================================== */}
         {variant === "archival-slip" && (
-          <div className="flex flex-col p-6 sm:p-7 space-y-4">
+          <div className="flex flex-col p-5 sm:p-7 space-y-4 w-full max-w-full min-w-0 overflow-hidden box-border">
             {/* Header: Palette Dots + Accession No. */}
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center justify-between gap-3 border-b border-white/[0.04] pb-2.5">
               <PaletteDots dots={palette.dots} size="md" />
               <span
-                className="font-mono text-[9.5px] uppercase tracking-[0.2em] opacity-65"
+                className="font-mono text-[9px] sm:text-[9.5px] uppercase tracking-[0.2em] opacity-65 shrink-0"
                 style={{ color: palette.muted }}
               >
                 {accessionNumber}
@@ -383,10 +384,10 @@ export default function MessageCard({
             </div>
 
             {/* Recipient & The "TO" Rule */}
-            <div className="space-y-2">
-              <div>
+            <div className="space-y-2 w-full max-w-full min-w-0 overflow-hidden">
+              <div className="max-w-full">
                 <span
-                  className="font-mono text-[9.5px] uppercase tracking-[0.16em] font-medium transition-colors duration-300"
+                  className="font-mono text-[9px] sm:text-[9.5px] uppercase tracking-[0.16em] font-medium transition-colors duration-300 truncate block"
                   style={{ color: isInspecting ? palette.accent : palette.muted }}
                 >
                   TO: {recipientDisplay}
@@ -404,17 +405,17 @@ export default function MessageCard({
               </div>
 
               {/* Message as dominant element */}
-              <blockquote className="w-full pt-1">
-                <p
-                  className={`font-serif font-normal break-words whitespace-pre-line tracking-[-0.015em] ${
+              <blockquote className="w-full max-w-full min-w-0 pt-1 overflow-hidden">
+                <ArchivalContentRenderer
+                  content={msgText}
+                  variant="card"
+                  className={`font-serif font-normal tracking-[-0.015em] ${
                     msgLength < 80
-                      ? "text-[21px] sm:text-[23px] leading-[1.38]"
-                      : "text-[18px] sm:text-[20px] leading-[1.44]"
+                      ? "text-[20px] sm:text-[22px] leading-[1.38]"
+                      : "text-[17px] sm:text-[19px] leading-[1.44]"
                   }`}
-                  style={{ color: palette.text }}
-                >
-                  {msgText}
-                </p>
+                  color={palette.text}
+                />
               </blockquote>
             </div>
 
@@ -506,12 +507,12 @@ export default function MessageCard({
             VARIANT 3: LETTER FRAGMENT (Correspondence)
             =================================================================== */}
         {variant === "letter-fragment" && (
-          <div className="flex flex-col p-6 sm:p-7 space-y-4">
+          <div className="flex flex-col p-5 sm:p-7 space-y-4 w-full max-w-full min-w-0 overflow-hidden box-border">
             {/* Header: Palette Dots + Accession No. */}
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center justify-between gap-3 border-b border-white/[0.04] pb-2.5">
               <PaletteDots dots={palette.dots} size="md" />
               <span
-                className="font-mono text-[9.5px] uppercase tracking-[0.2em] opacity-65"
+                className="font-mono text-[9px] sm:text-[9.5px] uppercase tracking-[0.2em] opacity-65 shrink-0"
                 style={{ color: palette.muted }}
               >
                 {accessionNumber}
@@ -519,10 +520,10 @@ export default function MessageCard({
             </div>
 
             {/* Recipient & The "TO" Rule */}
-            <div className="space-y-2">
-              <div>
+            <div className="space-y-2 w-full max-w-full min-w-0 overflow-hidden">
+              <div className="max-w-full">
                 <span
-                  className="font-mono text-[9.5px] uppercase tracking-[0.16em] font-medium transition-colors duration-300"
+                  className="font-mono text-[9px] sm:text-[9.5px] uppercase tracking-[0.16em] font-medium transition-colors duration-300 truncate block"
                   style={{ color: isInspecting ? palette.accent : palette.muted }}
                 >
                   TO: {recipientDisplay}
@@ -539,17 +540,17 @@ export default function MessageCard({
                 />
               </div>
 
-              <blockquote className="w-full pt-1">
-                <p
-                  className={`font-serif font-normal break-words whitespace-pre-line tracking-[-0.015em] ${
+              <blockquote className="w-full max-w-full min-w-0 pt-1 overflow-hidden">
+                <ArchivalContentRenderer
+                  content={msgText}
+                  variant="card"
+                  className={`font-serif font-normal tracking-[-0.015em] ${
                     msgLength < 80
-                      ? "text-[20px] sm:text-[22px] leading-[1.4]"
-                      : "text-[17px] sm:text-[19px] leading-[1.46]"
+                      ? "text-[19px] sm:text-[22px] leading-[1.4]"
+                      : "text-[16px] sm:text-[19px] leading-[1.46]"
                   }`}
-                  style={{ color: palette.text }}
-                >
-                  &ldquo;{msgText}&rdquo;
-                </p>
+                  color={palette.text}
+                />
               </blockquote>
             </div>
 
@@ -641,13 +642,13 @@ export default function MessageCard({
             VARIANT 4: FEATURED FRAGMENT (Editorial Centerpiece)
             =================================================================== */}
         {variant === "featured-fragment" && (
-          <div className="flex flex-col justify-between min-h-[300px] sm:min-h-[340px] p-7 sm:p-9 md:p-10 space-y-6">
+          <div className="flex flex-col justify-between min-h-[280px] sm:min-h-[340px] p-5 sm:p-8 md:p-10 space-y-5 sm:space-y-6 w-full max-w-full min-w-0 overflow-hidden box-border">
             {/* Header: Swatch Dots + Accession No. */}
-            <div className="flex items-center justify-between border-b border-white/[0.07] pb-4">
+            <div className="flex items-center justify-between border-b border-white/[0.07] pb-3.5 sm:pb-4 gap-2">
               <PaletteDots dots={palette.dots} size="md" />
 
               <span
-                className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-65"
+                className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.2em] opacity-65 shrink-0"
                 style={{ color: palette.muted }}
               >
                 {accessionNumber}
@@ -655,10 +656,10 @@ export default function MessageCard({
             </div>
 
             {/* Body: Recipient & The "TO" Rule */}
-            <div className="space-y-2.5 flex-1 flex flex-col justify-center py-2">
-              <div>
+            <div className="space-y-2.5 flex-1 flex flex-col justify-center py-2 w-full max-w-full min-w-0 overflow-hidden">
+              <div className="max-w-full">
                 <span
-                  className="font-mono text-[10px] uppercase tracking-[0.18em] font-medium transition-colors duration-300"
+                  className="font-mono text-[9.5px] sm:text-[10px] uppercase tracking-[0.18em] font-medium transition-colors duration-300 truncate block"
                   style={{ color: isInspecting ? palette.accent : palette.muted }}
                 >
                   TO: {recipientDisplay}
@@ -675,17 +676,17 @@ export default function MessageCard({
                 />
               </div>
 
-              <blockquote className="w-full pt-1">
-                <p
-                  className={`font-serif font-normal break-words whitespace-pre-line tracking-[-0.018em] ${
+              <blockquote className="w-full max-w-full min-w-0 pt-1 overflow-hidden">
+                <ArchivalContentRenderer
+                  content={msgText}
+                  variant="lead"
+                  className={`font-serif font-normal tracking-[-0.018em] ${
                     msgLength < 90
-                      ? "text-[26px] sm:text-[31px] md:text-[34px] leading-[1.26]"
-                      : "text-[21px] sm:text-[24px] md:text-[27px] leading-[1.34]"
+                      ? "text-[22px] sm:text-[29px] md:text-[32px] leading-[1.26]"
+                      : "text-[18px] sm:text-[22px] md:text-[25px] leading-[1.34]"
                   }`}
-                  style={{ color: palette.text }}
-                >
-                  &ldquo;{msgText}&rdquo;
-                </p>
+                  color={palette.text}
+                />
               </blockquote>
             </div>
 

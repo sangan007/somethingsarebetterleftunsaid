@@ -3,6 +3,7 @@
 import React from "react";
 import PaletteDots from "./PaletteDots";
 import { MessageData } from "./MessageCard";
+import ArchivalContentRenderer from "./ArchivalContentRenderer";
 import {
   ARCHIVAL_PALETTES,
   resolveMessagePalette,
@@ -40,10 +41,10 @@ export default function HomepageEditorial({
       {/* ====================================================================
           SECTION 1 — MASTHEAD / ENTRY (Nocturnal Editorial Atmosphere)
           ==================================================================== */}
-      <section className="pt-2 sm:pt-8 md:pt-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+      <section className="pt-2 sm:pt-8 md:pt-12 w-full max-w-full min-w-0">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start w-full max-w-full min-w-0">
           {/* Left Column (7 cols): Publication Masthead */}
-          <div className="lg:col-span-7 space-y-6">
+          <div className="lg:col-span-7 space-y-6 min-w-0 max-w-full">
             <div className="flex items-center gap-3">
               <span className="inline-block w-2 h-2 rounded-full bg-[#C29B68]" />
               <span className="font-mono text-[9px] sm:text-[9.5px] uppercase tracking-[0.28em] text-[#8E877C] font-medium">
@@ -51,7 +52,7 @@ export default function HomepageEditorial({
               </span>
             </div>
 
-            <h1 className="font-masthead text-[34px] xs:text-[42px] sm:text-[68px] md:text-[80px] lg:text-[94px] leading-[0.96] sm:leading-[0.93] tracking-[-0.03em] text-[#EDE8E0] font-normal uppercase break-words">
+            <h1 className="font-masthead text-[clamp(2.125rem,7.5vw,5.75rem)] leading-[0.96] sm:leading-[0.93] tracking-[-0.03em] text-[#EDE8E0] font-normal uppercase break-words w-full max-w-full min-w-0">
               A Collection<br />
               of Unsaid<br />
               <span className="italic font-normal lowercase tracking-[-0.02em] text-[#D8D2C7]">things</span>
@@ -65,7 +66,7 @@ export default function HomepageEditorial({
           </div>
 
           {/* Right Column (5 cols): Intimate Curator Statement */}
-          <div className="lg:col-span-5 lg:pt-16 space-y-8">
+          <div className="lg:col-span-5 lg:pt-16 space-y-8 min-w-0 max-w-full">
             <div className="border-t border-[rgba(255,255,255,0.1)] pt-7 space-y-5">
               <p className="font-serif text-[18px] sm:text-[21px] md:text-[22px] text-[#C2BCB3] leading-[1.5] font-normal">
                 There are things we never say. Not because they weren&apos;t important,
@@ -79,10 +80,10 @@ export default function HomepageEditorial({
             </div>
 
             {/* Understated Editorial Actions */}
-            <div className="pt-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 sm:gap-4">
+            <div className="pt-1 flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 sm:gap-4 w-full max-w-full">
               <button
                 onClick={() => onViewChange("archive")}
-                className="group font-mono text-[9.5px] uppercase tracking-[0.2em] px-6 py-3 bg-[#EDE8E0] text-[#0C0B0A] hover:bg-[#FAF7F2] transition-all rounded-full cursor-pointer shadow-lg inline-flex items-center justify-center gap-2 font-medium min-h-[44px]"
+                className="group font-mono text-[9px] sm:text-[9.5px] uppercase tracking-[0.16em] sm:tracking-[0.2em] px-5 sm:px-6 py-3 bg-[#EDE8E0] text-[#0C0B0A] hover:bg-[#FAF7F2] transition-all rounded-full cursor-pointer shadow-lg inline-flex items-center justify-center gap-2 font-medium min-h-[44px] w-full sm:w-auto max-w-full box-border"
               >
                 <span>Enter The Archive</span>
                 <span className="transition-transform duration-300 group-hover:translate-x-1">
@@ -92,7 +93,7 @@ export default function HomepageEditorial({
 
               <button
                 onClick={onOpenWrite}
-                className="font-mono text-[9.5px] uppercase tracking-[0.2em] px-6 py-3 border border-[rgba(255,255,255,0.18)] hover:border-[#EDE8E0] hover:bg-white/[0.04] text-[#EDE8E0] transition-all rounded-full cursor-pointer text-center min-h-[44px]"
+                className="font-mono text-[9px] sm:text-[9.5px] uppercase tracking-[0.16em] sm:tracking-[0.2em] px-5 sm:px-6 py-3 border border-[rgba(255,255,255,0.18)] hover:border-[#EDE8E0] hover:bg-white/[0.04] text-[#EDE8E0] transition-all rounded-full cursor-pointer text-center min-h-[44px] w-full sm:w-auto max-w-full box-border"
               >
                 Leave Something Unsaid
               </button>
@@ -369,17 +370,17 @@ export default function HomepageEditorial({
           Nothing is delivered. Nothing is judged.
         </p>
 
-        <div className="pt-3 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <div className="pt-3 flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-full min-w-0">
           <button
             onClick={onOpenWrite}
-            className="w-full sm:w-auto font-mono text-[10px] uppercase tracking-[0.22em] px-8 py-3.5 bg-[#EDE8E0] text-[#0C0B0A] hover:bg-[#FAF7F2] transition-all rounded-full cursor-pointer shadow-lg font-medium"
+            className="w-full sm:w-auto max-w-full box-border font-mono text-[9.5px] sm:text-[10px] uppercase tracking-[0.18em] sm:tracking-[0.22em] px-6 sm:px-8 py-3.5 bg-[#EDE8E0] text-[#0C0B0A] hover:bg-[#FAF7F2] transition-all rounded-full cursor-pointer shadow-lg font-medium min-h-[44px]"
           >
             Leave Something Unsaid
           </button>
 
           <button
             onClick={() => onViewChange("archive")}
-            className="w-full sm:w-auto font-mono text-[9.5px] uppercase tracking-[0.2em] px-6 py-3 text-[#8E877C] hover:text-[#EDE8E0] transition-colors cursor-pointer"
+            className="w-full sm:w-auto max-w-full box-border font-mono text-[9px] sm:text-[9.5px] uppercase tracking-[0.16em] sm:tracking-[0.2em] px-5 sm:px-6 py-3 text-[#8E877C] hover:text-[#EDE8E0] transition-colors cursor-pointer min-h-[44px]"
           >
             Explore Complete Archive →
           </button>
@@ -419,13 +420,13 @@ function LeadArchivalFragment({ message, index, onClick }: FragmentProps) {
           onClick();
         }
       }}
-      className="group relative cursor-pointer transition-transform duration-300 hover:-translate-y-1"
+      className="group relative cursor-pointer transition-transform duration-300 hover:-translate-y-1 w-full max-w-full min-w-0 overflow-hidden"
     >
       {/* 2px Layered Secondary Paper Underlay */}
       <div
-        className="absolute inset-0 pointer-events-none rounded-[2px] transition-transform duration-300 group-hover:translate-x-1 group-hover:translate-y-1"
+        className="absolute inset-0 pointer-events-none rounded-[2px] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:translate-y-0.5 max-w-full"
         style={{
-          transform: "translate(3px, 3px)",
+          transform: "translate(2px, 2px)",
           backgroundColor: palette.underlay,
           border: `1px solid ${palette.border}`,
           zIndex: 0,
@@ -435,7 +436,7 @@ function LeadArchivalFragment({ message, index, onClick }: FragmentProps) {
 
       {/* Primary Card Surface */}
       <article
-        className="relative z-10 w-full p-7 sm:p-10 md:p-12 rounded-[2px] border transition-all duration-300"
+        className="relative z-10 w-full max-w-full min-w-0 p-5 sm:p-8 md:p-12 rounded-[2px] border transition-all duration-300 box-border overflow-hidden"
         style={{
           backgroundColor: palette.surface,
           borderColor: palette.border,
@@ -444,26 +445,26 @@ function LeadArchivalFragment({ message, index, onClick }: FragmentProps) {
         }}
       >
         {/* Header: Dots + Accession + Emotion */}
-        <div className="flex items-center justify-between border-b border-white/[0.07] pb-5">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between border-b border-white/[0.07] pb-4 sm:pb-5 gap-2">
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
             <PaletteDots dots={palette.dots} size="md" />
             <span
-              className="font-mono text-[9px] uppercase tracking-[0.24em] font-medium"
+              className="font-mono text-[8.5px] sm:text-[9px] uppercase tracking-[0.2em] sm:tracking-[0.24em] font-medium truncate"
               style={{ color: palette.muted }}
             >
               ARCHIVAL SPECIMEN
             </span>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <span
-              className="font-mono text-[9.5px] uppercase tracking-[0.2em]"
+              className="font-mono text-[9px] sm:text-[9.5px] uppercase tracking-[0.16em] sm:tracking-[0.2em]"
               style={{ color: palette.muted }}
             >
               {accession}
             </span>
             <span
-              className="font-mono text-[9px] uppercase tracking-[0.2em] font-semibold px-2.5 py-0.5 rounded-full border"
+              className="font-mono text-[8.5px] sm:text-[9px] uppercase tracking-[0.16em] sm:tracking-[0.2em] font-semibold px-2 sm:px-2.5 py-0.5 rounded-full border"
               style={{
                 borderColor: palette.border,
                 color: palette.accent,
@@ -476,10 +477,10 @@ function LeadArchivalFragment({ message, index, onClick }: FragmentProps) {
         </div>
 
         {/* Content: Recipient + Large Editorial Typography */}
-        <div className="py-8 sm:py-10 space-y-3">
-          <div>
+        <div className="py-6 sm:py-9 md:py-10 space-y-3 w-full max-w-full min-w-0 overflow-hidden">
+          <div className="max-w-full">
             <div
-              className="font-mono text-[10.5px] uppercase tracking-[0.2em] font-medium opacity-80"
+              className="font-mono text-[10px] sm:text-[10.5px] uppercase tracking-[0.16em] sm:tracking-[0.2em] font-medium opacity-80 truncate"
               style={{ color: palette.muted }}
             >
               TO: {recipient}
@@ -492,27 +493,27 @@ function LeadArchivalFragment({ message, index, onClick }: FragmentProps) {
             />
           </div>
 
-          <blockquote className="w-full">
-            <p
-              className="font-serif text-[24px] sm:text-[32px] md:text-[38px] leading-[1.28] tracking-[-0.02em] font-normal transition-transform duration-300 group-hover:translate-x-1 whitespace-pre-line"
-              style={{ color: palette.text }}
-            >
-              &ldquo;{msgText}&rdquo;
-            </p>
+          <blockquote className="w-full max-w-full min-w-0 overflow-hidden">
+            <ArchivalContentRenderer
+              content={msgText}
+              variant="lead"
+              className="font-serif text-[20px] sm:text-[28px] md:text-[36px] leading-[1.28] tracking-[-0.02em] font-normal transition-transform duration-300 group-hover:translate-x-1"
+              color={palette.text}
+            />
           </blockquote>
         </div>
 
         {/* Footer: Quiet Action */}
-        <div className="pt-4 border-t border-white/[0.07] flex items-center justify-between">
+        <div className="pt-3.5 sm:pt-4 border-t border-white/[0.07] flex items-center justify-between gap-2">
           <span
-            className="font-mono text-[9px] uppercase tracking-[0.2em] opacity-60"
+            className="font-mono text-[8.5px] sm:text-[9px] uppercase tracking-[0.18em] sm:tracking-[0.2em] opacity-60"
             style={{ color: palette.muted }}
           >
             Cataloged in Silence
           </span>
 
           <span
-            className="font-mono text-[9.5px] uppercase tracking-[0.2em] flex items-center gap-1.5 transition-opacity opacity-75 group-hover:opacity-100"
+            className="font-mono text-[9px] sm:text-[9.5px] uppercase tracking-[0.16em] sm:tracking-[0.2em] flex items-center gap-1.5 transition-opacity opacity-75 group-hover:opacity-100"
             style={{ color: palette.accent }}
           >
             <span>Read In Solitary View</span>
@@ -544,11 +545,11 @@ function EditorialSlip({ message, index, onClick }: FragmentProps) {
           onClick();
         }
       }}
-      className="group relative cursor-pointer transition-transform duration-300 hover:-translate-y-1"
+      className="group relative cursor-pointer transition-transform duration-300 hover:-translate-y-1 w-full max-w-full min-w-0 overflow-hidden"
     >
       {/* 2px Layered Secondary Paper Underlay */}
       <div
-        className="absolute inset-0 pointer-events-none rounded-[2px] transition-transform duration-300 group-hover:translate-x-1 group-hover:translate-y-1"
+        className="absolute inset-0 pointer-events-none rounded-[2px] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:translate-y-0.5 max-w-full"
         style={{
           transform: "translate(2px, 2px)",
           backgroundColor: palette.underlay,
@@ -559,7 +560,7 @@ function EditorialSlip({ message, index, onClick }: FragmentProps) {
       />
 
       <article
-        className="relative z-10 w-full p-6 sm:p-7 rounded-[2px] border transition-all duration-300 space-y-4"
+        className="relative z-10 w-full max-w-full min-w-0 p-5 sm:p-7 rounded-[2px] border transition-all duration-300 space-y-4 box-border overflow-hidden"
         style={{
           backgroundColor: palette.surface,
           borderColor: palette.border,
@@ -567,20 +568,20 @@ function EditorialSlip({ message, index, onClick }: FragmentProps) {
           boxShadow: "0 4px 20px -2px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.3)",
         }}
       >
-        <div className="flex items-center justify-between border-b border-white/[0.07] pb-3">
+        <div className="flex items-center justify-between border-b border-white/[0.07] pb-3 gap-2">
           <PaletteDots dots={palette.dots} size="sm" />
           <span
-            className="font-mono text-[9px] uppercase tracking-[0.2em] opacity-65"
+            className="font-mono text-[9px] uppercase tracking-[0.2em] opacity-65 shrink-0"
             style={{ color: palette.muted }}
           >
             {accession}
           </span>
         </div>
 
-        <div className="space-y-1.5 py-1">
-          <div>
+        <div className="space-y-1.5 py-1 w-full max-w-full min-w-0 overflow-hidden">
+          <div className="max-w-full">
             <div
-              className="font-mono text-[9.5px] uppercase tracking-[0.16em] font-medium opacity-75"
+              className="font-mono text-[9px] sm:text-[9.5px] uppercase tracking-[0.16em] font-medium opacity-75 truncate"
               style={{ color: palette.muted }}
             >
               TO: {recipient}
@@ -593,26 +594,26 @@ function EditorialSlip({ message, index, onClick }: FragmentProps) {
             />
           </div>
 
-          <blockquote className="w-full">
-            <p
-              className="font-serif text-[19px] sm:text-[22px] leading-[1.36] tracking-[-0.015em] font-normal transition-transform duration-300 group-hover:translate-x-0.5 whitespace-pre-line"
-              style={{ color: palette.text }}
-            >
-              &ldquo;{msgText}&rdquo;
-            </p>
+          <blockquote className="w-full max-w-full min-w-0 overflow-hidden">
+            <ArchivalContentRenderer
+              content={msgText}
+              variant="slip"
+              className="font-serif text-[17px] sm:text-[21px] leading-[1.36] tracking-[-0.015em] font-normal transition-transform duration-300 group-hover:translate-x-0.5"
+              color={palette.text}
+            />
           </blockquote>
         </div>
 
-        <div className="pt-2 border-t border-white/[0.07] flex items-center justify-between">
+        <div className="pt-2 border-t border-white/[0.07] flex items-center justify-between gap-2">
           <span
-            className="font-mono text-[8.5px] uppercase tracking-[0.2em] font-medium opacity-70"
+            className="font-mono text-[8.5px] uppercase tracking-[0.2em] font-medium opacity-70 truncate"
             style={{ color: palette.muted }}
           >
             {(message.emotion || palette.defaultEmotion).toUpperCase()}
           </span>
 
           <span
-            className="font-mono text-[8.5px] uppercase tracking-[0.18em] opacity-0 group-hover:opacity-85 transition-opacity"
+            className="font-mono text-[8.5px] uppercase tracking-[0.18em] opacity-0 group-hover:opacity-85 transition-opacity shrink-0"
             style={{ color: palette.accent }}
           >
             OPEN →
@@ -643,16 +644,16 @@ function HorizontalLedgerFragment({ message, index, onClick }: FragmentProps) {
           onClick();
         }
       }}
-      className="group relative cursor-pointer border-t border-b border-[rgba(255,255,255,0.08)] py-6 px-4 sm:px-6 transition-all duration-300 hover:bg-white/[0.02]"
+      className="group relative cursor-pointer border-t border-b border-[rgba(255,255,255,0.08)] py-5 sm:py-6 px-3 sm:px-6 transition-all duration-300 hover:bg-white/[0.02] w-full max-w-full min-w-0 overflow-hidden box-border"
     >
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center gap-4 shrink-0">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4 w-full max-w-full min-w-0">
+        <div className="flex items-center gap-3 sm:gap-4 shrink-0 min-w-0">
           <PaletteDots dots={palette.dots} size="sm" />
-          <span className="font-mono text-[9.5px] uppercase tracking-[0.2em] text-[#8E877C]">
+          <span className="font-mono text-[9px] sm:text-[9.5px] uppercase tracking-[0.2em] text-[#8E877C]">
             {accession}
           </span>
-          <div className="relative inline-block">
-            <span className="font-mono text-[9.5px] uppercase tracking-[0.18em] text-[#EDE8E0] font-medium">
+          <div className="relative inline-block max-w-[200px] truncate">
+            <span className="font-mono text-[9px] sm:text-[9.5px] uppercase tracking-[0.18em] text-[#EDE8E0] font-medium">
               TO: {recipient}
             </span>
             <div
@@ -663,15 +664,17 @@ function HorizontalLedgerFragment({ message, index, onClick }: FragmentProps) {
           </div>
         </div>
 
-        <blockquote className="flex-1 md:px-8">
-          <p className="font-serif text-[17px] sm:text-[19px] text-[#C2BCB3] leading-[1.4] tracking-[-0.015em] line-clamp-2 md:line-clamp-1">
-            &ldquo;{msgText}&rdquo;
-          </p>
+        <blockquote className="flex-1 min-w-0 max-w-full md:px-8 overflow-hidden">
+          <ArchivalContentRenderer
+            content={msgText}
+            variant="slip"
+            className="font-serif text-[16px] sm:text-[18px] text-[#C2BCB3] leading-[1.4] tracking-[-0.015em] line-clamp-2 md:line-clamp-1"
+          />
         </blockquote>
 
         <div className="shrink-0 flex items-center gap-4 justify-between md:justify-end">
           <span
-            className="font-mono text-[9px] uppercase tracking-[0.2em] font-medium px-2 py-0.5 rounded-full border"
+            className="font-mono text-[8.5px] sm:text-[9px] uppercase tracking-[0.2em] font-medium px-2 py-0.5 rounded-full border"
             style={{
               borderColor: palette.border,
               color: palette.accent,
@@ -681,7 +684,7 @@ function HorizontalLedgerFragment({ message, index, onClick }: FragmentProps) {
             {(message.emotion || palette.defaultEmotion).toUpperCase()}
           </span>
 
-          <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#8E877C] group-hover:text-[#EDE8E0] transition-colors">
+          <span className="font-mono text-[8.5px] sm:text-[9px] uppercase tracking-[0.2em] text-[#8E877C] group-hover:text-[#EDE8E0] transition-colors">
             READ →
           </span>
         </div>

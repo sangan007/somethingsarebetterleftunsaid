@@ -84,14 +84,14 @@ export default function JournalArticleView({
   };
 
   return (
-    <div className="relative min-h-screen bg-[#0C0B0A] text-[#EDE8E0] pb-24 pt-8 sm:pt-12">
+    <div className="relative min-h-screen bg-[#0C0B0A] text-[#EDE8E0] pb-24 pt-8 sm:pt-12 w-full max-w-full overflow-x-hidden box-border">
       {/* Soft atmospheric radial ambient glow matching mineral palette */}
       <div
-        className="pointer-events-none fixed top-0 left-1/2 -translate-x-1/2 h-[500px] w-[800px] rounded-full opacity-[0.07] blur-[120px]"
+        className="pointer-events-none fixed top-0 left-1/2 -translate-x-1/2 h-[500px] w-[800px] max-w-full rounded-full opacity-[0.07] blur-[120px] overflow-hidden"
         style={{ backgroundColor: palette.dots[0] }}
       />
 
-      <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-8">
+      <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-8 w-full min-w-0 box-border">
         {/* Navigation / Return Bar */}
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/[0.07] pb-5 sm:pb-6 mb-8 sm:mb-12">
           <button

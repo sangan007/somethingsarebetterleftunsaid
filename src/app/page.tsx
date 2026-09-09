@@ -198,7 +198,7 @@ export default function Home() {
         onOpenWrite={() => setEditorOpen(true)}
       />
 
-      <main className="w-full min-h-screen pt-20 sm:pt-24 md:pt-36 pb-20 sm:pb-28 md:pb-36 px-4 sm:px-6 md:px-12">
+      <main className="w-full max-w-full min-h-screen pt-20 sm:pt-24 md:pt-36 pb-20 sm:pb-28 md:pb-36 px-4 sm:px-6 md:px-12 box-border overflow-x-hidden">
         {/* ==================================================================
             VIEW: HOMEPAGE (The Literary & Archival Entry)
            ================================================================== */}
@@ -331,7 +331,7 @@ export default function Home() {
       </main>
 
       {/* Editorial Footer (With mobile clearance for floating bottom quick navigation) */}
-      <footer className="w-full border-t border-[rgba(255,255,255,0.07)] pt-10 sm:pt-12 pb-28 sm:pb-32 md:pb-12 px-4 sm:px-6 text-center text-[10px] font-mono tracking-[0.16em] uppercase text-[#6B655B] space-y-4">
+      <footer className="w-full max-w-full border-t border-[rgba(255,255,255,0.07)] pt-10 sm:pt-12 pb-28 sm:pb-32 md:pb-12 px-4 sm:px-6 text-center text-[10px] font-mono tracking-[0.16em] uppercase text-[#6B655B] space-y-4 box-border">
         <div className="flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-6 gap-y-2">
           <button
             onClick={() => handleViewChange("home")}
