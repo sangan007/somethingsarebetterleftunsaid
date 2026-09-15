@@ -274,6 +274,25 @@ export default function Home() {
                 <p>Pure Anonymity · Preserved in Stone & Charcoal</p>
                 <p>A Public Repository of Unspoken Words</p>
               </div>
+
+              {/* Quiet Support Section */}
+              <div className="pt-10 sm:pt-12 border-t border-[rgba(255,255,255,0.07)] text-center space-y-4">
+                <p className="font-serif italic text-[15px] sm:text-[16px] text-[#A8A196] leading-relaxed max-w-sm mx-auto">
+                  Like this little corner of the internet?<br />
+                  You can buy me a coffee.
+                </p>
+                <div>
+                  <a
+                    href="https://buymeacoffee.com/thoughtsbysangan"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 font-mono text-[9px] sm:text-[9.5px] uppercase tracking-[0.2em] text-[#EDE8E0] hover:text-[#FAF7F2] border border-[rgba(255,255,255,0.16)] hover:border-[#EDE8E0] px-5 py-2.5 rounded-full transition-all duration-300 bg-white/[0.02] hover:bg-white/[0.06] cursor-pointer"
+                  >
+                    <span>BUY ME A COFFEE</span>
+                    <span className="text-[#C29B68] text-[11px]">→</span>
+                  </a>
+                </div>
+              </div>
             </div>
           </section>
         )}
@@ -367,6 +386,16 @@ export default function Home() {
           >
             Terms
           </button>
+          <span className="opacity-40">·</span>
+          <a
+            href="https://buymeacoffee.com/thoughtsbysangan"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-[#EDE8E0] cursor-pointer transition-colors py-1 inline-flex items-center gap-1 text-[#8E877C]"
+          >
+            <span>BUY ME A COFFEE</span>
+            <span className="text-[#C29B68]/80">→</span>
+          </a>
         </div>
         <div className="text-[9px] sm:text-[10px]">A Collection of Unsaid Things · Archive MMXXIV</div>
       </footer>

@@ -190,6 +190,19 @@ export default function Navigation({
                   </button>
                 );
               })}
+
+              {/* Small Secondary Menu Item: Buy Me A Coffee */}
+              <div className="pt-2">
+                <a
+                  href="https://buymeacoffee.com/thoughtsbysangan"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between py-3 text-left font-mono text-[10px] sm:text-[10.5px] uppercase tracking-[0.2em] text-[#8E877C] hover:text-[#EDE8E0] transition-colors border-b border-white/[0.04] cursor-pointer group"
+                >
+                  <span>BUY ME A COFFEE</span>
+                  <span className="text-[#C29B68]/70 group-hover:text-[#C29B68] transition-colors">→</span>
+                </a>
+              </div>
             </nav>
 
             {/* Mobile Call to Action: + Leave Something Unsaid */}

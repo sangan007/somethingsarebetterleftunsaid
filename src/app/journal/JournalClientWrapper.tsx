@@ -86,13 +86,22 @@ export default function JournalClientWrapper({
           >
             Journal
           </button>
-          <span className="opacity-40">·</span>
           <button
             onClick={() => router.push("/?view=about")}
             className="hover:text-[#EDE8E0] cursor-pointer transition-colors py-1"
           >
             About
           </button>
+          <span className="opacity-40">·</span>
+          <a
+            href="https://buymeacoffee.com/thoughtsbysangan"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-[#EDE8E0] cursor-pointer transition-colors py-1 inline-flex items-center gap-1 text-[#8E877C]"
+          >
+            <span>BUY ME A COFFEE</span>
+            <span className="text-[#C29B68]/80">→</span>
+          </a>
         </div>
         <div className="text-[9px] sm:text-[10px]">A Collection of Unsaid Things · Archive MMXXVI</div>
       </footer>
